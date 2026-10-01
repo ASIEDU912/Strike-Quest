@@ -1,7 +1,7 @@
 {
-  "name": "Strike Quest \u2014 Strike Price Calculator",
-  "short_name": "Strike Quest",
-  "description": "Gamified strike-price and entry-target calculator for stocks and ETFs with predictive search, historical performance, market context, saved analyses, and shareable Low/Mid/High targets.",
+  "name": "Strike Quest",
+  "short_name": "StrikeQuest",
+  "description": "Gamified stock and ETF strike-price research with Auto EOD data, watchlists, saved analyses, badges, quests, and predictive search.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

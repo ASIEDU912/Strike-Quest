@@ -157,6 +157,22 @@
     .splash-tagline{margin-top:18px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#77bdff}
     @media (prefers-reduced-motion:reduce){.app-splash{transition:none}}
 
+
+    .app-view{display:none}.app-view.active{display:block}
+    .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:26;width:min(430px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(8,13,19,.96);backdrop-filter:blur(18px);border-top:1px solid #2a3542;padding:7px 4px calc(7px + var(--safe-bottom));box-shadow:0 -12px 32px #0009}
+    .nav-btn{border:0;background:transparent;color:#8190a1;padding:6px 2px 4px;font-size:9px;font-weight:700;border-radius:12px;display:grid;gap:3px;place-items:center}
+    .nav-btn .nav-icon{font-size:18px;line-height:1}.nav-btn.active{color:#49a9ff;background:#102239}.nav-btn.active .nav-icon{filter:drop-shadow(0 0 8px #319eff88)}
+    .quick-picks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.quick-pick{border:1px solid #2d3a48;background:#0c1219;color:#eef5fb;border-radius:15px;padding:10px 5px;font-size:11px;font-weight:800}.quick-pick span{display:block;color:#8fa1b2;font-size:8px;font-weight:600;margin-top:3px}
+    .research-progress{margin-top:12px}.research-progress-head{display:flex;justify-content:space-between;color:#cbd8e4;font-size:10px;font-weight:800;margin-bottom:6px}.progress-track{height:8px;border-radius:999px;background:#0a1016;border:1px solid #263341;overflow:hidden}.progress-fill{height:100%;width:25%;background:linear-gradient(90deg,#2c91ff,#42d77d);border-radius:999px;transition:width .25s ease}
+    .analysis-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:#0b1118;border:1px solid #2c3744;border-radius:14px;padding:5px;margin:12px 0}.analysis-tab{border:0;background:transparent;color:#8fa0b1;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:800}.analysis-tab.active{background:#238fff;color:#07111d}.analysis-pane{display:none}.analysis-pane.active{display:block}
+    .screen-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 12px}.screen-title h2{font-size:24px;margin:0;letter-spacing:-.03em}.screen-title p{margin:3px 0 0;color:var(--muted);font-size:11px}
+    .watchlist-grid{display:grid;gap:8px}.watch-item{display:grid;grid-template-columns:1fr auto;gap:10px;background:#0c1219;border:1px solid #2a3643;border-radius:16px;padding:12px}.watch-symbol{font-size:18px;font-weight:900}.watch-name{font-size:10px;color:#93a4b5;margin-top:2px}.watch-actions{display:flex;gap:6px;align-items:center}.tiny-btn{border:1px solid #334252;background:#17212c;color:#dfe8f1;border-radius:10px;padding:8px 9px;font-size:10px;font-weight:800}.tiny-btn.danger{color:#ff9da5;background:#27161a;border-color:#5b2930}
+    .level-card{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;background:linear-gradient(135deg,#172331,#101923);border:1px solid #354252;border-radius:20px;padding:15px}.level-emblem{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:radial-gradient(circle,#f6c85f33,#16202b 65%);border:2px solid #f1c45d;box-shadow:0 0 24px #f1c45d22}.level-info h3{margin:0 0 4px;font-size:18px}.level-info p{margin:0;color:#9faebe;font-size:10px}.xp-row{display:flex;justify-content:space-between;color:#aab8c7;font-size:9px;margin-top:8px}.xp-bar{height:8px;border-radius:999px;background:#0a1016;border:1px solid #2a3542;overflow:hidden;margin-top:5px}.xp-fill{height:100%;background:linear-gradient(90deg,#277dff,#3dd7a0);width:0%}
+    .badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.badge-card{background:#0c1219;border:1px solid #2a3643;border-radius:16px;padding:10px 5px;text-align:center;opacity:.48}.badge-card.earned{opacity:1;border-color:#385673;box-shadow:0 0 20px #168dff14}.badge-icon{font-size:24px}.badge-name{font-size:8px;color:#cbd7e2;margin-top:5px;line-height:1.25}
+    .quest-list{display:grid;gap:8px}.quest-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:#0c1219;border:1px solid #2a3643;border-radius:15px;padding:11px}.quest-check{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#18232e;color:#718296}.quest-item.done .quest-check{background:#12341f;color:#61e695}.quest-copy b{display:block;font-size:11px}.quest-copy span{display:block;color:#91a2b3;font-size:9px;margin-top:2px}.quest-xp{font-size:10px;color:#ffd36b;font-weight:900}
+    .saved-empty,.watch-empty{padding:18px;text-align:center;color:#8899aa;font-size:11px;border:1px dashed #33404d;border-radius:15px}
+    .section-kicker{font-size:9px;color:#63baff;text-transform:uppercase;letter-spacing:.11em;font-weight:900;margin-bottom:5px}
+
 </style>
 </head>
 <body>
@@ -170,176 +186,133 @@
 </div>
 
 
+
 <div class="shell">
   <div class="top">
     <div class="brand">
-      <div class="logo">SP</div>
-      <div><h1>Strike Quest</h1><p>Find smarter entry zones</p></div>
+      <div class="logo">SQ</div>
+      <div><h1>Strike Quest</h1><p>Plan smarter. Research deeper.</p></div>
     </div>
     <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
   </div>
 
-  <section class="card quest-hero">
-    <div class="quest-grid">
-      <div>
-        <div class="eyebrow">Quest mode</div>
-        <h2 id="missionTitle">Mission: Find a 1-Year entry zone</h2>
-        <p id="missionLine">Apple Inc. (AAPL) • Manual inputs • 10% correction</p>
-        <div class="badge-row">
-          <span class="mood-pill mid" id="moodPill">🟡 Exploring</span>
-          <span class="score-pill">Research score <b id="researchScore">40</b></span>
+  <main id="viewResearch" class="app-view active">
+    <section class="card quest-hero">
+      <div class="quest-grid">
+        <div>
+          <div class="eyebrow">Active mission</div>
+          <h2 id="missionTitle">Mission: Find a 1-Year entry zone</h2>
+          <p id="missionLine">Apple Inc. (AAPL) • Auto EOD • 10% correction</p>
+          <div class="badge-row">
+            <span class="mood-pill mid" id="moodPill">🟡 Exploring</span>
+            <span class="score-pill">Research score <b id="researchScore">40</b></span>
+          </div>
+          <div class="research-progress">
+            <div class="research-progress-head"><span>Research progress</span><span id="researchProgressText">1 / 4</span></div>
+            <div class="progress-track"><div class="progress-fill" id="researchProgressFill"></div></div>
+          </div>
+        </div>
+        <div class="quest-orb"><div class="orb-ring"></div><div class="orb-core" id="orbTicker">AAPL</div></div>
+      </div>
+      <div class="stage-strip">
+        <div class="stage-mini"><b>Trend check</b><span id="stageTrendMini">Waiting for market context.</span></div>
+        <div class="stage-mini"><b>Range check</b><span id="stageRangeMini">52-week range will appear here.</span></div>
+        <div class="stage-mini"><b>Historical power</b><span id="stagePowerMini">Performance data powers the mission.</span></div>
+        <div class="stage-mini"><b>Strike zone</b><span id="stageStrikeMini">Low / Mid / High targets update live.</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-kicker">Discover</div><h2 class="section-title">Quick Picks</h2>
+      <div class="quick-picks" id="quickPicks">
+        <button class="quick-pick" data-quick="AAPL">AAPL<span>Apple</span></button>
+        <button class="quick-pick" data-quick="MSFT">MSFT<span>Microsoft</span></button>
+        <button class="quick-pick" data-quick="NVDA">NVDA<span>NVIDIA</span></button>
+        <button class="quick-pick" data-quick="XLK">XLK<span>Technology ETF</span></button>
+        <button class="quick-pick" data-quick="SPY">SPY<span>S&amp;P 500 ETF</span></button>
+        <button class="quick-pick" data-quick="QQQ">QQQ<span>Nasdaq ETF</span></button>
+        <button class="quick-pick" data-quick="SMH">SMH<span>Semiconductor ETF</span></button>
+        <button class="quick-pick" data-quick="AMZN">AMZN<span>Amazon</span></button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title-row"><h2 class="section-title" style="margin:0">Mission controls</h2><span class="consumer-tag">Predictive search</span></div>
+      <div class="row">
+        <div class="grow">
+          <label>Ticker search</label>
+          <div class="ticker-search-wrap"><input id="ticker" value="AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ticker or company name"><div id="tickerSuggestions" class="search-suggestions" role="listbox" aria-label="Ticker search suggestions"></div></div>
+          <div id="selectedInstrument" class="selected-instrument">Apple Inc. • AAPL</div>
+        </div>
+        <button id="analyzeBtn" class="btn primary" style="align-self:end">Analyze</button>
+      </div>
+      <div class="tabs" id="periodTabs"><button class="tab" data-p="3m">3M</button><button class="tab" data-p="6m">6M</button><button class="tab active" data-p="1y">1Y</button><button class="tab" data-p="2y">2Y</button><button class="tab" data-p="3y">3Y</button></div>
+      <div class="grid2" style="margin-top:12px"><div><label>Correction amount</label><div class="range-line"><input id="correction" type="range" min="0" max="30" step="1" value="10"><div class="pct"><span id="corrLabel">10</span>%</div></div></div><div></div></div>
+      <div class="grid2" style="margin-top:10px"><div><label>Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="2"></div><div><label>Strike increment</label><select id="increment"><option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select></div></div>
+    </section>
+
+    <section class="card">
+      <div class="row" style="align-items:center;justify-content:space-between"><h2 class="section-title" style="margin:0">Market data</h2><span class="source-badge" id="sourceBadge">Auto EOD</span></div>
+      <div class="grid2" style="margin-top:10px"><div><label>Current price</label><input id="price" type="number" step="0.01" value="192.75"></div><div><label>Historical performance ($)</label><input id="perf" type="number" step="0.01" value="39.57"></div></div>
+      <div class="row" style="margin-top:10px"><button class="btn secondary grow" id="refreshBtn">Refresh EOD data</button><button class="btn secondary" id="watchCurrentBtn">☆ Watch</button></div>
+      <div class="status" id="status">Ready.</div>
+    </section>
+
+    <section class="card">
+      <div class="topline"><h2 class="section-title" style="margin:0">Analysis</h2><span class="subtle">Research → context → targets</span></div>
+      <div class="hero"><div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div><div class="price"><span class="subtle">Current</span><br><strong id="outPrice">$192.75</strong></div></div>
+      <div class="analysis-tabs" id="analysisTabs"><button class="analysis-tab active" data-analysis="overview">Overview</button><button class="analysis-tab" data-analysis="performance">Performance</button><button class="analysis-tab" data-analysis="targets">Targets</button></div>
+
+      <div id="analysisOverview" class="analysis-pane active">
+        <div class="metrics" id="metricsRow"><div class="metric"><span>Performance</span><b id="outPerf">$39.57</b></div><div class="metric"><span>Adjusted</span><b id="outAdjusted">$19.79</b></div><div class="metric"><span>Projected</span><b id="outProjected">$212.54</b></div></div>
+        <div class="quest-grid-2" style="margin-top:13px">
+          <div class="mini-card"><h3>1. Trend Check</h3><div class="stage-line"><span class="chip" id="trend1mBadge">1M trend</span><span class="chip" id="trend3mBadge">3M trend</span></div><p id="questSummary" class="quest-summary">Trend chips turn positive when recent trend is supportive.</p></div>
+          <div class="mini-card"><h3>2. Market Position</h3><div class="gauge"><div class="gauge-fill" id="rangeFill"></div><div class="gauge-marker" id="rangeMarker"></div></div><div class="gauge-scale"><span>52W Low</span><span>52W High</span></div><p id="rangeText" class="quest-summary">52-week range data appears here when available.</p></div>
         </div>
       </div>
-      <div class="quest-orb">
-        <div class="orb-ring"></div>
-        <div class="orb-core" id="orbTicker">AAPL</div>
+
+      <div id="analysisPerformance" class="analysis-pane">
+        <div class="metrics"><div class="metric"><span>Performance</span><b id="perfMirror">$39.57</b></div><div class="metric"><span>Adjusted</span><b id="adjustedMirror">$19.79</b></div><div class="metric"><span>Projected</span><b id="projectedMirror">$212.54</b></div></div>
+        <div class="mini-card" style="margin-top:13px"><h3>3. Historical Performance</h3><p id="powerText">Performance data will summarize here.</p><div class="badge-strip" id="badgeStrip"></div></div>
       </div>
-    </div>
-    <div class="stage-strip">
-      <div class="stage-mini"><b>Trend check</b><span id="stageTrendMini">Waiting for market context.</span></div>
-      <div class="stage-mini"><b>Range check</b><span id="stageRangeMini">52-week range will appear here.</span></div>
-      <div class="stage-mini"><b>Historical power</b><span id="stagePowerMini">Performance data powers the mission.</span></div>
-      <div class="stage-mini"><b>Strike zone</b><span id="stageStrikeMini">Low / Mid / High targets update live.</span></div>
-    </div>
-  </section>
 
-  <section class="card">
-    <div class="title-row">
-      <h2 class="section-title" style="margin:0">Mission controls</h2>
-      <span class="consumer-tag">Consumer app view</span>
-    </div>
-    <div class="row">
-      <div class="grow">
-        <label>Ticker search</label>
-        <div class="ticker-search-wrap">
-          <input id="ticker" value="AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ticker or company name">
-          <div id="tickerSuggestions" class="search-suggestions" role="listbox" aria-label="Ticker search suggestions"></div>
-        </div>
-        <div id="selectedInstrument" class="selected-instrument">Apple Inc. • AAPL</div>
+      <div id="analysisTargets" class="analysis-pane">
+        <div class="targets" id="targetsRow"><div class="target low"><small class="tier">Low</small><div class="n" id="low">$192</div><div class="subtle">defensive</div><div class="caption">For patient entries and deeper pullbacks.</div></div><div class="target mid"><small class="tier">Mid</small><div class="n" id="mid">$202</div><div class="subtle">balanced</div><div class="caption">Middle zone between patience and momentum.</div></div><div class="target high"><small class="tier">High</small><div class="n" id="high">$213</div><div class="subtle">aggressive</div><div class="caption">Closest zone to the projected level.</div></div></div>
+        <div class="mini-card" style="margin-top:13px"><h3>4. Strike Zone Calculation</h3><details><summary>Show calculation</summary><pre id="details"></pre></details><div class="notice" id="extra"></div></div>
       </div>
-      <button id="analyzeBtn" class="btn primary" style="align-self:end">Analyze</button>
-    </div>
-    <div class="tabs" id="periodTabs">
-      <button class="tab" data-p="3m">3M</button>
-      <button class="tab" data-p="6m">6M</button>
-      <button class="tab active" data-p="1y">1Y</button>
-      <button class="tab" data-p="2y">2Y</button>
-      <button class="tab" data-p="3y">3Y</button>
-    </div>
-    <div class="grid2" style="margin-top:12px">
-      <div>
-        <label>Correction amount</label>
-        <div class="range-line">
-          <input id="correction" type="range" min="0" max="30" step="1" value="10">
-          <div class="pct"><span id="corrLabel">10</span>%</div>
-        </div>
-      </div>
-      <div></div>
-    </div>
-    <div class="grid2" style="margin-top:10px">
-      <div><label>Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="2"></div>
-      <div><label>Strike increment</label>
-        <select id="increment">
-          <option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option>
-        </select>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="card">
-    <div class="row" style="align-items:center;justify-content:space-between">
-      <h2 class="section-title" style="margin:0">Market inputs</h2>
-      <span class="source-badge" id="sourceBadge">Manual</span>
-    </div>
-    <div class="grid2" style="margin-top:10px">
-      <div><label>Current price</label><input id="price" type="number" step="0.01" value="192.75"></div>
-      <div><label>Historical performance ($)</label><input id="perf" type="number" step="0.01" value="39.57"></div>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <button class="btn secondary grow" id="refreshBtn">Refresh market data</button>
-    </div>
-    <div class="status" id="status">Ready.</div>
-  </section>
+    <section class="card"><h2 class="section-title">Validation lab</h2><div class="validation-grid"><button class="btn secondary" onclick="loadPreset('aapl')">AAPL 2023</button><button class="btn secondary" onclick="loadPreset('xlk')">XLK 2021</button></div><div class="status" id="validation" style="margin-top:10px">Use a preset to quickly validate the calculator.</div></section>
+    <section class="card"><h2 class="section-title">Share this result</h2><div class="sharebar"><button class="btn primary" id="shareResultBtn">Share result</button><button class="btn secondary" id="copyResultBtn">Copy summary</button></div><div class="notice">Sharing includes only the summary — never saved history or any API key.</div></section>
+  </main>
 
-  <section class="card">
-    <div class="topline"><h2 class="section-title" style="margin:0">Quest board</h2><span class="subtle">Stage 4: strike zone reveal</span></div>
-    <div class="hero">
-      <div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div>
-      <div class="price"><span class="subtle">Current</span><br><strong id="outPrice">$192.75</strong></div>
-    </div>
+  <main id="viewWatchlist" class="app-view">
+    <div class="screen-title"><div><div class="section-kicker">Watchlist</div><h2>Research Queue</h2><p>Keep tickers you want to revisit.</p></div><button class="btn primary" id="watchAddBtn">Add current</button></div>
+    <section class="card"><div id="watchlist" class="watchlist-grid"></div></section>
+  </main>
 
-    <div class="metrics">
-      <div class="metric"><span>Performance</span><b id="outPerf">$39.57</b></div>
-      <div class="metric"><span>Adjusted</span><b id="outAdjusted">$19.79</b></div>
-      <div class="metric"><span>Projected</span><b id="outProjected">$212.54</b></div>
-    </div>
+  <main id="viewSaved" class="app-view">
+    <div class="screen-title"><div><div class="section-kicker">Saved</div><h2>Analysis History</h2><p>Reload, compare, or delete past research runs.</p></div><button class="btn danger-lite" id="clearAllBtn">Clear all</button></div>
+    <section class="card"><div id="history"></div><button class="btn secondary" id="saveBtn" style="width:100%;margin-top:8px">Save current analysis</button></section>
+  </main>
 
-    <div class="targets">
-      <div class="target low"><small class="tier">Low</small><div class="n" id="low">$192</div><div class="subtle">defensive</div><div class="caption">For patient entries and deeper pullbacks.</div></div>
-      <div class="target mid"><small class="tier">Mid</small><div class="n" id="mid">$202</div><div class="subtle">moderate</div><div class="caption">Balanced zone between patience and momentum.</div></div>
-      <div class="target high"><small class="tier">High</small><div class="n" id="high">$213</div><div class="subtle">aggressive</div><div class="caption">Closest strike zone to the projected level.</div></div>
-    </div>
+  <main id="viewQuests" class="app-view">
+    <div class="screen-title"><div><div class="section-kicker">Quests</div><h2>Research Progress</h2><p>Progress rewards completed research steps — not trading frequency or profits.</p></div></div>
+    <section class="level-card"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
+    <section class="card"><h2 class="section-title">Badges</h2><div class="badge-grid" id="badgeGrid"></div></section>
+    <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
+  </main>
 
-    <div class="quest-grid-2" style="margin-top:13px">
-      <div class="mini-card">
-        <h3>Stage 1 — Trend check</h3>
-        <div class="stage-line">
-          <span class="chip" id="trend1mBadge">1M trend</span>
-          <span class="chip" id="trend3mBadge">3M trend</span>
-        </div>
-        <p id="questSummary" class="quest-summary">Trend chips turn positive when the recent trend is supportive.</p>
-      </div>
-      <div class="mini-card">
-        <h3>Stage 2 — Market position</h3>
-        <div class="gauge"><div class="gauge-fill" id="rangeFill"></div><div class="gauge-marker" id="rangeMarker"></div></div>
-        <div class="gauge-scale"><span>52W Low</span><span>52W High</span></div>
-        <p id="rangeText" class="quest-summary">52-week range data appears here when available.</p>
-      </div>
-      <div class="mini-card">
-        <h3>Stage 3 — Historical power</h3>
-        <p id="powerText">Performance data will summarize here.</p>
-        <div class="badge-strip" id="badgeStrip"></div>
-      </div>
-      <div class="mini-card">
-        <h3>Stage 4 — Calculation details</h3>
-        <details>
-          <summary>Show calculation</summary>
-          <pre id="details"></pre>
-        </details>
-        <div class="notice" id="extra"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 class="section-title">Validation lab</h2>
-    <div class="validation-grid">
-      <button class="btn secondary" onclick="loadPreset('aapl')">AAPL 2023</button>
-      <button class="btn secondary" onclick="loadPreset('xlk')">XLK 2021</button>
-    </div>
-    <div class="status" id="validation" style="margin-top:10px">Use a preset to quickly validate the calculator.</div>
-  </section>
-
-  <section class="card">
-    <h2 class="section-title">Share this result</h2>
-    <div class="sharebar">
-      <button class="btn primary" id="shareResultBtn">Share result</button>
-      <button class="btn secondary" id="copyResultBtn">Copy summary</button>
-    </div>
-    <div class="notice">Sharing includes only the summary — never your saved history or any API key.</div>
-  </section>
-
-  <section class="card">
-    <div class="row" style="align-items:center;justify-content:space-between">
-      <h2 class="section-title" style="margin:0">Saved analyses</h2>
-      <button class="btn danger-lite" id="clearAllBtn" style="padding:8px 10px;font-size:11px">Clear all</button>
-    </div>
-    <div id="history" style="margin-top:10px"></div>
-    <button class="btn secondary" id="saveBtn" style="width:100%;margin-top:6px">Save current analysis</button>
-  </section>
-
-  <div class="foot">Strike Quest • public shareable edition • informational only</div>
+  <div class="foot">Strike Quest • research gamification • informational only</div>
 </div>
+
+<nav class="bottom-nav" aria-label="App navigation">
+  <button class="nav-btn active" data-view="research"><span class="nav-icon">⌕</span><span>Research</span></button>
+  <button class="nav-btn" data-view="watchlist"><span class="nav-icon">♡</span><span>Watchlist</span></button>
+  <button class="nav-btn" data-view="saved"><span class="nav-icon">▣</span><span>Saved</span></button>
+  <button class="nav-btn" data-view="quests"><span class="nav-icon">🏆</span><span>Quests</span></button>
+  <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+</nav>
 
 
 <div class="modal" id="settingsModal">
@@ -347,25 +320,25 @@
     <div class="sheet-head"><h3>Settings & data</h3><button class="close-btn" id="closeSettings">×</button></div>
     <label>Market data source</label>
     <div class="seg" id="dataSeg">
-      <button class="active" data-mode="manual">Manual</button>
-      <button data-mode="barchart">Barchart</button>
+      <button class="active" data-mode="auto_eod">Auto EOD</button>
+      <button data-mode="manual">Manual</button>
     </div>
-    <div id="manualBox" style="margin-top:12px"><div class="consumer-note">Manual mode uses the market inputs on the main screen.</div></div>
-    <div id="apiBox" class="hidden" style="margin-top:12px">
+    <div id="manualBox" class="hidden" style="margin-top:12px"><div class="consumer-note">Manual mode lets you type the current price and historical performance yourself.</div></div>
+    <div id="apiBox" style="margin-top:12px">
       <label>Barchart OnDemand API key</label>
       <input id="apiKey" type="password" placeholder="Stored only on this device">
       <div class="row" style="margin-top:8px">
-        <button class="btn secondary grow" id="fetchBtn">Test & load</button>
+        <button class="btn secondary grow" id="fetchBtn">Save key & load EOD</button>
         <button class="btn ghost" id="forgetBtn">Forget</button>
       </div>
       <a class="source-link" id="barchartLink" href="https://www.barchart.com/etfs-funds/quotes/AAPL/performance" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px">Open Barchart ↗</a>
-      <div class="consumer-note" style="margin-top:8px">Automatic market data requires your own Barchart OnDemand access. Your key stays on this device and stays out of the public experience.</div>
+      <div class="consumer-note" style="margin-top:8px">Auto EOD uses Barchart OnDemand getQuoteEod plus historical data. Your key stays on this device and is never included when you share results.</div>
     </div>
     <div style="margin-top:14px">
       <label>Default strike increment</label>
       <select id="settingsIncrement"><option value="0.5">$0.50</option><option value="1">$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select>
     </div>
-    <div class="consumer-note" style="margin-top:12px">Targets are informational and are not investment recommendations.</div>
+    <div class="consumer-note" style="margin-top:12px"><b>Default:</b> Auto EOD. On launch, ticker selection, or timeframe change, Strike Quest loads the latest completed-session close and recalculates the selected historical-performance horizon. Targets are informational and are not investment recommendations.</div>
   </div>
 </div>
 
@@ -384,7 +357,7 @@ const PERIODS={
   "2y":{label:"2-Year",months:24,divisor:1.5},
   "3y":{label:"3-Year",months:36,divisor:2}
 };
-let state={period:"1y",mode:"manual",extra:{}};
+let state={period:"1y",mode:"auto_eod",extra:{}};
 const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
 let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1;
 
@@ -445,6 +418,7 @@ function chooseSuggestion(btn){
   $("tickerSuggestions").innerHTML="";
   if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/stocks/quotes/${encodeURIComponent(symbol)}/performance`;
   render();
+  if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0);
 }
 async function runPredictiveSearch(){
   const q=$("ticker").value.trim();
@@ -507,7 +481,7 @@ function renderQuest(r){
   const parts=selected.split(" • ");
   const name=(parts[0]||symbol).trim();
   $("missionTitle").textContent=`Mission: Find a ${PERIODS[state.period].label} entry zone`;
-  $("missionLine").textContent=`${name} (${symbol}) • ${state.mode==="barchart"?"Live Barchart data":"Manual inputs"} • ${Math.round(r.c*100)}% correction`;
+  $("missionLine").textContent=`${name} (${symbol}) • ${state.mode==="auto_eod"?"Automatic EOD data":"Manual inputs"} • ${Math.round(r.c*100)}% correction`;
   $("orbTicker").textContent=symbol.slice(0,5);
 
   const mood=moodFromRange(r);
@@ -521,10 +495,10 @@ function renderQuest(r){
   const checkRange=Number.isFinite(state.extra.high52)&&Number.isFinite(state.extra.low52)&&state.extra.high52>state.extra.low52;
   const checkCorrection=r.c>0;
   const score=(checkPrice?20:0)+(checkTrend1?20:0)+(checkTrend3?20:0)+(checkRange?20:0)+(checkCorrection?20:0);
-  $("researchScore").textContent=String(score);
+  $("researchScore").textContent=String(score); const checks=[checkTrend1&&checkTrend3,checkRange,Number.isFinite(r.perf),Number.isFinite(r.low)&&Number.isFinite(r.mid)&&Number.isFinite(r.high)]; const doneCount=checks.filter(Boolean).length; if($("researchProgressText"))$("researchProgressText").textContent=`${doneCount} / 4`; if($("researchProgressFill"))$("researchProgressFill").style.width=`${doneCount*25}%`; updateResearchProgress(checks);
 
-  $("stageTrendMini").textContent=checkTrend1||checkTrend3?`${state.extra.trend1m||"1M n/a"} • ${state.extra.trend3m||"3M n/a"}`:"Run with Barchart data for automatic trend checks.";
-  $("stageRangeMini").textContent=checkRange?`52W low ${money(state.extra.low52)} to high ${money(state.extra.high52)}.`:"Range data appears with Barchart mode or manual context.";
+  $("stageTrendMini").textContent=checkTrend1||checkTrend3?`${state.extra.trend1m||"1M n/a"} • ${state.extra.trend3m||"3M n/a"}`:"Auto EOD loads trend checks automatically when a Barchart key is saved.";
+  $("stageRangeMini").textContent=checkRange?`52W low ${money(state.extra.low52)} to high ${money(state.extra.high52)}.`:"Range data appears automatically with Auto EOD or can be entered manually.";
   $("stagePowerMini").textContent=`${money(r.perf)} move → ${money(r.adjusted)} usable after divisor ${r.div}.`;
   $("stageStrikeMini").textContent=`Low ${money(r.low,0)} • Mid ${money(r.mid,0)} • High ${money(r.high,0)}`;
 
@@ -546,7 +520,7 @@ function renderQuest(r){
   $("rangeMarker").style.left=`${pos*100}%`;
   $("rangeText").textContent=checkRange
     ? `Current price is ${Math.round(pos*100)}% of the way from the 52-week low to the 52-week high.`
-    : "52-week range unavailable right now. Switch to Barchart mode for automatic range context.";
+    : "52-week range unavailable right now. Auto EOD will populate this automatically once your Barchart key is saved.";
 
   $("powerText").textContent=`Historical performance contributes ${money(r.perf)}. After applying the holding divisor (${r.div}), the usable move is ${money(r.adjusted)} and the projected level becomes ${money(r.projected)}.`;
   const earned=[];
@@ -582,7 +556,7 @@ function render(){
   $("outPrice").textContent=money(r.p);
   $("outPerf").textContent=money(r.perf);
   $("outAdjusted").textContent=money(r.adjusted);
-  $("outProjected").textContent=money(r.projected);
+  $("outProjected").textContent=money(r.projected); if($("perfMirror"))$("perfMirror").textContent=money(r.perf); if($("adjustedMirror"))$("adjustedMirror").textContent=money(r.adjusted); if($("projectedMirror"))$("projectedMirror").textContent=money(r.projected);
   const d=r.inc<1?2:(Number.isInteger(r.inc)?0:2);
   $("low").textContent=money(r.low,d); $("mid").textContent=money(r.mid,d); $("high").textContent=money(r.high,d);
   $("details").textContent=
@@ -614,14 +588,15 @@ Rounded upward to nearest ${money(r.inc,r.inc<1?2:0)} strike increment.`;
 function setPeriod(p){
   state.period=p;
   document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.p===p));
-  $("divisor").value=PERIODS[p].divisor; render();
+  $("divisor").value=PERIODS[p].divisor; markPeriod(p); render();
 }
 function setMode(m){
   state.mode=m;
   document.querySelectorAll("#dataSeg button").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));
   $("manualBox").classList.toggle("hidden",m!=="manual");
-  $("apiBox").classList.toggle("hidden",m!=="barchart");
-  $("sourceBadge").textContent=m==="barchart"?"Barchart":"Manual";
+  $("apiBox").classList.toggle("hidden",m!=="auto_eod");
+  $("sourceBadge").textContent=m==="auto_eod"?"Auto EOD":"Manual";
+  render();
 }
 function status(msg,kind=""){
   $("status").textContent=msg;$("status").className="status"+(kind?` ${kind}`:"")
@@ -642,75 +617,117 @@ function trendFrom(records,spot,months){
   const close=Number(rec.close);
   return spot>close?"Up":spot<close?"Down":"Flat";
 }
+
+function eodCacheKey(){return `${($("ticker").value||"").trim().toUpperCase()}|${state.period}`;}
+function readEodCache(){
+  try{return JSON.parse(localStorage.getItem("strikequest_eod_cache")||"{}");}catch(e){return {}}
+}
+function writeEodCache(payload){
+  const cache=readEodCache();
+  cache[eodCacheKey()]=payload;
+  const entries=Object.entries(cache).sort((a,b)=>(b[1]?.savedAt||0)-(a[1]?.savedAt||0)).slice(0,40);
+  localStorage.setItem("strikequest_eod_cache",JSON.stringify(Object.fromEntries(entries)));
+}
+function loadCachedEod(silent=false){
+  const item=readEodCache()[eodCacheKey()];
+  if(!item)return false;
+  if(Number.isFinite(Number(item.price)))$("price").value=Number(item.price).toFixed(2);
+  if(Number.isFinite(Number(item.perf)))$("perf").value=Number(item.perf).toFixed(2);
+  state.extra=item.extra||{};
+  if(item.instrument)$("selectedInstrument").textContent=item.instrument;
+  if(!silent)status(`Showing cached EOD data from ${item.eodDate||new Date(item.savedAt).toLocaleDateString()}.`,"good");
+  render();
+  return true;
+}
+function maybeAutoLoadEod(){
+  if(state.mode!=="auto_eod")return;
+  const key=localStorage.getItem("splab_barchart_key");
+  if(key){fetchData();return;}
+  if(!loadCachedEod(false))status("Auto EOD is ready. Add your Barchart OnDemand key in Settings to load end-of-day data automatically. Manual values remain available until then.","warn");
+}
+
 async function fetchData(){
-  const ticker=$("ticker").value.trim().toUpperCase(),key=$("apiKey").value.trim();
-  if(!ticker||!key){status("Enter a ticker and Barchart OnDemand API key.","warn");return}
+  const ticker=$("ticker").value.trim().toUpperCase(),key=$("apiKey").value.trim()||localStorage.getItem("splab_barchart_key")||"";
+  if(!ticker){status("Enter a ticker first.","warn");return}
+  if(!key){
+    if(!loadCachedEod(false))status("Add your Barchart OnDemand key in Settings to enable automatic EOD data.","warn");
+    return;
+  }
   localStorage.setItem("splab_barchart_key",key);
-  $("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
-  status(`Loading ${ticker} from Barchart…`);
+  if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
+  status(`Loading latest end-of-day data for ${ticker}…`);
   $("fetchBtn").disabled=true;
   try{
     const endpoint="https://ondemand.websol.barchart.com";
     const now=new Date();
     const target=shiftMonths(now,-PERIODS[state.period].months);
     const historyType=state.period==="3y"?"weekly":"daily";
-    const historyStart=new Date(target);
-    historyStart.setDate(historyStart.getDate()-16);
-    const end=new Date(now);
-    end.setDate(end.getDate()+2);
+    const historyStart=new Date(Math.min(target.getTime()-16*86400000, shiftMonths(now,-13).getTime()));
+    const end=new Date(now);end.setDate(end.getDate()+2);
 
-    const quoteUrl=`${endpoint}/getQuote.json?apikey=${encodeURIComponent(key)}&symbols=${encodeURIComponent(ticker)}&fields=fiftyTwoWkHigh%2CfiftyTwoWkHighDate%2CfiftyTwoWkLow%2CfiftyTwoWkLowDate`;
-    const histUrl=`${endpoint}/getHistory.json?apikey=${encodeURIComponent(key)}&symbol=${encodeURIComponent(ticker)}&type=${historyType}&startDate=${ymd(historyStart)}&endDate=${ymd(end)}&order=asc&splits=true&dividends=true&maxRecords=1000`;
+    const quoteUrl=`${endpoint}/getQuoteEod.json?apikey=${encodeURIComponent(key)}&symbols=${encodeURIComponent(ticker)}&fields=previousClose`;
+    const histUrl=`${endpoint}/getHistory.json?apikey=${encodeURIComponent(key)}&symbol=${encodeURIComponent(ticker)}&type=${historyType}&startDate=${ymd(historyStart)}&endDate=${ymd(end)}&order=asc&splits=true&dividends=true&maxRecords=2000`;
 
     const [qr,hr]=await Promise.all([fetch(quoteUrl),fetch(histUrl)]);
     if(!qr.ok||!hr.ok)throw new Error(`Barchart request failed (${qr.status}/${hr.status}).`);
     const q=await qr.json(),h=await hr.json();
-
-    if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart quote request failed.");
+    if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart EOD request failed.");
     if(h?.status?.code!==200)throw new Error(h?.status?.message||"Barchart history request failed.");
 
     const quote=q?.results?.[0],records=h?.results||[];
-    if(!quote||!records.length)throw new Error("Barchart returned no market data for this ticker.");
+    if(!quote||!records.length)throw new Error("Barchart returned no EOD/history data for this ticker.");
+    const spot=Number(quote.close ?? quote.lastPrice ?? quote.settlement);
+    if(!Number.isFinite(spot))throw new Error("Barchart EOD response did not include a usable closing price.");
 
-    const spot=Number(quote.lastPrice ?? quote.close); if(quote.name)$("selectedInstrument").textContent=`${quote.name} • ${ticker}${quote.exchange?` • ${quote.exchange}`:""}`;
-    if(!Number.isFinite(spot))throw new Error("Barchart quote did not include a usable price.");
-
+    const quoteDate=quote.date||records[records.length-1]?.tradingDay||"";
     const baseline=recordOnOrBefore(records,target);
     if(!baseline)throw new Error("Barchart history did not include a baseline close for this horizon.");
-
     const baselineClose=Number(baseline.close);
     const perf=spot-baselineClose;
 
-    // Restrict period high/low to the actual performance interval beginning at baseline.
+    const quoteTime=quoteDate?isoDay(quoteDate).getTime():Date.now();
+    const oneYearAgo=quoteTime-370*86400000;
+    const recent52=records.filter(r=>isoDay(r.tradingDay).getTime()>=oneYearAgo && isoDay(r.tradingDay).getTime()<=quoteTime);
+    const highs52=recent52.map(r=>Number(r.high)).filter(Number.isFinite);
+    const lows52=recent52.map(r=>Number(r.low)).filter(Number.isFinite);
     const baselineTime=isoDay(baseline.tradingDay).getTime();
-    const periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime);
+    const periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime && isoDay(r.tradingDay).getTime()<=quoteTime);
     const highs=periodRecords.map(r=>Number(r.high)).filter(Number.isFinite);
     const lows=periodRecords.map(r=>Number(r.low)).filter(Number.isFinite);
 
+    const eodDateObj=quoteDate?isoDay(quoteDate):now;
+    const trendAt=(months)=>{
+      const rec=recordOnOrBefore(records,shiftMonths(eodDateObj,-months));
+      if(!rec)return "—";
+      const close=Number(rec.close);
+      return spot>close?"Up":spot<close?"Down":"Flat";
+    };
+
     $("price").value=spot.toFixed(2);
     $("perf").value=perf.toFixed(2);
-
+    const instrument=`${quote.name||ticker} • ${ticker}`;
+    $("selectedInstrument").textContent=instrument;
     state.extra={
       baselineDate:baseline.tradingDay,
       baselineClose,
       returnPct:baselineClose ? (perf/baselineClose)*100 : NaN,
       periodHigh:highs.length?Math.max(...highs):NaN,
       periodLow:lows.length?Math.min(...lows):NaN,
-      high52:Number(quote.fiftyTwoWkHigh),
-      low52:Number(quote.fiftyTwoWkLow),
-      trend1m:trendFrom(records,spot,1),
-      trend3m:trendFrom(records,spot,3),
-      marketMode:quote.mode||"",
-      tradeTimestamp:quote.tradeTimestamp||quote.serverTimestamp||""
+      high52:highs52.length?Math.max(...highs52):NaN,
+      low52:lows52.length?Math.min(...lows52):NaN,
+      trend1m:trendAt(1),
+      trend3m:trendAt(3),
+      marketMode:"EOD",
+      tradeTimestamp:quoteDate
     };
-    status(`Loaded ${ticker} from Barchart. Performance: ${money(perf)} since ${baseline.tradingDay}.`,"good");
+    writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});
+    status(`EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");
     render();
   }catch(e){
-    const msg=(e&&e.message)?e.message:"Barchart fetch failed.";
-    status(`${msg} Manual mode is still available. If Safari reports a network/CORS error, your Barchart OnDemand account may need browser/site authorization.`,"warn");
-  }finally{
-    $("fetchBtn").disabled=false;
-  }
+    const msg=(e&&e.message)?e.message:"Barchart EOD fetch failed.";
+    if(loadCachedEod(true))status(`${msg} Showing the last cached EOD snapshot instead.`,"warn");
+    else status(`${msg} Manual inputs are still available.`,"warn");
+  }finally{$("fetchBtn").disabled=false}
 }
 function loadPreset(which){
   setMode("manual");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
@@ -741,7 +758,7 @@ function saveCurrent(){
     low:r.low,mid:r.mid,high:r.high,
     at:new Date().toISOString()
   });
-  localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));renderHistory();status("Analysis saved.","good")
+  localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));awardAchievement("saved","Saved Analysis",25);renderHistory();renderProgressScreens();status("Analysis saved.","good")
 }
 function deleteSaved(id){
   const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
@@ -754,21 +771,50 @@ function clearAllSaved(){
 }
 function renderHistory(){
   const arr=JSON.parse(localStorage.getItem("splab_history")||"[]"),el=$("history");
-  if(!arr.length){el.innerHTML='<div class="notice">No saved analyses yet. Save a quest run to keep it here.</div>';return}
-  let changed=false;
-  arr.forEach((x,i)=>{if(!x.id){x.id=`legacy-${x.at||i}-${i}`;changed=true}});
-  if(changed)localStorage.setItem("splab_history",JSON.stringify(arr));
-  el.innerHTML=arr.map(x=>`<div class="history-item">
-    <div class="history-top">
-      <div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div>
-      <div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div>
-    </div>
-    <div class="history-actions">
-      ${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}
-      <button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button>
-    </div>
-  </div>`).join("")
+  if(!arr.length){el.innerHTML='<div class="saved-empty">No saved analyses yet. Save a research run from the Research screen.</div>';return}
+  let changed=false;arr.forEach((x,i)=>{if(!x.id){x.id=`legacy-${x.at||i}-${i}`;changed=true}});if(changed)localStorage.setItem("splab_history",JSON.stringify(arr));
+  el.innerHTML=arr.map(x=>`<div class="history-item"><div class="history-top"><div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div><div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div></div><div class="history-actions">${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}<button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button></div></div>`).join("")
 }
+
+const ACHIEVEMENTS={
+  first:{name:"First Analysis",xp:50,icon:"★"},
+  trend:{name:"Trend Checked",xp:50,icon:"↗"},
+  range:{name:"52W Range Reviewed",xp:50,icon:"⌁"},
+  multi:{name:"Multi-Timeframe",xp:75,icon:"▥"},
+  saved:{name:"Saved Analysis",xp:25,icon:"▣"}
+};
+function getProgress(){return JSON.parse(localStorage.getItem("sq_progress")||'{"xp":0,"earned":{},"periods":[]}')}
+function setProgress(p){localStorage.setItem("sq_progress",JSON.stringify(p))}
+function awardAchievement(key,name,xp){const p=getProgress();if(p.earned[key])return;p.earned[key]={name:name||ACHIEVEMENTS[key]?.name||key,at:new Date().toISOString()};p.xp=(p.xp||0)+(xp||ACHIEVEMENTS[key]?.xp||0);setProgress(p);renderProgressScreens()}
+function markPeriod(p){const prog=getProgress();prog.periods=Array.from(new Set([...(prog.periods||[]),p]));setProgress(prog);if(prog.periods.length>=2)awardAchievement("multi");renderProgressScreens()}
+function updateResearchProgress(checks){awardAchievement("first");if(checks[0])awardAchievement("trend");if(checks[1])awardAchievement("range");renderProgressScreens()}
+function renderProgressScreens(){
+  const p=getProgress(),xp=p.xp||0,level=Math.floor(xp/200)+1,base=(level-1)*200,next=level*200,pct=Math.max(0,Math.min(100,((xp-base)/200)*100));
+  if($("levelTitle"))$("levelTitle").textContent=`Level ${level} Researcher`;
+  if($("xpText"))$("xpText").textContent=`${xp-base} / 200 XP`;
+  if($("nextLevelText"))$("nextLevelText").textContent=`Next: Level ${level+1}`;
+  if($("xpFill"))$("xpFill").style.width=`${pct}%`;
+  const earned=p.earned||{};
+  if($("badgeGrid"))$("badgeGrid").innerHTML=Object.entries(ACHIEVEMENTS).map(([k,a])=>`<div class="badge-card ${earned[k]?'earned':''}"><div class="badge-icon">${a.icon}</div><div class="badge-name">${a.name}</div></div>`).join('');
+  const quests=[['first','Complete your first analysis','Run a full ticker analysis',50],['trend','Review 1M & 3M trends','Load market context and inspect trend',50],['range','Review the 52-week range','Check market position',50],['multi','Use 2 timeframes','Compare more than one horizon',75],['saved','Save an analysis','Keep a completed research run',25]];
+  if($("questList"))$("questList").innerHTML=quests.map(([k,title,sub,xpVal])=>`<div class="quest-item ${earned[k]?'done':''}"><div class="quest-check">${earned[k]?'✓':'○'}</div><div class="quest-copy"><b>${title}</b><span>${sub}</span></div><div class="quest-xp">+${xpVal} XP</div></div>`).join('');
+}
+function setView(view){
+  if(view==='settings'){openSettings();return}
+  document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));const el=$(`view${view.charAt(0).toUpperCase()+view.slice(1)}`);if(el)el.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  if(view==='watchlist')renderWatchlist();if(view==='saved')renderHistory();if(view==='quests')renderProgressScreens();window.scrollTo({top:0,behavior:'smooth'});
+}
+function setAnalysisTab(tab){document.querySelectorAll('.analysis-tab').forEach(b=>b.classList.toggle('active',b.dataset.analysis===tab));document.querySelectorAll('.analysis-pane').forEach(p=>p.classList.remove('active'));const id=tab==='overview'?'analysisOverview':tab==='performance'?'analysisPerformance':'analysisTargets';$(id)?.classList.add('active')}
+function symbolMeta(symbol){return LOCAL_SYMBOLS.find(x=>x.symbol===symbol)||{symbol,name:symbol,exchange:'',type:''}}
+function applySymbol(symbol){const m=symbolMeta(symbol);$("ticker").value=symbol;$("selectedInstrument").textContent=`${m.name} • ${symbol}${m.exchange?` • ${m.exchange}`:''}`;render();if(state.mode==='auto_eod'&&localStorage.getItem('splab_barchart_key'))fetchData()}
+function renderQuickPick(symbol){applySymbol(symbol);setView('research')}
+function getWatchlist(){return JSON.parse(localStorage.getItem('sq_watchlist')||'[]')}
+function setWatchlist(v){localStorage.setItem('sq_watchlist',JSON.stringify(v))}
+function addToWatchlist(symbol){symbol=(symbol||$("ticker").value).trim().toUpperCase();if(!symbol)return;const list=getWatchlist();if(!list.some(x=>x.symbol===symbol)){const m=symbolMeta(symbol);list.unshift({symbol,name:m.name,exchange:m.exchange,at:new Date().toISOString()});setWatchlist(list.slice(0,30));status(`${symbol} added to watchlist.`, 'good')}renderWatchlist()}
+function removeWatch(symbol){setWatchlist(getWatchlist().filter(x=>x.symbol!==symbol));renderWatchlist()}
+function renderWatchlist(){const el=$("watchlist");if(!el)return;const list=getWatchlist();if(!list.length){el.innerHTML='<div class="watch-empty">No watchlist tickers yet. Add the current ticker or use Quick Picks.</div>';return}el.innerHTML=list.map(x=>`<div class="watch-item"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`).join('')}
+function loadSaved(id){const arr=JSON.parse(localStorage.getItem('splab_history')||'[]');const x=arr.find(v=>String(v.id)===String(id));if(!x)return;if(x.ticker)applySymbol(x.ticker);if(x.instrument)$("selectedInstrument").textContent=x.instrument;if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);if(Number.isFinite(Number(x.correction))){$("correction").value=String(x.correction);$("corrLabel").textContent=String(x.correction)}setMode('manual');setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');setView('research');status(`Loaded saved analysis for ${x.ticker}.`,'good')}
 $("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
 $("ticker").addEventListener("keydown",e=>{
   const rows=[...document.querySelectorAll("#tickerSuggestions .suggest-row")];
@@ -782,15 +828,15 @@ $("ticker").addEventListener("keydown",e=>{
   rows[selectedSuggestionIndex]?.scrollIntoView({block:"nearest"});
 });
 document.addEventListener("click",e=>{if(!e.target.closest(".ticker-search-wrap"))$("tickerSuggestions").classList.remove("show")});
-$("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p)setPeriod(e.target.dataset.p)});
+$("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p){setPeriod(e.target.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
 $("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode)});
 ["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",render));
 $("ticker").addEventListener("input",()=>{render();schedulePredictiveSearch();});
 $("correction").addEventListener("input",()=>{$("corrLabel").textContent=$("correction").value;render()});
-$("analyzeBtn").addEventListener("click",()=>state.mode==="barchart"?fetchData():render());
+$("analyzeBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData():render());
 $("fetchBtn").addEventListener("click",fetchData);
-$("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this iPhone.")});
-$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="barchart"?fetchData():render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
+$("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device. Auto EOD will use cached data or manual inputs until a key is added again.")});
+$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData():render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
 $("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
 function resultSummary(){
   const r=calc();if(!r)return "";
@@ -803,7 +849,7 @@ function openSettings(){$("settingsModal").classList.add("show");$("settingsIncr
 function closeSettings(){$("settingsModal").classList.remove("show")}
 const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key;
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
-renderHistory();render();setMode(state.mode||"manual");
+markPeriod(state.period);renderHistory();renderWatchlist();renderProgressScreens();render();setMode(state.mode||"auto_eod");setTimeout(maybeAutoLoadEod,250);
 const splash=$("appSplash");
 if(splash){
   const hideSplash=()=>splash.classList.add("hide");
