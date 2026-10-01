@@ -1,7 +1,7 @@
 {
   "name": "Strike Quest",
   "short_name": "StrikeQuest",
-  "description": "Gamified stock and ETF strike-price research with Auto EOD data, watchlists, saved analyses, badges, quests, and predictive search.",
+  "description": "Gamified strike-price research app with working navigation, watchlists, saved analyses, quests, and Auto EOD support.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -20,5 +20,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./strike-quest-v6"
 }

@@ -225,14 +225,14 @@
     <section class="card">
       <div class="section-kicker">Discover</div><h2 class="section-title">Quick Picks</h2>
       <div class="quick-picks" id="quickPicks">
-        <button class="quick-pick" data-quick="AAPL">AAPL<span>Apple</span></button>
-        <button class="quick-pick" data-quick="MSFT">MSFT<span>Microsoft</span></button>
-        <button class="quick-pick" data-quick="NVDA">NVDA<span>NVIDIA</span></button>
-        <button class="quick-pick" data-quick="XLK">XLK<span>Technology ETF</span></button>
-        <button class="quick-pick" data-quick="SPY">SPY<span>S&amp;P 500 ETF</span></button>
-        <button class="quick-pick" data-quick="QQQ">QQQ<span>Nasdaq ETF</span></button>
-        <button class="quick-pick" data-quick="SMH">SMH<span>Semiconductor ETF</span></button>
-        <button class="quick-pick" data-quick="AMZN">AMZN<span>Amazon</span></button>
+        <button type="button" class="quick-pick" data-quick="AAPL">AAPL<span>Apple</span></button>
+        <button type="button" class="quick-pick" data-quick="MSFT">MSFT<span>Microsoft</span></button>
+        <button type="button" class="quick-pick" data-quick="NVDA">NVDA<span>NVIDIA</span></button>
+        <button type="button" class="quick-pick" data-quick="XLK">XLK<span>Technology ETF</span></button>
+        <button type="button" class="quick-pick" data-quick="SPY">SPY<span>S&amp;P 500 ETF</span></button>
+        <button type="button" class="quick-pick" data-quick="QQQ">QQQ<span>Nasdaq ETF</span></button>
+        <button type="button" class="quick-pick" data-quick="SMH">SMH<span>Semiconductor ETF</span></button>
+        <button type="button" class="quick-pick" data-quick="AMZN">AMZN<span>Amazon</span></button>
       </div>
     </section>
 
@@ -261,7 +261,7 @@
     <section class="card">
       <div class="topline"><h2 class="section-title" style="margin:0">Analysis</h2><span class="subtle">Research → context → targets</span></div>
       <div class="hero"><div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div><div class="price"><span class="subtle">Current</span><br><strong id="outPrice">$192.75</strong></div></div>
-      <div class="analysis-tabs" id="analysisTabs"><button class="analysis-tab active" data-analysis="overview">Overview</button><button class="analysis-tab" data-analysis="performance">Performance</button><button class="analysis-tab" data-analysis="targets">Targets</button></div>
+      <div class="analysis-tabs" id="analysisTabs"><button type="button" class="analysis-tab active" data-analysis="overview">Overview</button><button type="button" class="analysis-tab" data-analysis="performance">Performance</button><button type="button" class="analysis-tab" data-analysis="targets">Targets</button></div>
 
       <div id="analysisOverview" class="analysis-pane active">
         <div class="metrics" id="metricsRow"><div class="metric"><span>Performance</span><b id="outPerf">$39.57</b></div><div class="metric"><span>Adjusted</span><b id="outAdjusted">$19.79</b></div><div class="metric"><span>Projected</span><b id="outProjected">$212.54</b></div></div>
@@ -303,15 +303,15 @@
     <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">Strike Quest • research gamification • informational only</div>
+  <div class="foot">Strike Quest v6 • functional navigation • informational only</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
-  <button class="nav-btn active" data-view="research"><span class="nav-icon">⌕</span><span>Research</span></button>
-  <button class="nav-btn" data-view="watchlist"><span class="nav-icon">♡</span><span>Watchlist</span></button>
-  <button class="nav-btn" data-view="saved"><span class="nav-icon">▣</span><span>Saved</span></button>
-  <button class="nav-btn" data-view="quests"><span class="nav-icon">🏆</span><span>Quests</span></button>
-  <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+  <button type="button" class="nav-btn active" data-view="research"><span class="nav-icon">⌕</span><span>Research</span></button>
+  <button type="button" class="nav-btn" data-view="watchlist"><span class="nav-icon">♡</span><span>Watchlist</span></button>
+  <button type="button" class="nav-btn" data-view="saved"><span class="nav-icon">▣</span><span>Saved</span></button>
+  <button type="button" class="nav-btn" data-view="quests"><span class="nav-icon">🏆</span><span>Quests</span></button>
+  <button type="button" class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
 </nav>
 
 
@@ -800,10 +800,14 @@ function renderProgressScreens(){
   if($("questList"))$("questList").innerHTML=quests.map(([k,title,sub,xpVal])=>`<div class="quest-item ${earned[k]?'done':''}"><div class="quest-check">${earned[k]?'✓':'○'}</div><div class="quest-copy"><b>${title}</b><span>${sub}</span></div><div class="quest-xp">+${xpVal} XP</div></div>`).join('');
 }
 function setView(view){
-  if(view==='settings'){openSettings();return}
-  document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));const el=$(`view${view.charAt(0).toUpperCase()+view.slice(1)}`);if(el)el.classList.add('active');
+  if(view==='settings'){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view==='settings'));openSettings();return}
+  document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
+  const el=$(`view${view.charAt(0).toUpperCase()+view.slice(1)}`);if(el)el.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  if(view==='watchlist')renderWatchlist();if(view==='saved')renderHistory();if(view==='quests')renderProgressScreens();window.scrollTo({top:0,behavior:'smooth'});
+  if(view==='watchlist')renderWatchlist();
+  if(view==='saved')renderHistory();
+  if(view==='quests')renderProgressScreens();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function setAnalysisTab(tab){document.querySelectorAll('.analysis-tab').forEach(b=>b.classList.toggle('active',b.dataset.analysis===tab));document.querySelectorAll('.analysis-pane').forEach(p=>p.classList.remove('active'));const id=tab==='overview'?'analysisOverview':tab==='performance'?'analysisPerformance':'analysisTargets';$(id)?.classList.add('active')}
 function symbolMeta(symbol){return LOCAL_SYMBOLS.find(x=>x.symbol===symbol)||{symbol,name:symbol,exchange:'',type:''}}
@@ -828,6 +832,16 @@ $("ticker").addEventListener("keydown",e=>{
   rows[selectedSuggestionIndex]?.scrollIntoView({block:"nearest"});
 });
 document.addEventListener("click",e=>{if(!e.target.closest(".ticker-search-wrap"))$("tickerSuggestions").classList.remove("show")});
+// v6: wire all interactive game/navigation controls.
+const bottomNav=document.querySelector('.bottom-nav');
+if(bottomNav)bottomNav.addEventListener('click',e=>{const btn=e.target.closest('.nav-btn');if(btn)setView(btn.dataset.view)});
+const quickPicks=$("quickPicks");
+if(quickPicks)quickPicks.addEventListener('click',e=>{const btn=e.target.closest('[data-quick]');if(btn)renderQuickPick(btn.dataset.quick)});
+const analysisTabs=$("analysisTabs");
+if(analysisTabs)analysisTabs.addEventListener('click',e=>{const btn=e.target.closest('[data-analysis]');if(btn)setAnalysisTab(btn.dataset.analysis)});
+if($("watchCurrentBtn"))$("watchCurrentBtn").addEventListener('click',()=>addToWatchlist($("ticker").value));
+if($("watchAddBtn"))$("watchAddBtn").addEventListener('click',()=>addToWatchlist($("ticker").value));
+
 $("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p){setPeriod(e.target.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
 $("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode)});
 ["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",render));
@@ -846,7 +860,7 @@ function resultSummary(){
 async function shareResult(){const text=resultSummary();try{if(navigator.share){await navigator.share({title:"Strike Quest — Strike Price Calculator",text})}else{await navigator.clipboard.writeText(text);status("Result copied to clipboard.","good")}}catch(e){}}
 async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
 function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value}
-function closeSettings(){$("settingsModal").classList.remove("show")}
+function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view))}
 const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key;
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
 markPeriod(state.period);renderHistory();renderWatchlist();renderProgressScreens();render();setMode(state.mode||"auto_eod");setTimeout(maybeAutoLoadEod,250);
