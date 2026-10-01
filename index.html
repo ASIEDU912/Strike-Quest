@@ -249,14 +249,14 @@
   <section class="card">
     <div class="row" style="align-items:center;justify-content:space-between">
       <h2 class="section-title" style="margin:0">Market inputs</h2>
-      <span class="source-badge" id="sourceBadge">Manual</span>
+      <span class="source-badge" id="sourceBadge">Auto EOD</span>
     </div>
     <div class="grid2" style="margin-top:10px">
       <div><label>Current price</label><input id="price" type="number" step="0.01" value="192.75"></div>
       <div><label>Historical performance ($)</label><input id="perf" type="number" step="0.01" value="39.57"></div>
     </div>
     <div class="row" style="margin-top:10px">
-      <button class="btn secondary grow" id="refreshBtn">Refresh market data</button>
+      <button class="btn secondary grow" id="refreshBtn">Refresh EOD data</button>
     </div>
     <div class="status" id="status">Ready.</div>
   </section>
@@ -347,25 +347,25 @@
     <div class="sheet-head"><h3>Settings & data</h3><button class="close-btn" id="closeSettings">×</button></div>
     <label>Market data source</label>
     <div class="seg" id="dataSeg">
-      <button class="active" data-mode="manual">Manual</button>
-      <button data-mode="barchart">Barchart</button>
+      <button class="active" data-mode="auto_eod">Auto EOD</button>
+      <button data-mode="manual">Manual</button>
     </div>
-    <div id="manualBox" style="margin-top:12px"><div class="consumer-note">Manual mode uses the market inputs on the main screen.</div></div>
-    <div id="apiBox" class="hidden" style="margin-top:12px">
+    <div id="manualBox" class="hidden" style="margin-top:12px"><div class="consumer-note">Manual mode lets you type the current price and historical performance yourself.</div></div>
+    <div id="apiBox" style="margin-top:12px">
       <label>Barchart OnDemand API key</label>
       <input id="apiKey" type="password" placeholder="Stored only on this device">
       <div class="row" style="margin-top:8px">
-        <button class="btn secondary grow" id="fetchBtn">Test & load</button>
+        <button class="btn secondary grow" id="fetchBtn">Save key & load EOD</button>
         <button class="btn ghost" id="forgetBtn">Forget</button>
       </div>
       <a class="source-link" id="barchartLink" href="https://www.barchart.com/etfs-funds/quotes/AAPL/performance" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px">Open Barchart ↗</a>
-      <div class="consumer-note" style="margin-top:8px">Automatic market data requires your own Barchart OnDemand access. Your key stays on this device and stays out of the public experience.</div>
+      <div class="consumer-note" style="margin-top:8px">Auto EOD uses Barchart OnDemand getQuoteEod plus historical data. Your key stays on this device and is never included when you share results.</div>
     </div>
     <div style="margin-top:14px">
       <label>Default strike increment</label>
       <select id="settingsIncrement"><option value="0.5">$0.50</option><option value="1">$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select>
     </div>
-    <div class="consumer-note" style="margin-top:12px">Targets are informational and are not investment recommendations.</div>
+    <div class="consumer-note" style="margin-top:12px"><b>Default:</b> Auto EOD. On launch, ticker selection, or timeframe change, Strike Quest loads the latest completed-session close and recalculates the selected historical-performance horizon. Targets are informational and are not investment recommendations.</div>
   </div>
 </div>
 
@@ -384,7 +384,7 @@ const PERIODS={
   "2y":{label:"2-Year",months:24,divisor:1.5},
   "3y":{label:"3-Year",months:36,divisor:2}
 };
-let state={period:"1y",mode:"manual",extra:{}};
+let state={period:"1y",mode:"auto_eod",extra:{}};
 const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
 let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1;
 
@@ -445,6 +445,7 @@ function chooseSuggestion(btn){
   $("tickerSuggestions").innerHTML="";
   if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/stocks/quotes/${encodeURIComponent(symbol)}/performance`;
   render();
+  if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0);
 }
 async function runPredictiveSearch(){
   const q=$("ticker").value.trim();
@@ -507,7 +508,7 @@ function renderQuest(r){
   const parts=selected.split(" • ");
   const name=(parts[0]||symbol).trim();
   $("missionTitle").textContent=`Mission: Find a ${PERIODS[state.period].label} entry zone`;
-  $("missionLine").textContent=`${name} (${symbol}) • ${state.mode==="barchart"?"Live Barchart data":"Manual inputs"} • ${Math.round(r.c*100)}% correction`;
+  $("missionLine").textContent=`${name} (${symbol}) • ${state.mode==="auto_eod"?"Automatic EOD data":"Manual inputs"} • ${Math.round(r.c*100)}% correction`;
   $("orbTicker").textContent=symbol.slice(0,5);
 
   const mood=moodFromRange(r);
@@ -523,8 +524,8 @@ function renderQuest(r){
   const score=(checkPrice?20:0)+(checkTrend1?20:0)+(checkTrend3?20:0)+(checkRange?20:0)+(checkCorrection?20:0);
   $("researchScore").textContent=String(score);
 
-  $("stageTrendMini").textContent=checkTrend1||checkTrend3?`${state.extra.trend1m||"1M n/a"} • ${state.extra.trend3m||"3M n/a"}`:"Run with Barchart data for automatic trend checks.";
-  $("stageRangeMini").textContent=checkRange?`52W low ${money(state.extra.low52)} to high ${money(state.extra.high52)}.`:"Range data appears with Barchart mode or manual context.";
+  $("stageTrendMini").textContent=checkTrend1||checkTrend3?`${state.extra.trend1m||"1M n/a"} • ${state.extra.trend3m||"3M n/a"}`:"Auto EOD loads trend checks automatically when a Barchart key is saved.";
+  $("stageRangeMini").textContent=checkRange?`52W low ${money(state.extra.low52)} to high ${money(state.extra.high52)}.`:"Range data appears automatically with Auto EOD or can be entered manually.";
   $("stagePowerMini").textContent=`${money(r.perf)} move → ${money(r.adjusted)} usable after divisor ${r.div}.`;
   $("stageStrikeMini").textContent=`Low ${money(r.low,0)} • Mid ${money(r.mid,0)} • High ${money(r.high,0)}`;
 
@@ -546,7 +547,7 @@ function renderQuest(r){
   $("rangeMarker").style.left=`${pos*100}%`;
   $("rangeText").textContent=checkRange
     ? `Current price is ${Math.round(pos*100)}% of the way from the 52-week low to the 52-week high.`
-    : "52-week range unavailable right now. Switch to Barchart mode for automatic range context.";
+    : "52-week range unavailable right now. Auto EOD will populate this automatically once your Barchart key is saved.";
 
   $("powerText").textContent=`Historical performance contributes ${money(r.perf)}. After applying the holding divisor (${r.div}), the usable move is ${money(r.adjusted)} and the projected level becomes ${money(r.projected)}.`;
   const earned=[];
@@ -620,8 +621,9 @@ function setMode(m){
   state.mode=m;
   document.querySelectorAll("#dataSeg button").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));
   $("manualBox").classList.toggle("hidden",m!=="manual");
-  $("apiBox").classList.toggle("hidden",m!=="barchart");
-  $("sourceBadge").textContent=m==="barchart"?"Barchart":"Manual";
+  $("apiBox").classList.toggle("hidden",m!=="auto_eod");
+  $("sourceBadge").textContent=m==="auto_eod"?"Auto EOD":"Manual";
+  render();
 }
 function status(msg,kind=""){
   $("status").textContent=msg;$("status").className="status"+(kind?` ${kind}`:"")
@@ -642,75 +644,117 @@ function trendFrom(records,spot,months){
   const close=Number(rec.close);
   return spot>close?"Up":spot<close?"Down":"Flat";
 }
+
+function eodCacheKey(){return `${($("ticker").value||"").trim().toUpperCase()}|${state.period}`;}
+function readEodCache(){
+  try{return JSON.parse(localStorage.getItem("strikequest_eod_cache")||"{}");}catch(e){return {}}
+}
+function writeEodCache(payload){
+  const cache=readEodCache();
+  cache[eodCacheKey()]=payload;
+  const entries=Object.entries(cache).sort((a,b)=>(b[1]?.savedAt||0)-(a[1]?.savedAt||0)).slice(0,40);
+  localStorage.setItem("strikequest_eod_cache",JSON.stringify(Object.fromEntries(entries)));
+}
+function loadCachedEod(silent=false){
+  const item=readEodCache()[eodCacheKey()];
+  if(!item)return false;
+  if(Number.isFinite(Number(item.price)))$("price").value=Number(item.price).toFixed(2);
+  if(Number.isFinite(Number(item.perf)))$("perf").value=Number(item.perf).toFixed(2);
+  state.extra=item.extra||{};
+  if(item.instrument)$("selectedInstrument").textContent=item.instrument;
+  if(!silent)status(`Showing cached EOD data from ${item.eodDate||new Date(item.savedAt).toLocaleDateString()}.`,"good");
+  render();
+  return true;
+}
+function maybeAutoLoadEod(){
+  if(state.mode!=="auto_eod")return;
+  const key=localStorage.getItem("splab_barchart_key");
+  if(key){fetchData();return;}
+  if(!loadCachedEod(false))status("Auto EOD is ready. Add your Barchart OnDemand key in Settings to load end-of-day data automatically. Manual values remain available until then.","warn");
+}
+
 async function fetchData(){
-  const ticker=$("ticker").value.trim().toUpperCase(),key=$("apiKey").value.trim();
-  if(!ticker||!key){status("Enter a ticker and Barchart OnDemand API key.","warn");return}
+  const ticker=$("ticker").value.trim().toUpperCase(),key=$("apiKey").value.trim()||localStorage.getItem("splab_barchart_key")||"";
+  if(!ticker){status("Enter a ticker first.","warn");return}
+  if(!key){
+    if(!loadCachedEod(false))status("Add your Barchart OnDemand key in Settings to enable automatic EOD data.","warn");
+    return;
+  }
   localStorage.setItem("splab_barchart_key",key);
-  $("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
-  status(`Loading ${ticker} from Barchart…`);
+  if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
+  status(`Loading latest end-of-day data for ${ticker}…`);
   $("fetchBtn").disabled=true;
   try{
     const endpoint="https://ondemand.websol.barchart.com";
     const now=new Date();
     const target=shiftMonths(now,-PERIODS[state.period].months);
     const historyType=state.period==="3y"?"weekly":"daily";
-    const historyStart=new Date(target);
-    historyStart.setDate(historyStart.getDate()-16);
-    const end=new Date(now);
-    end.setDate(end.getDate()+2);
+    const historyStart=new Date(Math.min(target.getTime()-16*86400000, shiftMonths(now,-13).getTime()));
+    const end=new Date(now);end.setDate(end.getDate()+2);
 
-    const quoteUrl=`${endpoint}/getQuote.json?apikey=${encodeURIComponent(key)}&symbols=${encodeURIComponent(ticker)}&fields=fiftyTwoWkHigh%2CfiftyTwoWkHighDate%2CfiftyTwoWkLow%2CfiftyTwoWkLowDate`;
-    const histUrl=`${endpoint}/getHistory.json?apikey=${encodeURIComponent(key)}&symbol=${encodeURIComponent(ticker)}&type=${historyType}&startDate=${ymd(historyStart)}&endDate=${ymd(end)}&order=asc&splits=true&dividends=true&maxRecords=1000`;
+    const quoteUrl=`${endpoint}/getQuoteEod.json?apikey=${encodeURIComponent(key)}&symbols=${encodeURIComponent(ticker)}&fields=previousClose`;
+    const histUrl=`${endpoint}/getHistory.json?apikey=${encodeURIComponent(key)}&symbol=${encodeURIComponent(ticker)}&type=${historyType}&startDate=${ymd(historyStart)}&endDate=${ymd(end)}&order=asc&splits=true&dividends=true&maxRecords=2000`;
 
     const [qr,hr]=await Promise.all([fetch(quoteUrl),fetch(histUrl)]);
     if(!qr.ok||!hr.ok)throw new Error(`Barchart request failed (${qr.status}/${hr.status}).`);
     const q=await qr.json(),h=await hr.json();
-
-    if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart quote request failed.");
+    if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart EOD request failed.");
     if(h?.status?.code!==200)throw new Error(h?.status?.message||"Barchart history request failed.");
 
     const quote=q?.results?.[0],records=h?.results||[];
-    if(!quote||!records.length)throw new Error("Barchart returned no market data for this ticker.");
+    if(!quote||!records.length)throw new Error("Barchart returned no EOD/history data for this ticker.");
+    const spot=Number(quote.close ?? quote.lastPrice ?? quote.settlement);
+    if(!Number.isFinite(spot))throw new Error("Barchart EOD response did not include a usable closing price.");
 
-    const spot=Number(quote.lastPrice ?? quote.close); if(quote.name)$("selectedInstrument").textContent=`${quote.name} • ${ticker}${quote.exchange?` • ${quote.exchange}`:""}`;
-    if(!Number.isFinite(spot))throw new Error("Barchart quote did not include a usable price.");
-
+    const quoteDate=quote.date||records[records.length-1]?.tradingDay||"";
     const baseline=recordOnOrBefore(records,target);
     if(!baseline)throw new Error("Barchart history did not include a baseline close for this horizon.");
-
     const baselineClose=Number(baseline.close);
     const perf=spot-baselineClose;
 
-    // Restrict period high/low to the actual performance interval beginning at baseline.
+    const quoteTime=quoteDate?isoDay(quoteDate).getTime():Date.now();
+    const oneYearAgo=quoteTime-370*86400000;
+    const recent52=records.filter(r=>isoDay(r.tradingDay).getTime()>=oneYearAgo && isoDay(r.tradingDay).getTime()<=quoteTime);
+    const highs52=recent52.map(r=>Number(r.high)).filter(Number.isFinite);
+    const lows52=recent52.map(r=>Number(r.low)).filter(Number.isFinite);
     const baselineTime=isoDay(baseline.tradingDay).getTime();
-    const periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime);
+    const periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime && isoDay(r.tradingDay).getTime()<=quoteTime);
     const highs=periodRecords.map(r=>Number(r.high)).filter(Number.isFinite);
     const lows=periodRecords.map(r=>Number(r.low)).filter(Number.isFinite);
 
+    const eodDateObj=quoteDate?isoDay(quoteDate):now;
+    const trendAt=(months)=>{
+      const rec=recordOnOrBefore(records,shiftMonths(eodDateObj,-months));
+      if(!rec)return "—";
+      const close=Number(rec.close);
+      return spot>close?"Up":spot<close?"Down":"Flat";
+    };
+
     $("price").value=spot.toFixed(2);
     $("perf").value=perf.toFixed(2);
-
+    const instrument=`${quote.name||ticker} • ${ticker}`;
+    $("selectedInstrument").textContent=instrument;
     state.extra={
       baselineDate:baseline.tradingDay,
       baselineClose,
       returnPct:baselineClose ? (perf/baselineClose)*100 : NaN,
       periodHigh:highs.length?Math.max(...highs):NaN,
       periodLow:lows.length?Math.min(...lows):NaN,
-      high52:Number(quote.fiftyTwoWkHigh),
-      low52:Number(quote.fiftyTwoWkLow),
-      trend1m:trendFrom(records,spot,1),
-      trend3m:trendFrom(records,spot,3),
-      marketMode:quote.mode||"",
-      tradeTimestamp:quote.tradeTimestamp||quote.serverTimestamp||""
+      high52:highs52.length?Math.max(...highs52):NaN,
+      low52:lows52.length?Math.min(...lows52):NaN,
+      trend1m:trendAt(1),
+      trend3m:trendAt(3),
+      marketMode:"EOD",
+      tradeTimestamp:quoteDate
     };
-    status(`Loaded ${ticker} from Barchart. Performance: ${money(perf)} since ${baseline.tradingDay}.`,"good");
+    writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});
+    status(`EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");
     render();
   }catch(e){
-    const msg=(e&&e.message)?e.message:"Barchart fetch failed.";
-    status(`${msg} Manual mode is still available. If Safari reports a network/CORS error, your Barchart OnDemand account may need browser/site authorization.`,"warn");
-  }finally{
-    $("fetchBtn").disabled=false;
-  }
+    const msg=(e&&e.message)?e.message:"Barchart EOD fetch failed.";
+    if(loadCachedEod(true))status(`${msg} Showing the last cached EOD snapshot instead.`,"warn");
+    else status(`${msg} Manual inputs are still available.`,"warn");
+  }finally{$("fetchBtn").disabled=false}
 }
 function loadPreset(which){
   setMode("manual");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
@@ -782,15 +826,15 @@ $("ticker").addEventListener("keydown",e=>{
   rows[selectedSuggestionIndex]?.scrollIntoView({block:"nearest"});
 });
 document.addEventListener("click",e=>{if(!e.target.closest(".ticker-search-wrap"))$("tickerSuggestions").classList.remove("show")});
-$("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p)setPeriod(e.target.dataset.p)});
+$("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p){setPeriod(e.target.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
 $("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode)});
 ["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",render));
 $("ticker").addEventListener("input",()=>{render();schedulePredictiveSearch();});
 $("correction").addEventListener("input",()=>{$("corrLabel").textContent=$("correction").value;render()});
-$("analyzeBtn").addEventListener("click",()=>state.mode==="barchart"?fetchData():render());
+$("analyzeBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData():render());
 $("fetchBtn").addEventListener("click",fetchData);
-$("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this iPhone.")});
-$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="barchart"?fetchData():render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
+$("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device. Auto EOD will use cached data or manual inputs until a key is added again.")});
+$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData():render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
 $("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
 function resultSummary(){
   const r=calc();if(!r)return "";
@@ -803,7 +847,7 @@ function openSettings(){$("settingsModal").classList.add("show");$("settingsIncr
 function closeSettings(){$("settingsModal").classList.remove("show")}
 const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key;
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
-renderHistory();render();setMode(state.mode||"manual");
+renderHistory();render();setMode(state.mode||"auto_eod");setTimeout(maybeAutoLoadEod,250);
 const splash=$("appSplash");
 if(splash){
   const hideSplash=()=>splash.classList.add("hide");
