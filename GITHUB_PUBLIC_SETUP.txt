@@ -1,0 +1,26 @@
+STRIKE QUEST — PUBLIC GITHUB SETUP
+
+Recommended repository name:
+Strike-Quest
+
+Alternative:
+Strike-Quest-Calculator
+
+GitHub repository description:
+Gamified strike-price and entry-target calculator for stocks and ETFs with predictive search, historical performance, market context, saved analyses, and shareable Low/Mid/High targets.
+
+Suggested public app name:
+Strike Quest — Strike Price Calculator
+
+Short tagline:
+Find smarter entry zones with data, discipline, and progress.
+
+GitHub Pages:
+Settings → Pages → Deploy from a branch → main → /(root)
+
+Shareable URL pattern:
+https://YOUR-USERNAME.github.io/Strike-Quest/
+
+Important:
+- Keep API credentials out of the repository.
+- Barchart credentials are entered inside Settings and stored only on the user's device.

@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0B0F14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Strike Quest">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon-180.png">
+  <title>Strike Quest — Strike Price Calculator</title>
+  <style>
+    :root{
+      --bg:#090C10;--bg2:#0D1218;--panel:#121820;--panel2:#17202A;--line:#27313D;
+      --text:#F7FAFC;--muted:#98A6B7;--blue:#2F95FF;--green:#42D77D;--yellow:#FFB94C;--red:#FF6464;
+      --safe-top:env(safe-area-inset-top);--safe-bottom:env(safe-area-inset-bottom);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif}
+    body{background:radial-gradient(circle at 50% -10%,#18395b 0%,#0c1219 31%,#090c10 68%) fixed;}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .shell{max-width:430px;margin:0 auto;min-height:100vh;padding:calc(12px + var(--safe-top)) 14px calc(90px + var(--safe-bottom))}
+    .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#1777e9,#45b9ff);font-weight:900;box-shadow:0 8px 25px #0008}
+    .brand h1{font-size:18px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .mode{border:1px solid var(--line);background:#10161d;color:#a9b7c6;border-radius:999px;padding:7px 9px;font-size:11px}
+    .card{background:linear-gradient(180deg,#141b23,#10161d);border:1px solid var(--line);border-radius:22px;padding:15px;margin:10px 0;box-shadow:0 16px 40px #0006}
+    .section-title{font-size:14px;font-weight:800;margin:0 0 11px;color:#e9f0f7}
+    label{display:block;font-size:11px;color:var(--muted);margin:0 0 6px}
+    input,select{width:100%;background:#0c1117;border:1px solid #303b48;border-radius:14px;color:var(--text);padding:13px 12px;outline:none}
+    input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2f95ff22}
+    .row{display:flex;gap:9px}.grow{flex:1}
+    .btn{border:0;border-radius:14px;padding:13px 15px;font-weight:800}
+    .primary{background:var(--blue);color:#06111d}.secondary{background:#202a35;color:white;border:1px solid #303b48}.ghost{background:transparent;color:var(--blue)}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;background:#0c1117;border:1px solid var(--line);border-radius:15px;padding:5px;margin-top:12px}
+    .tab{border:0;background:transparent;color:var(--muted);padding:9px 2px;border-radius:11px;font-weight:700;font-size:12px}
+    .tab.active{background:#F6F8FB;color:#111820}
+    .seg{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#0c1117;border:1px solid var(--line);border-radius:15px;padding:5px}
+    .seg button{border:0;background:transparent;color:var(--muted);padding:9px 6px;border-radius:11px;font-size:12px;font-weight:700}
+    .seg button.active{background:#F6F8FB;color:#10161d}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .range-line{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--blue)}
+    .pct{border:1px solid var(--line);background:#0c1117;padding:7px 9px;border-radius:999px;font-size:12px}
+    .hero{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+    .ticker{font-size:30px;font-weight:900;letter-spacing:-.03em}.subtle{color:var(--muted);font-size:12px}
+    .price{text-align:right}.price strong{font-size:25px}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}
+    .metric{background:#0c1117;border:1px solid var(--line);border-radius:14px;padding:10px}
+    .metric span{display:block;color:var(--muted);font-size:10px}.metric b{display:block;margin-top:4px;font-size:14px}
+    .targets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}
+    .target{background:#0d131a;border:1px solid var(--line);border-radius:17px;text-align:center;padding:13px 5px}
+    .target.low{border-top:4px solid var(--green)}.target.mid{border-top:4px solid var(--yellow)}.target.high{border-top:4px solid var(--red)}
+    .target small{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.target .n{font-size:28px;font-weight:300;margin:7px 0 2px}
+    details{margin-top:13px;border-top:1px solid var(--line);padding-top:11px}summary{color:#dbe6f0;font-weight:700;font-size:13px}
+    pre{white-space:pre-wrap;font-size:11px;line-height:1.5;background:#0b1016;border:1px solid var(--line);border-radius:14px;padding:11px;color:#c9d7e4}
+    .status{font-size:11px;color:var(--muted);padding:9px 10px;border:1px solid var(--line);background:#0c1117;border-radius:12px;margin-top:10px}
+    .status.good{color:#bdf3ce;border-color:#2a6b42}.status.warn{color:#ffe1af;border-color:#6b512a}
+    .notice{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.45}
+    .hidden{display:none!important}
+    .history-item{display:grid;grid-template-columns:1fr auto;gap:8px;background:#0c1117;border:1px solid var(--line);border-radius:13px;padding:10px;margin:7px 0}
+    .history-item b{font-size:13px}.history-item small{color:var(--muted);font-size:9px}
+    .install-banner{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + var(--safe-bottom));width:min(404px,calc(100% - 24px));z-index:10;background:#18212b;border:1px solid #344253;border-radius:18px;padding:12px;box-shadow:0 18px 45px #000b}
+    .install-banner.show{display:block}.install-banner strong{font-size:13px}.install-banner p{font-size:11px;color:var(--muted);margin:4px 0 8px}
+    .source-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}.source-badge{font-size:10px;color:#b8c8d8;border:1px solid #334253;background:#0c1117;border-radius:999px;padding:6px 8px}.source-link{font-size:10px;color:var(--blue);text-decoration:none}.foot{color:#6f7e8e;text-align:center;font-size:9px;margin-top:14px}
+    @media (display-mode:standalone){.install-banner{display:none!important}}
+  
+    .history-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:6px;margin-top:5px}
+    .danger{background:#2b1518;color:#ff9da5;border:1px solid #5a252b}
+    .danger-lite{background:transparent;color:#ff868f;border:1px solid #4b252a}
+
+    .sharebar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .settings-btn{width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:#111820;color:#dce7f2;font-size:18px}
+    .modal{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:30}
+    .modal.show{display:flex}
+    .sheet{width:min(430px,100%);max-height:88vh;overflow:auto;background:#121820;border:1px solid #2b3642;border-radius:24px 24px 0 0;padding:16px 14px calc(22px + var(--safe-bottom));box-shadow:0 -20px 50px #000a}
+    .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheet-head h3{margin:0}
+    .close-btn{border:0;background:#202a35;color:white;width:36px;height:36px;border-radius:50%;font-size:18px}
+    .consumer-note{font-size:11px;color:var(--muted);line-height:1.5}
+.ticker-search-wrap{position:relative}
+.search-suggestions{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:25;background:#111821;border:1px solid #34404d;border-radius:14px;overflow:hidden;box-shadow:0 18px 42px #000b;max-height:320px;overflow-y:auto;display:none}
+.search-suggestions.show{display:block}
+.suggest-row{width:100%;display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;text-align:left;background:#111821;color:var(--text);border:0;border-bottom:1px solid #26313d;padding:11px 12px}
+.suggest-row:last-child{border-bottom:0}
+.suggest-row:active,.suggest-row.active{background:#1b2632}
+.suggest-symbol{font-weight:900;font-size:15px}
+.suggest-name{font-size:12px;line-height:1.25;color:#e7eef6;overflow:hidden;text-overflow:ellipsis}
+.suggest-meta{font-size:9px;color:var(--muted);white-space:nowrap}
+.search-hint{padding:10px 12px;color:var(--muted);font-size:10px;background:#0e141b}
+.selected-instrument{font-size:10px;color:#9fb0c1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+
+    .quest-hero{position:relative;overflow:hidden;background:
+      radial-gradient(circle at 20% 15%,rgba(71,167,255,.28),transparent 28%),
+      radial-gradient(circle at 85% 20%,rgba(66,215,125,.14),transparent 24%),
+      linear-gradient(180deg,#162230,#10161d);}
+    .quest-hero:before{content:"";position:absolute;inset:auto -80px -100px auto;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#4ab0ff1f,transparent 68%);pointer-events:none}
+    .eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#86bfff;margin-bottom:8px}
+    .quest-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    .quest-hero h2{margin:0;font-size:23px;line-height:1.08;letter-spacing:-.03em}
+    .quest-hero p{margin:8px 0 0;color:#c6d2dd;font-size:13px;line-height:1.4}
+    .badge-row,.badge-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .mood-pill,.score-pill,.quest-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;border:1px solid #34404d;background:#0e151d;color:#dfe8f1}
+    .mood-pill.good,.quest-badge.good{border-color:#2d6d45;color:#d6ffe4;background:#112318}
+    .mood-pill.warn,.quest-badge.warn{border-color:#7a4348;color:#ffd8dc;background:#241317}
+    .mood-pill.mid,.quest-badge.mid{border-color:#6d5b2f;color:#ffe8bc;background:#251d12}
+    .score-pill b{font-size:13px}
+    .quest-orb{position:relative;display:grid;place-items:center;width:92px;height:92px;border-radius:28px;background:linear-gradient(145deg,#0f1824,#101c2e);border:1px solid #314055;box-shadow:inset 0 0 0 1px #1a2636,0 12px 28px #0008}
+    .orb-ring{position:absolute;inset:10px;border-radius:22px;border:1px dashed #4db1ff55}
+    .orb-core{position:relative;z-index:1;font-size:24px;font-weight:900;letter-spacing:-.04em;color:#edf6ff;text-shadow:0 0 18px #49a3ff66}
+    .stage-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+    .stage-mini{background:#0d141c;border:1px solid #2b3846;border-radius:14px;padding:10px 8px;min-height:74px}
+    .stage-mini b{display:block;font-size:11px;color:#dfe8f2;margin-bottom:4px}
+    .stage-mini span{display:block;font-size:10px;color:var(--muted);line-height:1.35}
+    .title-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .consumer-tag{font-size:10px;padding:6px 8px;border-radius:999px;border:1px solid #334253;background:#0e141b;color:#b9c8d9}
+    .quest-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .mini-card{background:#0c1117;border:1px solid var(--line);border-radius:16px;padding:12px}
+    .mini-card h3{margin:0 0 8px;font-size:12px}
+    .mini-card p{margin:0;font-size:11px;line-height:1.5;color:#c6d1db}
+    .gauge{position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,var(--green) 0 36%,var(--yellow) 36% 72%,var(--red) 72% 100%);margin:10px 0 8px;overflow:hidden}
+    .gauge-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(255,255,255,.24)}
+    .gauge-marker{position:absolute;top:-4px;width:20px;height:20px;border-radius:50%;background:#f6fbff;border:3px solid #0e141c;box-shadow:0 4px 14px #0008;transform:translateX(-50%)}
+    .gauge-scale{display:flex;justify-content:space-between;font-size:9px;color:var(--muted)}
+    .quest-summary{margin-top:8px;font-size:11px;color:#d2dde8;line-height:1.45}
+    .stage-line{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:5px;background:#0c1117;border:1px solid #2e3945;border-radius:999px;padding:7px 9px;font-size:10px;color:#dbe6ef}
+    .chip.good{border-color:#2d6d45;color:#d6ffe4;background:#102417}
+    .chip.warn{border-color:#7a4348;color:#ffd7db;background:#251316}
+    .chip.mid{border-color:#6d5b2f;color:#ffe8bc;background:#261d11}
+    .target{position:relative;overflow:hidden}
+    .target:before{content:"";position:absolute;inset:auto -26px -30px auto;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 72%)}
+    .target .tier{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#b7c4d1}
+    .target .caption{margin-top:6px;font-size:10px;color:#95a6b7;line-height:1.35}
+    .validation-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .history-item{grid-template-columns:1fr;gap:10px;padding:12px;border-radius:16px}
+    .history-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .history-values{font-size:16px;font-weight:800;letter-spacing:-.03em}
+    .history-actions{grid-column:auto;justify-content:flex-start;margin-top:0}
+    .history-actions .btn{padding:8px 10px;font-size:11px}
+    .topline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .topline .subtle{font-size:11px}
+    .foot{margin-top:18px;line-height:1.5}
+
+
+    .app-splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:
+      radial-gradient(circle at 50% 30%,#0e3e72 0%,#071b32 31%,#020912 72%);transition:opacity .42s ease,visibility .42s ease}
+    .app-splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+    .splash-inner{text-align:center;padding:28px;max-width:360px}
+    .splash-icon{width:116px;height:116px;border-radius:27px;box-shadow:0 0 0 1px #55baff77,0 18px 48px #000a,0 0 42px #168cff44}
+    .splash-title{font-size:36px;line-height:1;font-weight:950;letter-spacing:-.045em;margin-top:20px;background:linear-gradient(90deg,#fff 0%,#f8fbff 46%,#ffd875 72%,#ffbd45 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .splash-sub{margin-top:10px;font-size:15px;color:#cad8e7;line-height:1.45}
+    .splash-tagline{margin-top:18px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#77bdff}
+    @media (prefers-reduced-motion:reduce){.app-splash{transition:none}}
+
+</style>
+</head>
+<body>
+<div class="app-splash" id="appSplash" aria-hidden="true">
+  <div class="splash-inner">
+    <img class="splash-icon" src="./icon-512.png" alt="">
+    <div class="splash-title">Strike Quest</div>
+    <div class="splash-sub">Gamified strike-price research for stocks and ETFs.</div>
+    <div class="splash-tagline">Data • Discipline • Progress</div>
+  </div>
+</div>
+
+
+<div class="shell">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">SP</div>
+      <div><h1>Strike Quest</h1><p>Find smarter entry zones</p></div>
+    </div>
+    <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
+  </div>
+
+  <section class="card quest-hero">
+    <div class="quest-grid">
+      <div>
+        <div class="eyebrow">Quest mode</div>
+        <h2 id="missionTitle">Mission: Find a 1-Year entry zone</h2>
+        <p id="missionLine">Apple Inc. (AAPL) • Manual inputs • 10% correction</p>
+        <div class="badge-row">
+          <span class="mood-pill mid" id="moodPill">🟡 Exploring</span>
+          <span class="score-pill">Research score <b id="researchScore">40</b></span>
+        </div>
+      </div>
+      <div class="quest-orb">
+        <div class="orb-ring"></div>
+        <div class="orb-core" id="orbTicker">AAPL</div>
+      </div>
+    </div>
+    <div class="stage-strip">
+      <div class="stage-mini"><b>Trend check</b><span id="stageTrendMini">Waiting for market context.</span></div>
+      <div class="stage-mini"><b>Range check</b><span id="stageRangeMini">52-week range will appear here.</span></div>
+      <div class="stage-mini"><b>Historical power</b><span id="stagePowerMini">Performance data powers the mission.</span></div>
+      <div class="stage-mini"><b>Strike zone</b><span id="stageStrikeMini">Low / Mid / High targets update live.</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="title-row">
+      <h2 class="section-title" style="margin:0">Mission controls</h2>
+      <span class="consumer-tag">Consumer app view</span>
+    </div>
+    <div class="row">
+      <div class="grow">
+        <label>Ticker search</label>
+        <div class="ticker-search-wrap">
+          <input id="ticker" value="AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ticker or company name">
+          <div id="tickerSuggestions" class="search-suggestions" role="listbox" aria-label="Ticker search suggestions"></div>
+        </div>
+        <div id="selectedInstrument" class="selected-instrument">Apple Inc. • AAPL</div>
+      </div>
+      <button id="analyzeBtn" class="btn primary" style="align-self:end">Analyze</button>
+    </div>
+    <div class="tabs" id="periodTabs">
+      <button class="tab" data-p="3m">3M</button>
+      <button class="tab" data-p="6m">6M</button>
+      <button class="tab active" data-p="1y">1Y</button>
+      <button class="tab" data-p="2y">2Y</button>
+      <button class="tab" data-p="3y">3Y</button>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <label>Correction amount</label>
+        <div class="range-line">
+          <input id="correction" type="range" min="0" max="30" step="1" value="10">
+          <div class="pct"><span id="corrLabel">10</span>%</div>
+        </div>
+      </div>
+      <div></div>
+    </div>
+    <div class="grid2" style="margin-top:10px">
+      <div><label>Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="2"></div>
+      <div><label>Strike increment</label>
+        <select id="increment">
+          <option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row" style="align-items:center;justify-content:space-between">
+      <h2 class="section-title" style="margin:0">Market inputs</h2>
+      <span class="source-badge" id="sourceBadge">Manual</span>
+    </div>
+    <div class="grid2" style="margin-top:10px">
+      <div><label>Current price</label><input id="price" type="number" step="0.01" value="192.75"></div>
+      <div><label>Historical performance ($)</label><input id="perf" type="number" step="0.01" value="39.57"></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn secondary grow" id="refreshBtn">Refresh market data</button>
+    </div>
+    <div class="status" id="status">Ready.</div>
+  </section>
+
+  <section class="card">
+    <div class="topline"><h2 class="section-title" style="margin:0">Quest board</h2><span class="subtle">Stage 4: strike zone reveal</span></div>
+    <div class="hero">
+      <div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div>
+      <div class="price"><span class="subtle">Current</span><br><strong id="outPrice">$192.75</strong></div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><span>Performance</span><b id="outPerf">$39.57</b></div>
+      <div class="metric"><span>Adjusted</span><b id="outAdjusted">$19.79</b></div>
+      <div class="metric"><span>Projected</span><b id="outProjected">$212.54</b></div>
+    </div>
+
+    <div class="targets">
+      <div class="target low"><small class="tier">Low</small><div class="n" id="low">$192</div><div class="subtle">defensive</div><div class="caption">For patient entries and deeper pullbacks.</div></div>
+      <div class="target mid"><small class="tier">Mid</small><div class="n" id="mid">$202</div><div class="subtle">moderate</div><div class="caption">Balanced zone between patience and momentum.</div></div>
+      <div class="target high"><small class="tier">High</small><div class="n" id="high">$213</div><div class="subtle">aggressive</div><div class="caption">Closest strike zone to the projected level.</div></div>
+    </div>
+
+    <div class="quest-grid-2" style="margin-top:13px">
+      <div class="mini-card">
+        <h3>Stage 1 — Trend check</h3>
+        <div class="stage-line">
+          <span class="chip" id="trend1mBadge">1M trend</span>
+          <span class="chip" id="trend3mBadge">3M trend</span>
+        </div>
+        <p id="questSummary" class="quest-summary">Trend chips turn positive when the recent trend is supportive.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Stage 2 — Market position</h3>
+        <div class="gauge"><div class="gauge-fill" id="rangeFill"></div><div class="gauge-marker" id="rangeMarker"></div></div>
+        <div class="gauge-scale"><span>52W Low</span><span>52W High</span></div>
+        <p id="rangeText" class="quest-summary">52-week range data appears here when available.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Stage 3 — Historical power</h3>
+        <p id="powerText">Performance data will summarize here.</p>
+        <div class="badge-strip" id="badgeStrip"></div>
+      </div>
+      <div class="mini-card">
+        <h3>Stage 4 — Calculation details</h3>
+        <details>
+          <summary>Show calculation</summary>
+          <pre id="details"></pre>
+        </details>
+        <div class="notice" id="extra"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">Validation lab</h2>
+    <div class="validation-grid">
+      <button class="btn secondary" onclick="loadPreset('aapl')">AAPL 2023</button>
+      <button class="btn secondary" onclick="loadPreset('xlk')">XLK 2021</button>
+    </div>
+    <div class="status" id="validation" style="margin-top:10px">Use a preset to quickly validate the calculator.</div>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">Share this result</h2>
+    <div class="sharebar">
+      <button class="btn primary" id="shareResultBtn">Share result</button>
+      <button class="btn secondary" id="copyResultBtn">Copy summary</button>
+    </div>
+    <div class="notice">Sharing includes only the summary — never your saved history or any API key.</div>
+  </section>
+
+  <section class="card">
+    <div class="row" style="align-items:center;justify-content:space-between">
+      <h2 class="section-title" style="margin:0">Saved analyses</h2>
+      <button class="btn danger-lite" id="clearAllBtn" style="padding:8px 10px;font-size:11px">Clear all</button>
+    </div>
+    <div id="history" style="margin-top:10px"></div>
+    <button class="btn secondary" id="saveBtn" style="width:100%;margin-top:6px">Save current analysis</button>
+  </section>
+
+  <div class="foot">Strike Quest • public shareable edition • informational only</div>
+</div>
+
+
+<div class="modal" id="settingsModal">
+  <div class="sheet">
+    <div class="sheet-head"><h3>Settings & data</h3><button class="close-btn" id="closeSettings">×</button></div>
+    <label>Market data source</label>
+    <div class="seg" id="dataSeg">
+      <button class="active" data-mode="manual">Manual</button>
+      <button data-mode="barchart">Barchart</button>
+    </div>
+    <div id="manualBox" style="margin-top:12px"><div class="consumer-note">Manual mode uses the market inputs on the main screen.</div></div>
+    <div id="apiBox" class="hidden" style="margin-top:12px">
+      <label>Barchart OnDemand API key</label>
+      <input id="apiKey" type="password" placeholder="Stored only on this device">
+      <div class="row" style="margin-top:8px">
+        <button class="btn secondary grow" id="fetchBtn">Test & load</button>
+        <button class="btn ghost" id="forgetBtn">Forget</button>
+      </div>
+      <a class="source-link" id="barchartLink" href="https://www.barchart.com/etfs-funds/quotes/AAPL/performance" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px">Open Barchart ↗</a>
+      <div class="consumer-note" style="margin-top:8px">Automatic market data requires your own Barchart OnDemand access. Your key stays on this device and stays out of the public experience.</div>
+    </div>
+    <div style="margin-top:14px">
+      <label>Default strike increment</label>
+      <select id="settingsIncrement"><option value="0.5">$0.50</option><option value="1">$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select>
+    </div>
+    <div class="consumer-note" style="margin-top:12px">Targets are informational and are not investment recommendations.</div>
+  </div>
+</div>
+
+<div class="install-banner" id="installBanner">
+  <strong>Add Strike Quest to your Home Screen</strong>
+  <p>On iPhone Safari: tap Share → Add to Home Screen → Add to install the gamified version.</p>
+  <button class="btn secondary" id="dismissInstall" style="width:100%">Got it</button>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PERIODS={
+  "3m":{label:"3-Month",months:3,divisor:2},
+  "6m":{label:"6-Month",months:6,divisor:2},
+  "1y":{label:"1-Year",months:12,divisor:2},
+  "2y":{label:"2-Year",months:24,divisor:1.5},
+  "3y":{label:"3-Year",months:36,divisor:2}
+};
+let state={period:"1y",mode:"manual",extra:{}};
+const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
+let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1;
+
+function escapeHtml(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+}
+function localSymbolSearch(q){
+  const needle=q.trim().toLowerCase();
+  if(!needle)return [];
+  return LOCAL_SYMBOLS
+    .map(x=>({...x,score:
+      x.symbol.toLowerCase()===needle?0:
+      x.symbol.toLowerCase().startsWith(needle)?1:
+      x.name.toLowerCase().startsWith(needle)?2:
+      x.name.toLowerCase().includes(needle)?3:9}))
+    .filter(x=>x.score<9).sort((a,b)=>a.score-b.score||a.symbol.localeCompare(b.symbol)).slice(0,8);
+}
+async function barchartSymbolSearch(q){
+  const key=localStorage.getItem("splab_barchart_key");
+  if(!key||q.trim().length<2)return [];
+  if(searchAbort)searchAbort.abort();
+  searchAbort=new AbortController();
+  const url=`https://ondemand.websol.barchart.com/getSymbolLookUp.json?apikey=${encodeURIComponent(key)}&keyword=${encodeURIComponent(q)}&limit=10&moreBestMatches=true&moreBestMatchLimit=4&fields=type`;
+  const res=await fetch(url,{signal:searchAbort.signal});
+  if(!res.ok)throw new Error("Symbol lookup unavailable");
+  const data=await res.json();
+  if(data?.status?.code!==200)return [];
+  return (data.results||[]).map(x=>({symbol:x.symbol,name:x.name||x.symbol,exchange:x.exchange||"",type:x.type||""}));
+}
+function mergeSuggestions(remote,local){
+  const out=[],seen=new Set();
+  for(const x of [...remote,...local]){
+    const k=String(x.symbol||"").toUpperCase();
+    if(!k||seen.has(k))continue;
+    seen.add(k);out.push(x);
+    if(out.length>=10)break;
+  }
+  return out;
+}
+function renderSuggestions(items, note=""){
+  const box=$("tickerSuggestions");
+  selectedSuggestionIndex=-1;
+  if(!items.length){
+    box.innerHTML=note?`<div class="search-hint">${escapeHtml(note)}</div>`:"";
+    box.classList.toggle("show",!!note);
+    return;
+  }
+  box.innerHTML=items.map((x,i)=>`<button type="button" class="suggest-row" data-i="${i}" data-symbol="${escapeHtml(x.symbol)}" data-name="${escapeHtml(x.name)}" data-exchange="${escapeHtml(x.exchange)}" data-type="${escapeHtml(x.type)}"><span class="suggest-symbol">${escapeHtml(x.symbol)}</span><span class="suggest-name">${escapeHtml(x.name)}</span><span class="suggest-meta">${escapeHtml(x.exchange||x.type)}</span></button>`).join("");
+  box.classList.add("show");
+}
+function chooseSuggestion(btn){
+  const symbol=btn.dataset.symbol||"";
+  const name=btn.dataset.name||symbol;
+  const exchange=btn.dataset.exchange||"";
+  $("ticker").value=symbol;
+  $("selectedInstrument").textContent=`${name} • ${symbol}${exchange?` • ${exchange}`:""}`;
+  $("tickerSuggestions").classList.remove("show");
+  $("tickerSuggestions").innerHTML="";
+  if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/stocks/quotes/${encodeURIComponent(symbol)}/performance`;
+  render();
+}
+async function runPredictiveSearch(){
+  const q=$("ticker").value.trim();
+  if(!q){renderSuggestions([]);$("selectedInstrument").textContent="";return;}
+  const local=localSymbolSearch(q);
+  if(q.length<2){
+    renderSuggestions(local,local.length?"":"Type at least 2 characters for full Barchart search.");
+    return;
+  }
+  const hasKey=!!localStorage.getItem("splab_barchart_key");
+  if(!hasKey){
+    renderSuggestions(local,local.length?"":"Add a Barchart key in Settings for full symbol/company search.");
+    return;
+  }
+  renderSuggestions(local,"Searching Barchart…");
+  try{
+    const remote=await barchartSymbolSearch(q);
+    renderSuggestions(mergeSuggestions(remote,local),remote.length||local.length?"":"No matching instruments found.");
+  }catch(e){
+    if(e?.name==="AbortError")return;
+    renderSuggestions(local,local.length?"":"Barchart lookup unavailable; try the ticker symbol directly.");
+  }
+}
+function schedulePredictiveSearch(){
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(runPredictiveSearch,260);
+}
+
+
+function money(n,d=2){return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
+function roundUp(v,inc){return Math.ceil((v-1e-9)/inc)*inc}
+function calc(){
+  const p=+$("price").value, perf=+$("perf").value, div=+$("divisor").value, c=+$("correction").value/100, inc=+$("increment").value;
+  if(![p,perf,div,c,inc].every(Number.isFinite)||div<=0||inc<=0)return null;
+  const adjusted=perf/div;
+  const projected=p+adjusted;
+  const highRaw=projected;
+  const midRaw=projected*(1-c/2);
+  const lowRaw=projected*(1-c);
+  return {p,perf,div,c,inc,adjusted,projected,highRaw,midRaw,lowRaw,high:roundUp(highRaw,inc),mid:roundUp(midRaw,inc),low:roundUp(lowRaw,inc)};
+}
+
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function moodFromRange(r){
+  if(Number.isFinite(state.extra.high52)&&Number.isFinite(state.extra.low52)&&state.extra.high52>state.extra.low52){
+    const pos=(r.p-state.extra.low52)/(state.extra.high52-state.extra.low52);
+    if(pos<=0.35)return {cls:"good",emoji:"🟢",text:"Favorable"};
+    if(pos>=0.75)return {cls:"warn",emoji:"🔴",text:"Extended"};
+    return {cls:"mid",emoji:"🟡",text:"Watch"};
+  }
+  if(Number.isFinite(state.extra.returnPct)){
+    if(state.extra.returnPct<0)return {cls:"good",emoji:"🟢",text:"Reset zone"};
+    if(state.extra.returnPct>20)return {cls:"warn",emoji:"🔴",text:"Extended"};
+  }
+  return {cls:"mid",emoji:"🟡",text:"Exploring"};
+}
+function renderQuest(r){
+  const symbol=(($("ticker").value||"").trim().toUpperCase())||"—";
+  const selected=(($("selectedInstrument").textContent||"").trim());
+  const parts=selected.split(" • ");
+  const name=(parts[0]||symbol).trim();
+  $("missionTitle").textContent=`Mission: Find a ${PERIODS[state.period].label} entry zone`;
+  $("missionLine").textContent=`${name} (${symbol}) • ${state.mode==="barchart"?"Live Barchart data":"Manual inputs"} • ${Math.round(r.c*100)}% correction`;
+  $("orbTicker").textContent=symbol.slice(0,5);
+
+  const mood=moodFromRange(r);
+  const moodEl=$("moodPill");
+  moodEl.className=`mood-pill ${mood.cls}`;
+  moodEl.textContent=`${mood.emoji} ${mood.text}`;
+
+  const checkPrice=Number.isFinite(r.p)&&Number.isFinite(r.perf);
+  const checkTrend1=!!state.extra.trend1m;
+  const checkTrend3=!!state.extra.trend3m;
+  const checkRange=Number.isFinite(state.extra.high52)&&Number.isFinite(state.extra.low52)&&state.extra.high52>state.extra.low52;
+  const checkCorrection=r.c>0;
+  const score=(checkPrice?20:0)+(checkTrend1?20:0)+(checkTrend3?20:0)+(checkRange?20:0)+(checkCorrection?20:0);
+  $("researchScore").textContent=String(score);
+
+  $("stageTrendMini").textContent=checkTrend1||checkTrend3?`${state.extra.trend1m||"1M n/a"} • ${state.extra.trend3m||"3M n/a"}`:"Run with Barchart data for automatic trend checks.";
+  $("stageRangeMini").textContent=checkRange?`52W low ${money(state.extra.low52)} to high ${money(state.extra.high52)}.`:"Range data appears with Barchart mode or manual context.";
+  $("stagePowerMini").textContent=`${money(r.perf)} move → ${money(r.adjusted)} usable after divisor ${r.div}.`;
+  $("stageStrikeMini").textContent=`Low ${money(r.low,0)} • Mid ${money(r.mid,0)} • High ${money(r.high,0)}`;
+
+  const t1=$("trend1mBadge"), t3=$("trend3mBadge");
+  const paintTrend=(el,label,val)=>{
+    const lower=(val||"").toLowerCase();
+    let cls="";
+    if(lower.includes("up"))cls="good"; else if(lower.includes("down"))cls="warn"; else if(val)cls="mid";
+    el.className=`chip ${cls}`.trim();
+    el.textContent=val?`${label}: ${val}`:`${label}: unavailable`;
+  };
+  paintTrend(t1,"1M",state.extra.trend1m);
+  paintTrend(t3,"3M",state.extra.trend3m);
+
+  let pos=0.5;
+  if(checkRange){pos=(r.p-state.extra.low52)/(state.extra.high52-state.extra.low52);}
+  pos=clamp(pos,0,1);
+  $("rangeFill").style.width=`${Math.max(6,pos*100)}%`;
+  $("rangeMarker").style.left=`${pos*100}%`;
+  $("rangeText").textContent=checkRange
+    ? `Current price is ${Math.round(pos*100)}% of the way from the 52-week low to the 52-week high.`
+    : "52-week range unavailable right now. Switch to Barchart mode for automatic range context.";
+
+  $("powerText").textContent=`Historical performance contributes ${money(r.perf)}. After applying the holding divisor (${r.div}), the usable move is ${money(r.adjusted)} and the projected level becomes ${money(r.projected)}.`;
+  const earned=[];
+  if(checkPrice)earned.push(['⚡ Input lock','good']);
+  if(checkTrend1||checkTrend3)earned.push(['📈 Trend checked',(checkTrend1&&checkTrend3)?'good':'mid']);
+  if(checkRange)earned.push(['🧭 Range reviewed','good']);
+  if(checkCorrection)earned.push([`${Math.round(r.c*100)}% correction`,'mid']);
+  if(score===100)earned.push(['🏆 Quest complete','good']);
+  $("badgeStrip").innerHTML=earned.map(([label,cls])=>`<span class="quest-badge ${cls}">${label}</span>`).join('') || '<span class="quest-badge">Start the analysis to earn badges.</span>';
+  $("questSummary").textContent=`Strike Quest frames the targets as defensive, balanced, and aggressive entry zones. Use the score and badges as a research checklist, not a promise of outcome.`;
+}
+function loadSaved(id){
+  const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
+  const x=arr.find(v=>String(v.id)===String(id));
+  if(!x)return;
+  if(x.ticker)$("ticker").value=x.ticker;
+  if(x.instrument)$("selectedInstrument").textContent=x.instrument;
+  if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);
+  if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);
+  if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);
+  if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);
+  if(Number.isFinite(Number(x.correction))){$("correction").value=String(x.correction);$("corrLabel").textContent=String(x.correction)}
+  setMode('manual');
+  setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');
+  status(`Loaded saved analysis for ${x.ticker||'ticker'}.`,'good');
+}
+
+function render(){
+  const r=calc();if(!r)return;
+  const t=$("ticker").value.trim().toUpperCase()||"—";
+  $("outTicker").textContent=t;
+  $("outHorizon").textContent=`${PERIODS[state.period].label} • ${Math.round(r.c*100)}% correction`;
+  $("outPrice").textContent=money(r.p);
+  $("outPerf").textContent=money(r.perf);
+  $("outAdjusted").textContent=money(r.adjusted);
+  $("outProjected").textContent=money(r.projected);
+  const d=r.inc<1?2:(Number.isInteger(r.inc)?0:2);
+  $("low").textContent=money(r.low,d); $("mid").textContent=money(r.mid,d); $("high").textContent=money(r.high,d);
+  $("details").textContent=
+`${PERIODS[state.period].label}
+Current price: ${money(r.p)}
+Historical performance: ${money(r.perf)}
+Holding adjustment: ${money(r.perf)} ÷ ${r.div} = ${money(r.adjusted)}
+Projected target: ${money(r.p)} + ${money(r.adjusted)} = ${money(r.projected)}
+
+HIGH: ${money(r.projected)} → ${money(r.high,d)}
+MID: ${money(r.projected)} × ${(1-r.c/2).toFixed(3)} = ${money(r.midRaw)} → ${money(r.mid,d)}
+LOW: ${money(r.projected)} × ${(1-r.c).toFixed(3)} = ${money(r.lowRaw)} → ${money(r.low,d)}
+
+Rounded upward to nearest ${money(r.inc,r.inc<1?2:0)} strike increment.`;
+  const extras=[];
+  if(state.extra.baselineDate)extras.push(`Baseline ${state.extra.baselineDate}: ${money(state.extra.baselineClose)}`);
+  if(Number.isFinite(state.extra.returnPct))extras.push(`Return: ${state.extra.returnPct.toFixed(2)}%`);
+  if(Number.isFinite(state.extra.periodHigh))extras.push(`${PERIODS[state.period].label} high: ${money(state.extra.periodHigh)}`);
+  if(Number.isFinite(state.extra.periodLow))extras.push(`${PERIODS[state.period].label} low: ${money(state.extra.periodLow)}`);
+  if(Number.isFinite(state.extra.high52))extras.push(`52W high: ${money(state.extra.high52)}`);
+  if(Number.isFinite(state.extra.low52))extras.push(`52W low: ${money(state.extra.low52)}`);
+  if(state.extra.trend1m)extras.push(`1M: ${state.extra.trend1m}`);
+  if(state.extra.trend3m)extras.push(`3M: ${state.extra.trend3m}`);
+  if(state.extra.marketMode)extras.push(`Barchart mode: ${state.extra.marketMode}`);
+  if(state.extra.tradeTimestamp)extras.push(`Quote: ${state.extra.tradeTimestamp}`);
+  $("extra").textContent=extras.join(" • ");
+  renderQuest(r);
+}
+function setPeriod(p){
+  state.period=p;
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.p===p));
+  $("divisor").value=PERIODS[p].divisor; render();
+}
+function setMode(m){
+  state.mode=m;
+  document.querySelectorAll("#dataSeg button").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));
+  $("manualBox").classList.toggle("hidden",m!=="manual");
+  $("apiBox").classList.toggle("hidden",m!=="barchart");
+  $("sourceBadge").textContent=m==="barchart"?"Barchart":"Manual";
+}
+function status(msg,kind=""){
+  $("status").textContent=msg;$("status").className="status"+(kind?` ${kind}`:"")
+}
+function shiftMonths(d,m){const x=new Date(d);x.setMonth(x.getMonth()+m);return x}
+function pad2(n){return String(n).padStart(2,"0")}
+function ymd(d){return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`}
+function isoDay(s){return new Date(`${s}T12:00:00`)}
+function recordOnOrBefore(records,target){
+  const t=target.getTime();
+  const eligible=records.filter(r=>isoDay(r.tradingDay).getTime()<=t)
+    .sort((a,b)=>isoDay(b.tradingDay)-isoDay(a.tradingDay));
+  return eligible[0]||null;
+}
+function trendFrom(records,spot,months){
+  const rec=recordOnOrBefore(records,shiftMonths(new Date(),-months));
+  if(!rec)return "—";
+  const close=Number(rec.close);
+  return spot>close?"Up":spot<close?"Down":"Flat";
+}
+async function fetchData(){
+  const ticker=$("ticker").value.trim().toUpperCase(),key=$("apiKey").value.trim();
+  if(!ticker||!key){status("Enter a ticker and Barchart OnDemand API key.","warn");return}
+  localStorage.setItem("splab_barchart_key",key);
+  $("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
+  status(`Loading ${ticker} from Barchart…`);
+  $("fetchBtn").disabled=true;
+  try{
+    const endpoint="https://ondemand.websol.barchart.com";
+    const now=new Date();
+    const target=shiftMonths(now,-PERIODS[state.period].months);
+    const historyType=state.period==="3y"?"weekly":"daily";
+    const historyStart=new Date(target);
+    historyStart.setDate(historyStart.getDate()-16);
+    const end=new Date(now);
+    end.setDate(end.getDate()+2);
+
+    const quoteUrl=`${endpoint}/getQuote.json?apikey=${encodeURIComponent(key)}&symbols=${encodeURIComponent(ticker)}&fields=fiftyTwoWkHigh%2CfiftyTwoWkHighDate%2CfiftyTwoWkLow%2CfiftyTwoWkLowDate`;
+    const histUrl=`${endpoint}/getHistory.json?apikey=${encodeURIComponent(key)}&symbol=${encodeURIComponent(ticker)}&type=${historyType}&startDate=${ymd(historyStart)}&endDate=${ymd(end)}&order=asc&splits=true&dividends=true&maxRecords=1000`;
+
+    const [qr,hr]=await Promise.all([fetch(quoteUrl),fetch(histUrl)]);
+    if(!qr.ok||!hr.ok)throw new Error(`Barchart request failed (${qr.status}/${hr.status}).`);
+    const q=await qr.json(),h=await hr.json();
+
+    if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart quote request failed.");
+    if(h?.status?.code!==200)throw new Error(h?.status?.message||"Barchart history request failed.");
+
+    const quote=q?.results?.[0],records=h?.results||[];
+    if(!quote||!records.length)throw new Error("Barchart returned no market data for this ticker.");
+
+    const spot=Number(quote.lastPrice ?? quote.close); if(quote.name)$("selectedInstrument").textContent=`${quote.name} • ${ticker}${quote.exchange?` • ${quote.exchange}`:""}`;
+    if(!Number.isFinite(spot))throw new Error("Barchart quote did not include a usable price.");
+
+    const baseline=recordOnOrBefore(records,target);
+    if(!baseline)throw new Error("Barchart history did not include a baseline close for this horizon.");
+
+    const baselineClose=Number(baseline.close);
+    const perf=spot-baselineClose;
+
+    // Restrict period high/low to the actual performance interval beginning at baseline.
+    const baselineTime=isoDay(baseline.tradingDay).getTime();
+    const periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime);
+    const highs=periodRecords.map(r=>Number(r.high)).filter(Number.isFinite);
+    const lows=periodRecords.map(r=>Number(r.low)).filter(Number.isFinite);
+
+    $("price").value=spot.toFixed(2);
+    $("perf").value=perf.toFixed(2);
+
+    state.extra={
+      baselineDate:baseline.tradingDay,
+      baselineClose,
+      returnPct:baselineClose ? (perf/baselineClose)*100 : NaN,
+      periodHigh:highs.length?Math.max(...highs):NaN,
+      periodLow:lows.length?Math.min(...lows):NaN,
+      high52:Number(quote.fiftyTwoWkHigh),
+      low52:Number(quote.fiftyTwoWkLow),
+      trend1m:trendFrom(records,spot,1),
+      trend3m:trendFrom(records,spot,3),
+      marketMode:quote.mode||"",
+      tradeTimestamp:quote.tradeTimestamp||quote.serverTimestamp||""
+    };
+    status(`Loaded ${ticker} from Barchart. Performance: ${money(perf)} since ${baseline.tradingDay}.`,"good");
+    render();
+  }catch(e){
+    const msg=(e&&e.message)?e.message:"Barchart fetch failed.";
+    status(`${msg} Manual mode is still available. If Safari reports a network/CORS error, your Barchart OnDemand account may need browser/site authorization.`,"warn");
+  }finally{
+    $("fetchBtn").disabled=false;
+  }
+}
+function loadPreset(which){
+  setMode("manual");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
+  if(which==="aapl"){
+    $("ticker").value="AAPL";$("selectedInstrument").textContent="Apple Inc. • AAPL";$("price").value="192.75";$("perf").value="39.57";setPeriod("1y");
+    render();const r=calc();const ok=r.low===192&&r.mid===202&&r.high===213;
+    $("validation").textContent=ok?"✓ AAPL validation passes: $192 / $202 / $213":`Mismatch: ${r.low}/${r.mid}/${r.high}`;
+    $("validation").className="status "+(ok?"good":"warn");
+  }else{
+    $("ticker").value="XLK";$("selectedInstrument").textContent="Technology Select Sector SPDR Fund • XLK";$("price").value="159.17";$("perf").value="6.51";setPeriod("3m");render();
+    $("validation").textContent="XLK Oct 27, 2021 inputs loaded."; $("validation").className="status";
+  }
+}
+function saveCurrent(){
+  const r=calc();if(!r)return;const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
+  const id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
+  arr.unshift({
+    id,
+    ticker:$("ticker").value.trim().toUpperCase(),
+    instrument:$("selectedInstrument").textContent.trim(),
+    p:state.period,
+    c:Math.round(r.c*100),
+    correction:Math.round(r.c*100),
+    price:r.p,
+    perf:r.perf,
+    divisor:r.div,
+    increment:r.inc,
+    low:r.low,mid:r.mid,high:r.high,
+    at:new Date().toISOString()
+  });
+  localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));renderHistory();status("Analysis saved.","good")
+}
+function deleteSaved(id){
+  const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
+  localStorage.setItem("splab_history",JSON.stringify(arr.filter(x=>String(x.id)!==String(id))));
+  renderHistory();
+}
+function clearAllSaved(){
+  if(!confirm("Delete all saved analyses?"))return;
+  localStorage.removeItem("splab_history");renderHistory();
+}
+function renderHistory(){
+  const arr=JSON.parse(localStorage.getItem("splab_history")||"[]"),el=$("history");
+  if(!arr.length){el.innerHTML='<div class="notice">No saved analyses yet. Save a quest run to keep it here.</div>';return}
+  let changed=false;
+  arr.forEach((x,i)=>{if(!x.id){x.id=`legacy-${x.at||i}-${i}`;changed=true}});
+  if(changed)localStorage.setItem("splab_history",JSON.stringify(arr));
+  el.innerHTML=arr.map(x=>`<div class="history-item">
+    <div class="history-top">
+      <div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div>
+      <div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div>
+    </div>
+    <div class="history-actions">
+      ${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}
+      <button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button>
+    </div>
+  </div>`).join("")
+}
+$("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
+$("ticker").addEventListener("keydown",e=>{
+  const rows=[...document.querySelectorAll("#tickerSuggestions .suggest-row")];
+  if(!rows.length)return;
+  if(e.key==="ArrowDown"){e.preventDefault();selectedSuggestionIndex=Math.min(selectedSuggestionIndex+1,rows.length-1)}
+  else if(e.key==="ArrowUp"){e.preventDefault();selectedSuggestionIndex=Math.max(selectedSuggestionIndex-1,0)}
+  else if(e.key==="Enter"&&selectedSuggestionIndex>=0){e.preventDefault();chooseSuggestion(rows[selectedSuggestionIndex]);return}
+  else if(e.key==="Escape"){$("tickerSuggestions").classList.remove("show");return}
+  else return;
+  rows.forEach((r,i)=>r.classList.toggle("active",i===selectedSuggestionIndex));
+  rows[selectedSuggestionIndex]?.scrollIntoView({block:"nearest"});
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".ticker-search-wrap"))$("tickerSuggestions").classList.remove("show")});
+$("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p)setPeriod(e.target.dataset.p)});
+$("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode)});
+["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",render));
+$("ticker").addEventListener("input",()=>{render();schedulePredictiveSearch();});
+$("correction").addEventListener("input",()=>{$("corrLabel").textContent=$("correction").value;render()});
+$("analyzeBtn").addEventListener("click",()=>state.mode==="barchart"?fetchData():render());
+$("fetchBtn").addEventListener("click",fetchData);
+$("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this iPhone.")});
+$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="barchart"?fetchData():render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
+$("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
+function resultSummary(){
+  const r=calc();if(!r)return "";
+  const t=$("ticker").value.trim().toUpperCase()||"—";
+  return `${t} • ${PERIODS[state.period].label} • ${Math.round(r.c*100)}% correction\nCurrent: ${money(r.p)}\nPerformance: ${money(r.perf)}\nLow: ${money(r.low,0)}\nMid: ${money(r.mid,0)}\nHigh: ${money(r.high,0)}\n\nCalculated with Strike Price Calculator.`;
+}
+async function shareResult(){const text=resultSummary();try{if(navigator.share){await navigator.share({title:"Strike Quest — Strike Price Calculator",text})}else{await navigator.clipboard.writeText(text);status("Result copied to clipboard.","good")}}catch(e){}}
+async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
+function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value}
+function closeSettings(){$("settingsModal").classList.remove("show")}
+const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key;
+$("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
+renderHistory();render();setMode(state.mode||"manual");
+const splash=$("appSplash");
+if(splash){
+  const hideSplash=()=>splash.classList.add("hide");
+  const delay=sessionStorage.getItem("strikequest_splash_seen")?280:1150;
+  setTimeout(()=>{hideSplash();sessionStorage.setItem("strikequest_splash_seen","1")},delay);
+}
+
+const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+if(isiOS&&!standalone&&!localStorage.getItem("splab_install_hint"))setTimeout(()=>$("installBanner").classList.add("show"),900);
+
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body>
+</html>
