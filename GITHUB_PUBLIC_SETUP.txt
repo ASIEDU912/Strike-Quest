@@ -1,26 +1,25 @@
-STRIKE QUEST — PUBLIC GITHUB SETUP
+STRIKEQUESTS — PUBLIC GITHUB SETUP
 
-Recommended repository name:
-Strike-Quest
+Existing repository:
+ASIEDU912/Strike-Quest
 
-Alternative:
-Strike-Quest-Calculator
+You do NOT need to rename the repository because the public URL is now the custom domain.
+
+Public product name:
+StrikeQuestss
+
+Public URL:
+https://strikequests.com
 
 GitHub repository description:
-Gamified strike-price and entry-target calculator for stocks and ETFs with predictive search, historical performance, market context, saved analyses, and shareable Low/Mid/High targets.
-
-Suggested public app name:
-Strike Quest — Strike Price Calculator
-
-Short tagline:
-Find smarter entry zones with data, discipline, and progress.
+StrikeQuestss is a gamified stock and ETF research app with automated EOD data, seasonality, watchlists, comparisons, saved analyses, and shareable Low/Mid/High strike zones.
 
 GitHub Pages:
 Settings → Pages → Deploy from a branch → main → /(root)
+Custom domain: strikequests.com
+Enforce HTTPS: enable after GitHub issues the certificate
 
-Shareable URL pattern:
-https://YOUR-USERNAME.github.io/Strike-Quest/
-
-Important:
+IMPORTANT:
+- Keep the CNAME file in the repository root.
 - Keep API credentials out of the repository.
-- Barchart credentials are entered inside Settings and stored only on the user's device.
+- User API keys are entered in Settings and stored only in that user's browser.

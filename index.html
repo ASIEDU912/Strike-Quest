@@ -6,11 +6,22 @@
   <meta name="theme-color" content="#0B0F14">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Strike Quest">
+  <meta name="apple-mobile-web-app-title" content="StrikeQuests">
   <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="StrikeQuests is a gamified stock and ETF research app with automated end-of-day data, seasonality, watchlists, comparisons, saved analyses, and shareable Low/Mid/High strike zones.">
+  <link rel="canonical" href="https://strikequests.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="StrikeQuests">
+  <meta property="og:title" content="StrikeQuests — Strike Price Calculator">
+  <meta property="og:description" content="Research the market. Find your strike. Complete the quest.">
+  <meta property="og:url" content="https://strikequests.com/">
+  <meta property="og:image" content="https://strikequests.com/icon-512.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="StrikeQuests — Strike Price Calculator">
+  <meta name="twitter:description" content="Research the market. Find your strike. Complete the quest.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icon-180.png">
-  <title>Strike Quest — Strike Price Calculator</title>
+  <title>StrikeQuests — Strike Price Calculator</title>
   <style>
     :root{
       --bg:#090C10;--bg2:#0D1218;--panel:#121820;--panel2:#17202A;--line:#27313D;
@@ -203,8 +214,8 @@
 <div class="app-splash" id="appSplash" aria-hidden="true">
   <div class="splash-inner">
     <img class="splash-icon" src="./icon-512.png" alt="">
-    <div class="splash-title">Strike Quest</div>
-    <div class="splash-sub">Gamified strike-price research for stocks and ETFs.</div>
+    <div class="splash-title">StrikeQuests</div>
+    <div class="splash-sub">Research the market. Find your strike. Complete the quest.</div>
     <div class="splash-tagline">Data • Discipline • Progress</div>
   </div>
 </div>
@@ -215,7 +226,7 @@
   <div class="top">
     <div class="brand">
       <div class="logo">SQ</div>
-      <div><h1>Strike Quest</h1><p>Plan smarter. Research deeper.</p></div>
+      <div><h1>StrikeQuests</h1><p>Research the market. Find your strike.</p></div>
     </div>
     <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
   </div>
@@ -341,7 +352,7 @@
     <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">Strike Quest v8 • seasonality + Alpha EOD fallback • share-safe • informational only</div>
+  <div class="foot">StrikeQuests v9 • rebrand + seasonality + Auto EOD • share-safe • informational only</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -381,7 +392,7 @@
 </div>
 
 <div class="install-banner" id="installBanner">
-  <strong>Add Strike Quest to your Home Screen</strong>
+  <strong>Add StrikeQuests to your Home Screen</strong>
   <p>On iPhone Safari: tap Share → Add to Home Screen → Add to install the gamified version.</p>
   <button class="btn secondary" id="dismissInstall" style="width:100%">Got it</button>
 </div>
@@ -600,7 +611,7 @@ function renderQuest(r){
   if(checkCorrection)earned.push([`${Math.round(r.c*100)}% correction`,'mid']);
   if(score===100)earned.push(['🏆 Quest complete','good']);
   $("badgeStrip").innerHTML=earned.map(([label,cls])=>`<span class="quest-badge ${cls}">${label}</span>`).join('') || '<span class="quest-badge">Start the analysis to earn badges.</span>';
-  $("questSummary").textContent=`Strike Quest frames the targets as defensive, balanced, and aggressive entry zones. Use the score and badges as a research checklist, not a promise of outcome.`;
+  $("questSummary").textContent=`StrikeQuests frames the targets as defensive, balanced, and aggressive entry zones. Use the score and badges as a research checklist, not a promise of outcome.`;
 }
 function loadSaved(id){
   const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
@@ -953,9 +964,9 @@ $("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_in
 function resultSummary(){
   const r=calc();if(!r)return "";
   const t=$("ticker").value.trim().toUpperCase()||"—";
-  return `${t} • ${PERIODS[state.period].label} • ${Math.round(r.c*100)}% correction\nCurrent: ${money(r.p)}\nPerformance: ${money(r.perf)}\nLow: ${money(r.low,0)}\nMid: ${money(r.mid,0)}\nHigh: ${money(r.high,0)}\n\nCalculated with Strike Price Calculator.`;
+  return `${t} • ${PERIODS[state.period].label} • ${Math.round(r.c*100)}% correction\nCurrent: ${money(r.p)}\nPerformance: ${money(r.perf)}\nLow: ${money(r.low,0)}\nMid: ${money(r.mid,0)}\nHigh: ${money(r.high,0)}\n\nCalculated with StrikeQuests • https://strikequests.com`;
 }
-async function shareResult(){const text=resultSummary();try{if(navigator.share){await navigator.share({title:"Strike Quest — Strike Price Calculator",text})}else{await navigator.clipboard.writeText(text);status("Result copied to clipboard.","good")}}catch(e){}}
+async function shareResult(){const text=resultSummary();try{if(navigator.share){await navigator.share({title:"StrikeQuests — Strike Price Calculator",text})}else{await navigator.clipboard.writeText(text);status("Result copied to clipboard.","good")}}catch(e){}}
 async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
 function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference()}
 function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view))}
@@ -965,8 +976,8 @@ markPeriod(state.period);renderHistory();renderWatchlist();renderProgressScreens
 const splash=$("appSplash");
 if(splash){
   const hideSplash=()=>splash.classList.add("hide");
-  const delay=sessionStorage.getItem("strikequest_splash_seen")?280:1150;
-  setTimeout(()=>{hideSplash();sessionStorage.setItem("strikequest_splash_seen","1")},delay);
+  const delay=sessionStorage.getItem("strikequests_v9_splash_seen")?280:1150;
+  setTimeout(()=>{hideSplash();sessionStorage.setItem("strikequests_v9_splash_seen","1")},delay);
 }
 
 const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);

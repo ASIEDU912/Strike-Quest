@@ -1,7 +1,7 @@
 {
-  "name": "Strike Quest",
-  "short_name": "StrikeQuest",
-  "description": "Gamified strike-price research with Auto EOD fallback, native seasonality, predictive search, watchlist comparison, saved analyses, and research progression.",
+  "name": "StrikeQuests \u2014 Strike Price Calculator",
+  "short_name": "StrikeQuests",
+  "description": "Gamified stock and ETF research with Auto EOD data, native seasonality, predictive search, watchlist comparison, saved analyses, research progression, and shareable strike zones.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
