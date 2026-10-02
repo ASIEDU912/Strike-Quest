@@ -1,7 +1,7 @@
 {
   "name": "Strike Quest",
   "short_name": "StrikeQuest",
-  "description": "Gamified strike-price research with predictive search, Auto EOD, watchlist snapshots, comparison mode, and persistent research progression.",
+  "description": "Gamified strike-price research with Auto EOD fallback, native seasonality, predictive search, watchlist comparison, saved analyses, and research progression.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -21,5 +21,5 @@
       "purpose": "any maskable"
     }
   ],
-  "id": "./strike-quest-v6"
+  "id": "./strike-quest-v8"
 }
