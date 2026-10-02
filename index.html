@@ -322,11 +322,10 @@
 
       <div id="analysisTargets" class="analysis-pane">
         <div class="targets" id="targetsRow"><div class="target low"><small class="tier">Low</small><div class="n" id="low">$192</div><div class="subtle">defensive</div><div class="caption">For patient entries and deeper pullbacks.</div></div><div class="target mid"><small class="tier">Mid</small><div class="n" id="mid">$202</div><div class="subtle">balanced</div><div class="caption">Middle zone between patience and momentum.</div></div><div class="target high"><small class="tier">High</small><div class="n" id="high">$213</div><div class="subtle">aggressive</div><div class="caption">Closest zone to the projected level.</div></div></div>
-        <div class="mini-card" style="margin-top:13px"><h3>4. Strike Zone Calculation</h3><details><summary>Show calculation</summary><pre id="details"></pre></details><div class="notice" id="extra"></div></div>
+        <div class="mini-card" style="margin-top:13px"><h3>5. Strike Zone Calculation</h3><details><summary>Show calculation</summary><pre id="details"></pre></details><div class="notice" id="extra"></div></div>
       </div>
     </section>
 
-    <section class="card"><h2 class="section-title">Validation lab</h2><div class="validation-grid"><button class="btn secondary" onclick="loadPreset('aapl')">AAPL 2023</button><button class="btn secondary" onclick="loadPreset('xlk')">XLK 2021</button></div><div class="status" id="validation" style="margin-top:10px">Use a preset to quickly validate the calculator.</div></section>
     <section class="card"><h2 class="section-title">Share this result</h2><div class="sharebar"><button class="btn primary" id="shareResultBtn">Share result</button><button class="btn secondary" id="copyResultBtn">Copy summary</button></div><div class="notice">Sharing includes only the summary — never saved history or any API key.</div></section>
   </main>
 
@@ -352,7 +351,7 @@
     <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">StrikeQuests v9 • rebrand + seasonality + Auto EOD • share-safe • informational only</div>
+  <div class="foot">StrikeQuests v9.1 • 2026 validation diagnostics • seasonality + Auto EOD • share-safe • informational only</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -387,6 +386,15 @@
       <label>Default strike increment</label>
       <select id="settingsIncrement"><option value="0.5">$0.50</option><option value="1">$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select>
     </div>
+    <details style="margin-top:14px">
+      <summary style="cursor:pointer;font-weight:800">Diagnostics & validation</summary>
+      <div class="consumer-note" style="margin-top:10px">Developer test presets use fixed 2026 market snapshots to verify the strike-zone formula. Loading a preset temporarily switches the calculator to Manual mode.</div>
+      <div class="validation-grid">
+        <button class="btn secondary" type="button" onclick="loadPreset('aapl')">AAPL 2026</button>
+        <button class="btn secondary" type="button" onclick="loadPreset('xlk')">XLK 2026</button>
+      </div>
+      <div class="status" id="validation" style="margin-top:10px">Choose a 2026 preset to run a formula check.</div>
+    </details>
     <div class="consumer-note" style="margin-top:12px"><b>Default:</b> Auto EOD. Alpha Vantage supplies the temporary daily/weekly/monthly data path; Barchart can take over when your OnDemand key is approved. Cached data is reused to reduce API requests. Targets and seasonality are informational, not investment recommendations.</div>
   </div>
 </div>
@@ -771,13 +779,17 @@ async function fetchData(force=false){
 function loadPreset(which){
   setMode("manual");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
   if(which==="aapl"){
-    $("ticker").value="AAPL";$("selectedInstrument").textContent="Apple Inc. • AAPL";$("price").value="192.75";$("perf").value="39.57";setPeriod("1y");
-    render();const r=calc();const ok=r.low===192&&r.mid===202&&r.high===213;
-    $("validation").textContent=ok?"✓ AAPL validation passes: $192 / $202 / $213":`Mismatch: ${r.low}/${r.mid}/${r.high}`;
+    // Oct 1, 2026 EOD $330.32; Oct 1, 2025 adjusted close $254.51 => 1Y performance $75.81.
+    $("ticker").value="AAPL";$("selectedInstrument").textContent="Apple Inc. • AAPL";$("price").value="330.32";$("perf").value="75.81";setPeriod("1y");
+    render();const r=calc();const ok=r.low===332&&r.mid===350&&r.high===369;
+    $("validation").textContent=ok?"✓ AAPL 2026 validation passes: $332 / $350 / $369":`AAPL 2026 mismatch: ${r.low}/${r.mid}/${r.high}`;
     $("validation").className="status "+(ok?"good":"warn");
   }else{
-    $("ticker").value="XLK";$("selectedInstrument").textContent="Technology Select Sector SPDR Fund • XLK";$("price").value="159.17";$("perf").value="6.51";setPeriod("3m");render();
-    $("validation").textContent="XLK Oct 27, 2021 inputs loaded."; $("validation").className="status";
+    // Oct 1, 2026 EOD $197.81; Oct 1, 2025 adjusted close $141.58 => 1Y performance $56.23.
+    $("ticker").value="XLK";$("selectedInstrument").textContent="Technology Select Sector SPDR Fund • XLK";$("price").value="197.81";$("perf").value="56.23";setPeriod("1y");
+    render();const r=calc();const ok=r.low===204&&r.mid===215&&r.high===226;
+    $("validation").textContent=ok?"✓ XLK 2026 validation passes: $204 / $215 / $226":`XLK 2026 mismatch: ${r.low}/${r.mid}/${r.high}`;
+    $("validation").className="status "+(ok?"good":"warn");
   }
 }
 function saveCurrent(){

@@ -48,3 +48,6 @@ Open **https://strikequests.com** in Chrome/Edge/Samsung Internet → **Install 
 
 ## Data and safety note
 StrikeQuestss is an informational research tool, not an investment recommendation. Automatic providers may require each user's own authorized API key unless a secure shared backend is added later. Keys are stored locally in the user's browser and are not included in share text or repository files.
+
+## v9.1 validation cleanup
+Validation presets are now hidden under Settings → Diagnostics & validation and use 2026 AAPL/XLK examples. The public Research screen no longer exposes developer validation controls.
