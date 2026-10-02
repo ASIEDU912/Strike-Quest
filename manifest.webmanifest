@@ -1,7 +1,7 @@
 {
   "name": "Strike Quest",
   "short_name": "StrikeQuest",
-  "description": "Gamified strike-price research app with working navigation, watchlists, saved analyses, quests, and Auto EOD support.",
+  "description": "Gamified strike-price research with predictive search, Auto EOD, watchlist snapshots, comparison mode, and persistent research progression.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

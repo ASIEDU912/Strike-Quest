@@ -173,6 +173,22 @@
     .saved-empty,.watch-empty{padding:18px;text-align:center;color:#8899aa;font-size:11px;border:1px dashed #33404d;border-radius:15px}
     .section-kicker{font-size:9px;color:#63baff;text-transform:uppercase;letter-spacing:.11em;font-weight:900;margin-bottom:5px}
 
+
+    /* v7: richer watchlist, comparison, and persistent research progression */
+    .watchlist-grid{display:grid;gap:10px}
+    .watch-item{display:block;background:linear-gradient(180deg,#0e151d,#0b1118);border:1px solid #2a3846;border-radius:18px;padding:13px}
+    .watch-item.compare-selected{border-color:#2e9cff;box-shadow:0 0 0 1px #2e9cff55,0 12px 30px #0005}
+    .watch-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .watch-symbol{font-size:20px;font-weight:900;letter-spacing:-.03em}.watch-name{font-size:10px;color:#93a4b5;margin-top:2px}
+    .watch-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.watch-chip{font-size:9px;border:1px solid #334253;border-radius:999px;padding:5px 7px;color:#b8c7d6;background:#101820}
+    .watch-snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.watch-stat{background:#091016;border:1px solid #273442;border-radius:12px;padding:8px 6px;text-align:center}.watch-stat span{display:block;color:#8294a6;font-size:8px}.watch-stat b{display:block;color:#edf5fb;font-size:12px;margin-top:3px}
+    .watch-targets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.watch-target{border-radius:11px;padding:7px;text-align:center;font-size:9px;border:1px solid #2b3744;background:#0a1118}.watch-target b{display:block;font-size:13px;margin-top:2px}.watch-target.low{border-top:2px solid var(--green)}.watch-target.mid{border-top:2px solid var(--yellow)}.watch-target.high{border-top:2px solid var(--red)}
+    .watch-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px}.tiny-btn.compare-on{border-color:#2e9cff;color:#87c8ff;background:#10233a}
+    .compare-section{margin-top:10px}.compare-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.compare-count{font-size:10px;color:#9fb0c1}.compare-grid{display:grid;gap:9px}.compare-card{background:#0b1219;border:1px solid #2b3947;border-radius:17px;padding:12px}.compare-card-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.compare-card h3{margin:0;font-size:18px}.compare-card .compare-name{font-size:9px;color:#91a3b5;margin-top:2px}.compare-score{border-radius:999px;padding:5px 7px;border:1px solid #35475a;background:#101a24;font-size:9px;color:#b7c8d8}.compare-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.compare-metric{background:#081016;border:1px solid #263441;border-radius:11px;padding:8px 6px;text-align:center}.compare-metric span{display:block;font-size:8px;color:#8395a6}.compare-metric b{display:block;font-size:12px;margin-top:3px}.compare-target-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:6px}.compare-target-row div{padding:7px 4px;border-radius:10px;background:#0a1118;border:1px solid #2a3542;text-align:center;font-size:8px;color:#8ea0b2}.compare-target-row b{display:block;font-size:13px;color:#eef5fb;margin-top:2px}.compare-empty{padding:16px;text-align:center;border:1px dashed #334353;border-radius:15px;color:#8ea0b2;font-size:10px;line-height:1.5}
+    .progress-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.progress-stat{background:#0b1219;border:1px solid #2a3744;border-radius:14px;padding:10px 5px;text-align:center}.progress-stat b{display:block;font-size:18px}.progress-stat span{display:block;color:#8ea0b2;font-size:8px;margin-top:3px}
+    .level-subtitle-strong{color:#d7e3ed!important;font-size:10px!important}
+    @media(min-width:650px){.compare-grid{grid-template-columns:repeat(3,1fr)}}
+
 </style>
 </head>
 <body>
@@ -287,8 +303,12 @@
   </main>
 
   <main id="viewWatchlist" class="app-view">
-    <div class="screen-title"><div><div class="section-kicker">Watchlist</div><h2>Research Queue</h2><p>Keep tickers you want to revisit.</p></div><button class="btn primary" id="watchAddBtn">Add current</button></div>
+    <div class="screen-title"><div><div class="section-kicker">Watchlist</div><h2>Research Queue</h2><p>Track analysis snapshots and compare up to three tickers.</p></div><button class="btn primary" id="watchAddBtn">Add current</button></div>
     <section class="card"><div id="watchlist" class="watchlist-grid"></div></section>
+    <section class="card compare-section">
+      <div class="compare-toolbar"><div><h2 class="section-title" style="margin:0">Compare Mode</h2><div class="compare-count" id="compareCount">Select 2–3 watchlist items</div></div><button class="btn ghost" id="compareClearBtn" style="padding:8px 10px">Clear</button></div>
+      <div id="comparePanel" class="compare-grid"></div>
+    </section>
   </main>
 
   <main id="viewSaved" class="app-view">
@@ -298,12 +318,13 @@
 
   <main id="viewQuests" class="app-view">
     <div class="screen-title"><div><div class="section-kicker">Quests</div><h2>Research Progress</h2><p>Progress rewards completed research steps — not trading frequency or profits.</p></div></div>
-    <section class="level-card"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
+    <section class="level-card"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle" class="level-subtitle-strong">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
+    <section class="card"><h2 class="section-title">Research Stats</h2><div class="progress-stats"><div class="progress-stat"><b id="statAnalyses">0</b><span>Analyses</span></div><div class="progress-stat"><b id="statSaved">0</b><span>Saved</span></div><div class="progress-stat"><b id="statWatch">0</b><span>Watchlist</span></div><div class="progress-stat"><b id="statCompare">0</b><span>Compares</span></div></div></section>
     <section class="card"><h2 class="section-title">Badges</h2><div class="badge-grid" id="badgeGrid"></div></section>
     <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">Strike Quest v6 • functional navigation • informational only</div>
+  <div class="foot">Strike Quest v7 • compare + progression upgrade • informational only</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -723,6 +744,7 @@ async function fetchData(){
     writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});
     status(`EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");
     render();
+    const wl=getWatchlist();const wi=wl.find(x=>x.symbol===ticker);if(wi){wi.snapshot=makeSnapshot(ticker);wi.updatedAt=new Date().toISOString();setWatchlist(wl);}
   }catch(e){
     const msg=(e&&e.message)?e.message:"Barchart EOD fetch failed.";
     if(loadCachedEod(true))status(`${msg} Showing the last cached EOD snapshot instead.`,"warn");
@@ -758,7 +780,7 @@ function saveCurrent(){
     low:r.low,mid:r.mid,high:r.high,
     at:new Date().toISOString()
   });
-  localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));awardAchievement("saved","Saved Analysis",25);renderHistory();renderProgressScreens();status("Analysis saved.","good")
+  localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));recordProgressEvent("saved");awardAchievement("saved","Saved Analysis",25);renderHistory();renderProgressScreens();status("Analysis saved.","good")
 }
 function deleteSaved(id){
   const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
@@ -776,35 +798,95 @@ function renderHistory(){
   el.innerHTML=arr.map(x=>`<div class="history-item"><div class="history-top"><div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div><div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div></div><div class="history-actions">${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}<button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button></div></div>`).join("")
 }
 
+
+function currentResearchScore(){
+  const r=calc();if(!r)return 0;
+  const checkPrice=Number.isFinite(r.p)&&Number.isFinite(r.perf);
+  const checkTrend1=!!state.extra.trend1m,checkTrend3=!!state.extra.trend3m;
+  const checkRange=Number.isFinite(state.extra.high52)&&Number.isFinite(state.extra.low52)&&state.extra.high52>state.extra.low52;
+  const checkCorrection=r.c>0;
+  return (checkPrice?20:0)+(checkTrend1?20:0)+(checkTrend3?20:0)+(checkRange?20:0)+(checkCorrection?20:0);
+}
+function makeSnapshot(symbol){
+  const r=calc();if(!r)return null;
+  return {symbol,price:r.p,perf:r.perf,low:r.low,mid:r.mid,high:r.high,period:state.period,correction:Math.round(r.c*100),score:currentResearchScore(),updatedAt:new Date().toISOString(),returnPct:Number.isFinite(state.extra.returnPct)?state.extra.returnPct:null,high52:Number.isFinite(state.extra.high52)?state.extra.high52:null,low52:Number.isFinite(state.extra.low52)?state.extra.low52:null};
+}
+function latestSavedSnapshot(symbol){
+  const arr=JSON.parse(localStorage.getItem('splab_history')||'[]').filter(x=>x.ticker===symbol&&x.price!=null).sort((a,b)=>new Date(b.at)-new Date(a.at));
+  const x=arr[0]; if(!x)return null;
+  return {symbol,price:Number(x.price),perf:Number(x.perf),low:Number(x.low),mid:Number(x.mid),high:Number(x.high),period:x.p||'1y',correction:Number(x.correction??x.c??10),score:60,updatedAt:x.at};
+}
+function getCompareSelection(){return JSON.parse(localStorage.getItem('sq_compare')||'[]')}
+function setCompareSelection(v){localStorage.setItem('sq_compare',JSON.stringify(v.slice(0,3)))}
+function toggleCompare(symbol){
+  let selected=getCompareSelection();
+  if(selected.includes(symbol))selected=selected.filter(x=>x!==symbol);
+  else if(selected.length<3)selected.push(symbol);
+  else {status('Compare Mode supports up to 3 tickers.','warn');return}
+  setCompareSelection(selected);renderWatchlist();renderComparePanel();
+}
+function clearCompare(){setCompareSelection([]);renderWatchlist();renderComparePanel()}
+function syncWatchSnapshot(symbol){
+  const current=($('ticker').value||'').trim().toUpperCase();
+  const list=getWatchlist();const item=list.find(x=>x.symbol===symbol);if(!item)return;
+  let snap=null;if(current===symbol)snap=makeSnapshot(symbol);if(!snap)snap=latestSavedSnapshot(symbol);
+  if(!snap){status(`Analyze ${symbol} first, then sync its snapshot.`, 'warn');return}
+  item.snapshot=snap;item.updatedAt=new Date().toISOString();setWatchlist(list);renderWatchlist();renderComparePanel();status(`${symbol} snapshot updated.`,'good');
+}
+function renderComparePanel(){
+  const panel=$('comparePanel'),count=$('compareCount');if(!panel)return;
+  const selected=getCompareSelection(),list=getWatchlist();if(count)count.textContent=selected.length?`${selected.length} selected • choose up to 3`:'Select 2–3 watchlist items';
+  const items=selected.map(s=>list.find(x=>x.symbol===s)).filter(Boolean);
+  if(items.length<2){panel.innerHTML='<div class="compare-empty">Select at least two Watchlist items using the Compare button. Analysis snapshots are used for the side-by-side view.</div>';return}
+  panel.innerHTML=items.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div><div class="compare-score">Score ${s.score??'—'}</div></div><div class="compare-metrics"><div class="compare-metric"><span>Current</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
+  recordProgressEvent('compare');awardAchievement('compare');
+}
+function recordProgressEvent(type){
+  const p=getProgress();p.stats=p.stats||{analyses:0,saved:0,watch:0,compare:0};
+  if(type==='analysis')p.stats.analyses=(p.stats.analyses||0)+1;
+  if(type==='saved')p.stats.saved=(p.stats.saved||0)+1;
+  if(type==='watch')p.stats.watch=(p.stats.watch||0)+1;
+  if(type==='compare')p.stats.compare=(p.stats.compare||0)+1;
+  setProgress(p);renderProgressScreens();
+}
 const ACHIEVEMENTS={
   first:{name:"First Analysis",xp:50,icon:"★"},
   trend:{name:"Trend Checked",xp:50,icon:"↗"},
   range:{name:"52W Range Reviewed",xp:50,icon:"⌁"},
   multi:{name:"Multi-Timeframe",xp:75,icon:"▥"},
-  saved:{name:"Saved Analysis",xp:25,icon:"▣"}
+  saved:{name:"Saved Analysis",xp:25,icon:"▣"},
+  watch:{name:"Watchlist Builder",xp:25,icon:"♡"},
+  compare:{name:"Side-by-Side",xp:75,icon:"⇄"},
+  complete:{name:"Full Research Run",xp:100,icon:"🏆"}
 };
-function getProgress(){return JSON.parse(localStorage.getItem("sq_progress")||'{"xp":0,"earned":{},"periods":[]}')}
+function getProgress(){
+  const p=JSON.parse(localStorage.getItem("sq_progress")||'{"xp":0,"earned":{},"periods":[],"stats":{"analyses":0,"saved":0,"watch":0,"compare":0}}');
+  p.earned=p.earned||{};p.periods=p.periods||[];p.stats=p.stats||{analyses:0,saved:0,watch:0,compare:0};return p
+}
 function setProgress(p){localStorage.setItem("sq_progress",JSON.stringify(p))}
 function awardAchievement(key,name,xp){const p=getProgress();if(p.earned[key])return;p.earned[key]={name:name||ACHIEVEMENTS[key]?.name||key,at:new Date().toISOString()};p.xp=(p.xp||0)+(xp||ACHIEVEMENTS[key]?.xp||0);setProgress(p);renderProgressScreens()}
-function markPeriod(p){const prog=getProgress();prog.periods=Array.from(new Set([...(prog.periods||[]),p]));setProgress(prog);if(prog.periods.length>=2)awardAchievement("multi");renderProgressScreens()}
-function updateResearchProgress(checks){awardAchievement("first");if(checks[0])awardAchievement("trend");if(checks[1])awardAchievement("range");renderProgressScreens()}
+function markPeriod(period){const prog=getProgress();prog.periods=Array.from(new Set([...(prog.periods||[]),period]));setProgress(prog);if(prog.periods.length>=2)awardAchievement("multi");renderProgressScreens()}
+function updateResearchProgress(checks){awardAchievement("first");if(checks[0])awardAchievement("trend");if(checks[1])awardAchievement("range");if(checks.every(Boolean))awardAchievement("complete");renderProgressScreens()}
 function renderProgressScreens(){
-  const p=getProgress(),xp=p.xp||0,level=Math.floor(xp/200)+1,base=(level-1)*200,next=level*200,pct=Math.max(0,Math.min(100,((xp-base)/200)*100));
-  if($("levelTitle"))$("levelTitle").textContent=`Level ${level} Researcher`;
+  const p=getProgress(),xp=p.xp||0,level=Math.floor(xp/200)+1,base=(level-1)*200,pct=Math.max(0,Math.min(100,((xp-base)/200)*100));
+  const names=['Researcher','Trend Scout','Range Mapper','Scenario Builder','Research Strategist','Quest Veteran'];
+  if($("levelTitle"))$("levelTitle").textContent=`Level ${level} ${names[Math.min(level-1,names.length-1)]}`;
+  if($("levelSubtitle"))$("levelSubtitle").textContent=level<4?'Build repeatable research habits.':'Keep expanding your research toolkit.';
   if($("xpText"))$("xpText").textContent=`${xp-base} / 200 XP`;
   if($("nextLevelText"))$("nextLevelText").textContent=`Next: Level ${level+1}`;
   if($("xpFill"))$("xpFill").style.width=`${pct}%`;
   const earned=p.earned||{};
   if($("badgeGrid"))$("badgeGrid").innerHTML=Object.entries(ACHIEVEMENTS).map(([k,a])=>`<div class="badge-card ${earned[k]?'earned':''}"><div class="badge-icon">${a.icon}</div><div class="badge-name">${a.name}</div></div>`).join('');
-  const quests=[['first','Complete your first analysis','Run a full ticker analysis',50],['trend','Review 1M & 3M trends','Load market context and inspect trend',50],['range','Review the 52-week range','Check market position',50],['multi','Use 2 timeframes','Compare more than one horizon',75],['saved','Save an analysis','Keep a completed research run',25]];
+  const quests=[['first','Complete your first analysis','Run a ticker analysis',50],['trend','Review 1M & 3M trends','Load market context and inspect trend',50],['range','Review the 52-week range','Check market position',50],['multi','Use 2 timeframes','Compare more than one horizon',75],['saved','Save an analysis','Keep a completed research run',25],['watch','Build a Watchlist','Add at least one ticker',25],['compare','Compare two tickers','Use Compare Mode with 2–3 snapshots',75],['complete','Complete the full checklist','Finish all four research stages',100]];
   if($("questList"))$("questList").innerHTML=quests.map(([k,title,sub,xpVal])=>`<div class="quest-item ${earned[k]?'done':''}"><div class="quest-check">${earned[k]?'✓':'○'}</div><div class="quest-copy"><b>${title}</b><span>${sub}</span></div><div class="quest-xp">+${xpVal} XP</div></div>`).join('');
+  const s=p.stats||{};if($("statAnalyses"))$("statAnalyses").textContent=s.analyses||0;if($("statSaved"))$("statSaved").textContent=s.saved||0;if($("statWatch"))$("statWatch").textContent=s.watch||0;if($("statCompare"))$("statCompare").textContent=s.compare||0;
 }
 function setView(view){
   if(view==='settings'){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view==='settings'));openSettings();return}
   document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
   const el=$(`view${view.charAt(0).toUpperCase()+view.slice(1)}`);if(el)el.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  if(view==='watchlist')renderWatchlist();
+  if(view==='watchlist'){renderWatchlist();renderComparePanel();}
   if(view==='saved')renderHistory();
   if(view==='quests')renderProgressScreens();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -815,9 +897,16 @@ function applySymbol(symbol){const m=symbolMeta(symbol);$("ticker").value=symbol
 function renderQuickPick(symbol){applySymbol(symbol);setView('research')}
 function getWatchlist(){return JSON.parse(localStorage.getItem('sq_watchlist')||'[]')}
 function setWatchlist(v){localStorage.setItem('sq_watchlist',JSON.stringify(v))}
-function addToWatchlist(symbol){symbol=(symbol||$("ticker").value).trim().toUpperCase();if(!symbol)return;const list=getWatchlist();if(!list.some(x=>x.symbol===symbol)){const m=symbolMeta(symbol);list.unshift({symbol,name:m.name,exchange:m.exchange,at:new Date().toISOString()});setWatchlist(list.slice(0,30));status(`${symbol} added to watchlist.`, 'good')}renderWatchlist()}
-function removeWatch(symbol){setWatchlist(getWatchlist().filter(x=>x.symbol!==symbol));renderWatchlist()}
-function renderWatchlist(){const el=$("watchlist");if(!el)return;const list=getWatchlist();if(!list.length){el.innerHTML='<div class="watch-empty">No watchlist tickers yet. Add the current ticker or use Quick Picks.</div>';return}el.innerHTML=list.map(x=>`<div class="watch-item"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`).join('')}
+function addToWatchlist(symbol){
+  symbol=(symbol||$("ticker").value).trim().toUpperCase();if(!symbol)return;const list=getWatchlist();let item=list.find(x=>x.symbol===symbol);
+  if(!item){const m=symbolMeta(symbol);item={symbol,name:m.name,exchange:m.exchange,at:new Date().toISOString(),snapshot:null};list.unshift(item);recordProgressEvent('watch');awardAchievement('watch')}
+  const current=($("ticker").value||'').trim().toUpperCase();if(current===symbol)item.snapshot=makeSnapshot(symbol)||item.snapshot;item.updatedAt=new Date().toISOString();setWatchlist(list.slice(0,30));status(`${symbol} is on your watchlist.`,'good');renderWatchlist();renderComparePanel()
+}
+function removeWatch(symbol){setWatchlist(getWatchlist().filter(x=>x.symbol!==symbol));setCompareSelection(getCompareSelection().filter(x=>x!==symbol));renderWatchlist();renderComparePanel()}
+function renderWatchlist(){
+  const el=$("watchlist");if(!el)return;const list=getWatchlist(),selected=getCompareSelection();if(!list.length){el.innerHTML='<div class="watch-empty">No Watchlist tickers yet. Add the current ticker or use Quick Picks, then return here to compare research snapshots.</div>';renderComparePanel();return}
+  el.innerHTML=list.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Current</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Score</span><b>${s.score??'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
+}
 function loadSaved(id){const arr=JSON.parse(localStorage.getItem('splab_history')||'[]');const x=arr.find(v=>String(v.id)===String(id));if(!x)return;if(x.ticker)applySymbol(x.ticker);if(x.instrument)$("selectedInstrument").textContent=x.instrument;if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);if(Number.isFinite(Number(x.correction))){$("correction").value=String(x.correction);$("corrLabel").textContent=String(x.correction)}setMode('manual');setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');setView('research');status(`Loaded saved analysis for ${x.ticker}.`,'good')}
 $("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
 $("ticker").addEventListener("keydown",e=>{
@@ -841,13 +930,14 @@ const analysisTabs=$("analysisTabs");
 if(analysisTabs)analysisTabs.addEventListener('click',e=>{const btn=e.target.closest('[data-analysis]');if(btn)setAnalysisTab(btn.dataset.analysis)});
 if($("watchCurrentBtn"))$("watchCurrentBtn").addEventListener('click',()=>addToWatchlist($("ticker").value));
 if($("watchAddBtn"))$("watchAddBtn").addEventListener('click',()=>addToWatchlist($("ticker").value));
+if($("compareClearBtn"))$("compareClearBtn").addEventListener("click",clearCompare);
 
 $("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p){setPeriod(e.target.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
 $("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode)});
 ["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",render));
 $("ticker").addEventListener("input",()=>{render();schedulePredictiveSearch();});
 $("correction").addEventListener("input",()=>{$("corrLabel").textContent=$("correction").value;render()});
-$("analyzeBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData():render());
+$("analyzeBtn").addEventListener("click",()=>{recordProgressEvent("analysis");state.mode==="auto_eod"?fetchData():render()});
 $("fetchBtn").addEventListener("click",fetchData);
 $("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device. Auto EOD will use cached data or manual inputs until a key is added again.")});
 $("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData():render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
