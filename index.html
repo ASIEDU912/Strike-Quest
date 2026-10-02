@@ -207,7 +207,9 @@
     .season-current{background:linear-gradient(135deg,#10243a,#0d171f);border:1px solid #31567a;border-radius:16px;padding:12px;margin:10px 0}.season-current-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.season-current h3{margin:0;font-size:15px}.season-signal{font-size:9px;font-weight:900;border-radius:999px;padding:6px 8px;border:1px solid #35516c;background:#0f1d2b}.season-signal.good{color:#75e8a5;border-color:#2b6945;background:#0e2619}.season-signal.warn{color:#ff9da5;border-color:#6d3439;background:#261217}.season-signal.mid{color:#ffd36b;border-color:#67592f;background:#241e0f}.season-current p{margin:7px 0 0;color:#a7b5c3;font-size:10px;line-height:1.45}
     .season-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.season-month{background:#0a1118;border:1px solid #293744;border-radius:13px;padding:9px 5px;text-align:center}.season-month.current{border-color:#339dff;box-shadow:0 0 0 1px #339dff55}.season-month strong{display:block;font-size:10px}.season-month .hit{display:block;font-size:13px;font-weight:900;margin-top:4px}.season-month .avg{display:block;font-size:9px;margin-top:2px;color:#9fb0bf}.season-month.good .hit,.season-month.good .avg{color:#6fe9a0}.season-month.warn .hit,.season-month.warn .avg{color:#ff9da5}.season-month.mid .hit{color:#ffd36b}
     .season-foot{margin-top:10px;font-size:9px;color:#8192a3;line-height:1.45}.provider-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.provider-card{background:#0d141c;border:1px solid #2a3745;border-radius:14px;padding:10px}.provider-card b{font-size:11px}.provider-card p{font-size:9px;color:#8fa0b0;line-height:1.4;margin:4px 0 8px}.key-row{display:grid;grid-template-columns:1fr auto;gap:7px}.key-row .btn{white-space:nowrap;padding-left:10px;padding-right:10px}
-    @media(max-width:390px){.stage-strip{grid-template-columns:repeat(2,1fr)}.season-grid{grid-template-columns:repeat(3,1fr)}.analysis-tab{font-size:10px}}
+    /* v9.2: flexible seasonality range + specific calendar-year selection */
+    .season-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#081018;border:1px solid #2a3745;border-radius:14px;padding:5px;margin-bottom:12px}.season-mode-btn{border:0;border-radius:10px;padding:9px 8px;background:transparent;color:#92a3b4;font-weight:800;font-size:10px}.season-mode-btn.active{background:#2499ff;color:#04111d}.season-range-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}.season-range-value{font-size:11px;font-weight:900;color:#eaf4ff;border:1px solid #34485b;background:#09121c;border-radius:999px;padding:5px 9px;white-space:nowrap}.season-range-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.season-range-row input[type=range]{width:100%}.season-range-hints{display:flex;justify-content:space-between;color:#718497;font-size:8px;margin-top:4px}.season-specific-panel{display:none}.season-specific-panel.show{display:block}.season-range-panel.hide{display:none}.season-year-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}.season-mini-btn{border:1px solid #304255;border-radius:999px;background:#0a121b;color:#b7c6d5;padding:6px 9px;font-size:9px;font-weight:800}.season-mini-btn:active{transform:scale(.98)}.season-year-chips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.season-year-chip{border:1px solid #314254;border-radius:9px;background:#091119;color:#9fb0c0;padding:7px 3px;font-size:9px;font-weight:850;text-align:center}.season-year-chip.selected{border-color:#2a9fff;background:#0e2a43;color:#eaf6ff;box-shadow:0 0 0 1px #2a9fff44}.season-year-chip.current-year::after{content:' YTD';font-size:6px;color:#6fb8f4}.season-selection-note{margin-top:8px;color:#8496a8;font-size:8px;line-height:1.4}.season-source-line{display:flex;justify-content:flex-end;margin-top:7px}
+    @media(max-width:390px){.stage-strip{grid-template-columns:repeat(2,1fr)}.season-grid{grid-template-columns:repeat(3,1fr)}.season-year-chips{grid-template-columns:repeat(4,minmax(0,1fr))}.analysis-tab{font-size:10px}}
 </style>
 </head>
 <body>
@@ -313,7 +315,19 @@
       </div>
 
       <div id="analysisSeasonality" class="analysis-pane">
-        <div class="seasonality-toolbar"><div><label>Seasonality lookback</label><select id="seasonalityLookback"><option value="5">5 years</option><option value="10" selected>10 years</option><option value="15">15 years</option><option value="20">20 years</option></select></div><div class="consumer-tag" id="seasonalitySource">Waiting for monthly history</div></div>
+        <div class="season-mode-switch" id="seasonModeSwitch"><button type="button" class="season-mode-btn active" data-season-mode="range">Recent range</button><button type="button" class="season-mode-btn" data-season-mode="specific">Specific years</button></div>
+        <div class="season-range-panel" id="seasonRangePanel">
+          <div class="season-range-head"><label>Seasonality lookback</label><span class="season-range-value" id="seasonalityLookbackLabel">10 years</span></div>
+          <div class="season-range-row"><input id="seasonalityLookback" type="range" min="1" max="25" step="1" value="10"><div class="consumer-tag" id="seasonalitySource">Waiting for monthly history</div></div>
+          <div class="season-range-hints"><span>1 year</span><span>25 years</span></div>
+        </div>
+        <div class="season-specific-panel" id="seasonSpecificPanel">
+          <label>Select calendar years</label>
+          <div class="season-year-actions"><button type="button" class="season-mini-btn" id="seasonPrevYearBtn">Previous year</button><button type="button" class="season-mini-btn" id="seasonCurrentYearBtn">Current YTD</button><button type="button" class="season-mini-btn" id="seasonClearYearsBtn">Clear</button></div>
+          <div class="season-year-chips" id="seasonalityYearChips"></div>
+          <div class="season-selection-note" id="seasonalitySelectionNote">Choose one or more years. Selecting one year lets you inspect that year's monthly pattern by itself.</div>
+          <div class="season-source-line"><div class="consumer-tag" id="seasonalitySpecificSource">Waiting for monthly history</div></div>
+        </div>
         <div class="season-current" id="seasonalityCurrent"><div class="season-current-top"><h3>Current month</h3><span class="season-signal mid" id="seasonalitySignal">Waiting</span></div><p id="seasonalityCurrentText">Load automatic market data to calculate monthly seasonality.</p></div>
         <div class="seasonality-summary"><div class="season-stat"><span>Positive years</span><b id="seasonalityHit">—</b></div><div class="season-stat"><span>Average return</span><b id="seasonalityAvg">—</b></div><div class="season-stat"><span>Observations</span><b id="seasonalityObs">—</b></div></div>
         <div class="season-grid" id="seasonalityGrid"></div>
@@ -351,7 +365,7 @@
     <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">StrikeQuests v9.1 • 2026 validation diagnostics • seasonality + Auto EOD • share-safe • informational only</div>
+  <div class="foot">StrikeQuests v9.2 • flexible seasonality years • Auto EOD • share-safe • informational only</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -509,31 +523,81 @@ function money(n,d=2){return new Intl.NumberFormat("en-US",{style:"currency",cur
 function signedPct(n,d=1){if(!Number.isFinite(Number(n)))return "—";const v=Number(n);return `${v>0?"+":""}${v.toFixed(d)}%`}
 const MONTH_NAMES=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function median(vals){const a=vals.filter(Number.isFinite).slice().sort((x,y)=>x-y);if(!a.length)return NaN;const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2}
-function seasonSignal(stat){if(!stat||!stat.observations)return {label:"Unavailable",cls:"mid"};if(stat.avgReturn>1&&stat.hitRate>=60)return {label:"Historically favorable",cls:"good"};if(stat.avgReturn<0&&stat.hitRate<50)return {label:"Historically weak",cls:"warn"};return {label:"Mixed history",cls:"mid"}}
-function computeSeasonality(monthlyRecords,lookbackYears=10){
+function seasonSignal(stat){
+  if(!stat||!stat.observations)return {label:"Unavailable",cls:"mid"};
+  if(stat.observations===1){if(stat.avgReturn>0)return {label:"Positive in selected year",cls:"good"};if(stat.avgReturn<0)return {label:"Negative in selected year",cls:"warn"};return {label:"Flat in selected year",cls:"mid"}}
+  if(stat.avgReturn>1&&stat.hitRate>=60)return {label:"Historically favorable",cls:"good"};
+  if(stat.avgReturn<0&&stat.hitRate<50)return {label:"Historically weak",cls:"warn"};
+  return {label:"Mixed history",cls:"mid"}
+}
+function seasonalityMode(){return localStorage.getItem("sq_seasonality_mode")||"range"}
+function selectedSeasonYears(){try{return JSON.parse(localStorage.getItem("sq_seasonality_years")||"[]").map(Number).filter(Number.isFinite)}catch(e){return []}}
+function saveSelectedSeasonYears(years){localStorage.setItem("sq_seasonality_years",JSON.stringify([...new Set(years.map(Number).filter(Number.isFinite))].sort((a,b)=>a-b)))}
+function availableSeasonYears(monthlyRecords){
+  const years=[...new Set((monthlyRecords||[]).map(r=>Number(String(r.date||r.tradingDay||'').slice(0,4))).filter(Number.isFinite))].sort((a,b)=>a-b);
+  return years.slice(-25)
+}
+function seasonalityOptions(monthlyRecords){
+  const years=availableSeasonYears(monthlyRecords),latest=years[years.length-1]||new Date().getFullYear();
+  const maxYears=Math.max(1,Math.min(25,years.length||25));
+  const requested=Math.max(1,Math.min(maxYears,Number($("seasonalityLookback")?.value||localStorage.getItem("sq_seasonality_lookback")||10)));
+  const selected=selectedSeasonYears().filter(y=>years.includes(y));
+  return {mode:seasonalityMode(),lookbackYears:requested,selectedYears:selected,availableYears:years,latestYear:latest,maxYears}
+}
+function computeSeasonality(monthlyRecords,opts=10){
   const rows=(monthlyRecords||[]).map(r=>({date:r.date||r.tradingDay,close:Number(r.close)})).filter(r=>r.date&&Number.isFinite(r.close)).sort((a,b)=>new Date(a.date)-new Date(b.date));
   if(rows.length<2)return null;
-  const cutoff=new Date();cutoff.setFullYear(cutoff.getFullYear()-Number(lookbackYears));
-  const currentMonth=new Date().getMonth();
-  const grouped=Array.from({length:12},()=>[]);
+  const config=typeof opts==='number'?{mode:'range',lookbackYears:Number(opts),selectedYears:[]}:{mode:opts?.mode||'range',lookbackYears:Number(opts?.lookbackYears||10),selectedYears:(opts?.selectedYears||[]).map(Number)};
+  const years=[...new Set(rows.map(r=>new Date(`${r.date}T12:00:00`).getFullYear()))].sort((a,b)=>a-b),latestYear=years[years.length-1];
+  const lookback=Math.max(1,Math.min(25,config.lookbackYears));
+  const startYear=latestYear-lookback+1,selectedSet=new Set(config.selectedYears);
+  const usedYearSet=new Set(),grouped=Array.from({length:12},()=>[]);
   for(let i=1;i<rows.length;i++){
-    const d=new Date(`${rows[i].date}T12:00:00`);if(d<cutoff)continue;
-    const ret=(rows[i].close/rows[i-1].close-1)*100;if(Number.isFinite(ret))grouped[d.getMonth()].push(ret);
+    const d=new Date(`${rows[i].date}T12:00:00`),year=d.getFullYear();
+    const include=config.mode==='specific'?selectedSet.has(year):(year>=startYear&&year<=latestYear);
+    if(!include)continue;
+    const ret=(rows[i].close/rows[i-1].close-1)*100;if(Number.isFinite(ret)){grouped[d.getMonth()].push(ret);usedYearSet.add(year)}
   }
   const months=grouped.map((vals,i)=>({month:i,name:MONTH_NAMES[i],observations:vals.length,hitRate:vals.length?vals.filter(v=>v>0).length/vals.length*100:NaN,avgReturn:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:NaN,medianReturn:median(vals)}));
-  const ranked=months.filter(x=>x.observations&&Number.isFinite(x.avgReturn)).slice().sort((a,b)=>b.avgReturn-a.avgReturn);
-  return {lookback:Number(lookbackYears),months,currentMonth:months[currentMonth],strongest:ranked[0]||null,weakest:ranked[ranked.length-1]||null,totalMonths:months.reduce((a,m)=>a+m.observations,0)};
+  const ranked=months.filter(x=>x.observations&&Number.isFinite(x.avgReturn)).slice().sort((a,b)=>b.avgReturn-a.avgReturn),usedYears=[...usedYearSet].sort((a,b)=>a-b);
+  return {lookback,mode:config.mode,selectedYears:config.selectedYears,usedYears,rangeStart:config.mode==='range'?startYear:null,rangeEnd:latestYear,months,currentMonth:months[new Date().getMonth()],strongest:ranked[0]||null,weakest:ranked[ranked.length-1]||null,totalMonths:months.reduce((a,m)=>a+m.observations,0)}
+}
+function setSeasonalityMode(mode){
+  const next=mode==='specific'?'specific':'range';
+  if(next==='specific'&&!selectedSeasonYears().length){const raw=getAlphaRaw(($('ticker')?.value||'').trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){const latest=years[years.length-1],prev=years.includes(latest-1)?latest-1:years[Math.max(0,years.length-2)];saveSelectedSeasonYears([prev])}}
+  localStorage.setItem('sq_seasonality_mode',next);
+  document.querySelectorAll('.season-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.seasonMode===next));
+  $("seasonRangePanel")?.classList.toggle('hide',next!=='range');$("seasonSpecificPanel")?.classList.toggle('show',next==='specific');
+  renderSeasonality()
+}
+function renderSeasonYearControls(raw){
+  const cfg=seasonalityOptions(raw?.monthly||[]),slider=$("seasonalityLookback"),label=$("seasonalityLookbackLabel"),chips=$("seasonalityYearChips");
+  if(slider){slider.max=String(cfg.maxYears);if(Number(slider.value)>cfg.maxYears)slider.value=String(cfg.maxYears);label.textContent=`${slider.value} ${Number(slider.value)===1?'year':'years'}`}
+  document.querySelectorAll('.season-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.seasonMode===cfg.mode));
+  $("seasonRangePanel")?.classList.toggle('hide',cfg.mode!=='range');$("seasonSpecificPanel")?.classList.toggle('show',cfg.mode==='specific');
+  if(!chips)return cfg;
+  if(!cfg.availableYears.length){chips.innerHTML='<div class="compare-empty" style="grid-column:1/-1">Load monthly market history to choose specific years.</div>';return cfg}
+  const selected=new Set(cfg.selectedYears);chips.innerHTML=cfg.availableYears.map(y=>`<button type="button" class="season-year-chip ${selected.has(y)?'selected':''} ${y===cfg.latestYear?'current-year':''}" data-season-year="${y}">${y}</button>`).join('');
+  const note=$("seasonalitySelectionNote");if(note){note.textContent=cfg.selectedYears.length?`Selected: ${cfg.selectedYears.join(', ')}. Monthly returns are aggregated only across these calendar years.`:'Choose one or more calendar years. “Previous year” is useful for seeing last year by itself.'}
+  return cfg
+}
+function recomputeSeasonality(){
+  const raw=getAlphaRaw(($('ticker')?.value||'').trim().toUpperCase());
+  const cfg=renderSeasonYearControls(raw);
+  if(raw?.monthly?.length){state.extra.seasonality=computeSeasonality(raw.monthly,cfg);render();renderSeasonality()}
 }
 function renderSeasonality(){
-  const lookback=Number($("seasonalityLookback")?.value||localStorage.getItem("sq_seasonality_lookback")||10);
+  const raw=getAlphaRaw(($('ticker')?.value||'').trim().toUpperCase()),cfg=renderSeasonYearControls(raw);
   let season=state.extra.seasonality;
-  const raw=getAlphaRaw(($('ticker')?.value||'').trim().toUpperCase());
-  if(raw?.monthly?.length){season=computeSeasonality(raw.monthly,lookback);state.extra.seasonality=season;}
+  if(raw?.monthly?.length){season=computeSeasonality(raw.monthly,cfg);state.extra.seasonality=season}
   const grid=$("seasonalityGrid");if(!grid)return;
-  if(!season?.months){grid.innerHTML='<div class="compare-empty" style="grid-column:1/-1">Seasonality needs monthly market history. Add an Alpha Vantage key in Settings and load EOD data.</div>';$("seasonalityHit").textContent='—';$("seasonalityAvg").textContent='—';$("seasonalityObs").textContent='—';return;}
-  const cur=season.currentMonth,sig=seasonSignal(cur);$("seasonalitySignal").className=`season-signal ${sig.cls}`;$("seasonalitySignal").textContent=sig.label;$("seasonalityCurrent").querySelector('h3').textContent=`${MONTH_NAMES[new Date().getMonth()]} seasonal profile`;$("seasonalityCurrentText").textContent=`Across the selected ${season.lookback}-year lookback, ${cur.observations||0} ${MONTH_NAMES[new Date().getMonth()]} observations were available. Strongest average month: ${season.strongest?.name||'—'} ${signedPct(season.strongest?.avgReturn)}. Weakest: ${season.weakest?.name||'—'} ${signedPct(season.weakest?.avgReturn)}.`;
-  $("seasonalityHit").textContent=Number.isFinite(cur.hitRate)?`${cur.hitRate.toFixed(0)}%`:'—';$("seasonalityAvg").textContent=signedPct(cur.avgReturn);$("seasonalityObs").textContent=String(cur.observations||0);$("seasonalitySource").textContent=`${season.lookback}Y monthly history`;
-  grid.innerHTML=season.months.map(m=>{const sig=seasonSignal(m);return `<div class="season-month ${sig.cls} ${m.month===new Date().getMonth()?'current':''}"><strong>${m.name}</strong><span class="hit">${Number.isFinite(m.hitRate)?m.hitRate.toFixed(0)+'%':'—'}</span><span class="avg">${signedPct(m.avgReturn)}</span></div>`}).join('');
+  if(!season?.months){grid.innerHTML='<div class="compare-empty" style="grid-column:1/-1">Seasonality needs monthly market history. Add an Alpha Vantage key in Settings and load EOD data.</div>';$("seasonalityHit").textContent='—';$("seasonalityAvg").textContent='—';$("seasonalityObs").textContent='—';return}
+  const cur=season.currentMonth,sig=seasonSignal(cur),monthName=MONTH_NAMES[new Date().getMonth()];$("seasonalitySignal").className=`season-signal ${sig.cls}`;$("seasonalitySignal").textContent=sig.label;$("seasonalityCurrent").querySelector('h3').textContent=`${monthName} seasonal profile`;
+  const rangeText=season.mode==='specific'?`Selected calendar years: ${season.usedYears.length?season.usedYears.join(', '):'none'}`:`Calendar range ${season.rangeStart}–${season.rangeEnd} (${season.lookback} ${season.lookback===1?'year':'years'})`;
+  $("seasonalityCurrentText").textContent=`${rangeText}. ${cur.observations||0} ${monthName} observation${cur.observations===1?' was':'s were'} available. Strongest average month: ${season.strongest?.name||'—'} ${signedPct(season.strongest?.avgReturn)}. Weakest: ${season.weakest?.name||'—'} ${signedPct(season.weakest?.avgReturn)}.`;
+  $("seasonalityHit").textContent=Number.isFinite(cur.hitRate)?`${cur.hitRate.toFixed(0)}%`:'—';$("seasonalityAvg").textContent=signedPct(cur.avgReturn);$("seasonalityObs").textContent=String(cur.observations||0);
+  const sourceText=season.mode==='specific'?(season.usedYears.length===1?`${season.usedYears[0]} only`:`${season.usedYears.length} selected years`):`${season.rangeStart}–${season.rangeEnd}`;$("seasonalitySource").textContent=sourceText;if($("seasonalitySpecificSource"))$("seasonalitySpecificSource").textContent=sourceText;
+  grid.innerHTML=season.months.map(m=>{const ms=seasonSignal(m);return `<div class="season-month ${ms.cls} ${m.month===new Date().getMonth()?'current':''}"><strong>${m.name}</strong><span class="hit">${Number.isFinite(m.hitRate)?m.hitRate.toFixed(0)+'%':'—'}</span><span class="avg">${signedPct(m.avgReturn)}</span></div>`}).join('')
 }
 function roundUp(v,inc){return Math.ceil((v-1e-9)/inc)*inc}
 function calc(){
@@ -750,7 +814,7 @@ function applyAlphaRaw(ticker,raw){
   const perf=spot-Number(baseline.close),oneYearAgo=new Date(now);oneYearAgo.setDate(oneYearAgo.getDate()-370);const recent52=weekly.filter(r=>isoDay(r.date)>=oneYearAgo&&isoDay(r.date)<=now),periodRecords=weekly.filter(r=>isoDay(r.date)>=isoDay(baseline.date)&&isoDay(r.date)<=now);
   const highs52=recent52.map(r=>r.high).filter(Number.isFinite),lows52=recent52.map(r=>r.low).filter(Number.isFinite),highs=periodRecords.map(r=>r.high).filter(Number.isFinite),lows=periodRecords.map(r=>r.low).filter(Number.isFinite);
   const trendAt=months=>{const rec=alphaOnOrBefore(weekly,shiftMonths(now,-months));if(!rec)return "—";return spot>rec.close?"Up":spot<rec.close?"Down":"Flat"};
-  const lookback=Number($("seasonalityLookback")?.value||localStorage.getItem("sq_seasonality_lookback")||10),seasonality=computeSeasonality(monthly,lookback);
+  const seasonality=computeSeasonality(monthly,seasonalityOptions(monthly));
   $("price").value=spot.toFixed(2);$("perf").value=perf.toFixed(2);const meta=symbolMeta(ticker),instrument=`${meta.name||ticker} • ${ticker}${meta.exchange?` • ${meta.exchange}`:''}`;$("selectedInstrument").textContent=instrument;
   state.extra={baselineDate:baseline.date,baselineClose:baseline.close,returnPct:baseline.close?(perf/baseline.close)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Alpha Vantage",tradeTimestamp:quoteDate,seasonality};
   writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Alpha EOD";render();renderSeasonality();return {spot,perf,quoteDate};
@@ -767,7 +831,7 @@ async function fetchBarchartData(ticker,key){
   const [qr,hr]=await Promise.all([fetch(quoteUrl),fetch(histUrl)]);if(!qr.ok||!hr.ok)throw new Error(`Barchart request failed (${qr.status}/${hr.status}).`);const q=await qr.json(),h=await hr.json();if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart EOD request failed.");if(h?.status?.code!==200)throw new Error(h?.status?.message||"Barchart history request failed.");
   const quote=q?.results?.[0],records=h?.results||[];if(!quote||!records.length)throw new Error("Barchart returned no EOD/history data for this ticker.");const spot=Number(quote.close??quote.lastPrice??quote.settlement);if(!Number.isFinite(spot))throw new Error("Barchart EOD response did not include a usable closing price.");const quoteDate=quote.date||records[records.length-1]?.tradingDay||"",baseline=recordOnOrBefore(records,target);if(!baseline)throw new Error("Barchart history did not include a baseline close for this horizon.");const baselineClose=Number(baseline.close),perf=spot-baselineClose,quoteTime=quoteDate?isoDay(quoteDate).getTime():Date.now(),oneYearAgo=quoteTime-370*86400000,recent52=records.filter(r=>isoDay(r.tradingDay).getTime()>=oneYearAgo&&isoDay(r.tradingDay).getTime()<=quoteTime),highs52=recent52.map(r=>Number(r.high)).filter(Number.isFinite),lows52=recent52.map(r=>Number(r.low)).filter(Number.isFinite),baselineTime=isoDay(baseline.tradingDay).getTime(),periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime&&isoDay(r.tradingDay).getTime()<=quoteTime),highs=periodRecords.map(r=>Number(r.high)).filter(Number.isFinite),lows=periodRecords.map(r=>Number(r.low)).filter(Number.isFinite),eodDateObj=quoteDate?isoDay(quoteDate):now;
   const trendAt=months=>{const rec=recordOnOrBefore(records,shiftMonths(eodDateObj,-months));if(!rec)return "—";const close=Number(rec.close);return spot>close?"Up":spot<close?"Down":"Flat"};$("price").value=spot.toFixed(2);$("perf").value=perf.toFixed(2);const instrument=`${quote.name||ticker} • ${ticker}`;$("selectedInstrument").textContent=instrument;
-  const alphaRaw=getAlphaRaw(ticker),seasonality=alphaRaw?.monthly?.length?computeSeasonality(alphaRaw.monthly,Number($("seasonalityLookback")?.value||10)):null;state.extra={baselineDate:baseline.tradingDay,baselineClose,returnPct:baselineClose?(perf/baselineClose)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Barchart",tradeTimestamp:quoteDate,seasonality};writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Barchart EOD";status(`Barchart EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");render();renderSeasonality()
+  const alphaRaw=getAlphaRaw(ticker),seasonality=alphaRaw?.monthly?.length?computeSeasonality(alphaRaw.monthly,seasonalityOptions(alphaRaw.monthly)):null;state.extra={baselineDate:baseline.tradingDay,baselineClose,returnPct:baselineClose?(perf/baselineClose)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Barchart",tradeTimestamp:quoteDate,seasonality};writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Barchart EOD";status(`Barchart EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");render();renderSeasonality()
 }
 function maybeAutoLoadEod(){
   if(state.mode!=="auto_eod")return;const provider=activeProvider();if(provider){fetchData(false);return}if(!loadCachedEod(false))status("Auto EOD is ready. Add a free Alpha Vantage key in Settings now, or your Barchart key when approved. Manual values remain available until then.","warn")
@@ -971,7 +1035,14 @@ $("correction").addEventListener("input",()=>{$("corrLabel").textContent=$("corr
 $("analyzeBtn").addEventListener("click",()=>{recordProgressEvent("analysis");state.mode==="auto_eod"?fetchData():render()});
 $("fetchBtn").addEventListener("click",()=>fetchData(true));
 $("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device.")}); if($("forgetAlphaBtn"))$("forgetAlphaBtn").addEventListener("click",()=>{localStorage.removeItem("sq_alpha_key");$("alphaKey").value="";status("Alpha Vantage API key removed from this device.")});
-if($("providerSelect"))$("providerSelect").addEventListener("change",()=>{localStorage.setItem("sq_provider_pref",$("providerSelect").value);if(state.mode==="auto_eod")maybeAutoLoadEod()}); if($("seasonalityLookback"))$("seasonalityLookback").addEventListener("change",()=>{localStorage.setItem("sq_seasonality_lookback",$("seasonalityLookback").value);const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase());if(raw?.monthly?.length){state.extra.seasonality=computeSeasonality(raw.monthly,Number($("seasonalityLookback").value));render();renderSeasonality()}}); $("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData(true):render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
+if($("providerSelect"))$("providerSelect").addEventListener("change",()=>{localStorage.setItem("sq_provider_pref",$("providerSelect").value);if(state.mode==="auto_eod")maybeAutoLoadEod()});
+if($("seasonModeSwitch"))$("seasonModeSwitch").addEventListener("click",e=>{const btn=e.target.closest('[data-season-mode]');if(btn)setSeasonalityMode(btn.dataset.seasonMode)});
+if($("seasonalityLookback"))$("seasonalityLookback").addEventListener("input",()=>{localStorage.setItem("sq_seasonality_lookback",$("seasonalityLookback").value);if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`;recomputeSeasonality()});
+if($("seasonalityYearChips"))$("seasonalityYearChips").addEventListener("click",e=>{const btn=e.target.closest('[data-season-year]');if(!btn)return;const y=Number(btn.dataset.seasonYear),years=selectedSeasonYears();saveSelectedSeasonYears(years.includes(y)?years.filter(v=>v!==y):[...years,y]);recomputeSeasonality()});
+if($("seasonPrevYearBtn"))$("seasonPrevYearBtn").addEventListener("click",()=>{const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){const latest=years[years.length-1],prev=years.includes(latest-1)?latest-1:years[Math.max(0,years.length-2)];saveSelectedSeasonYears([prev]);setSeasonalityMode('specific')}});
+if($("seasonCurrentYearBtn"))$("seasonCurrentYearBtn").addEventListener("click",()=>{const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){saveSelectedSeasonYears([years[years.length-1]]);setSeasonalityMode('specific')}});
+if($("seasonClearYearsBtn"))$("seasonClearYearsBtn").addEventListener("click",()=>{saveSelectedSeasonYears([]);renderSeasonality()});
+$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData(true):render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
 $("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
 function resultSummary(){
   const r=calc();if(!r)return "";
@@ -982,7 +1053,7 @@ async function shareResult(){const text=resultSummary();try{if(navigator.share){
 async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
 function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference()}
 function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view))}
-const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=localStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback"))$("seasonalityLookback").value=localStorage.getItem("sq_seasonality_lookback")||"10";
+const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=localStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback")){$("seasonalityLookback").value=localStorage.getItem("sq_seasonality_lookback")||"10";if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`}
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
 markPeriod(state.period);renderHistory();renderWatchlist();renderProgressScreens();render();renderSeasonality();setMode(state.mode||"auto_eod");setTimeout(maybeAutoLoadEod,250);
 const splash=$("appSplash");

@@ -51,3 +51,7 @@ StrikeQuestss is an informational research tool, not an investment recommendatio
 
 ## v9.1 validation cleanup
 Validation presets are now hidden under Settings → Diagnostics & validation and use 2026 AAPL/XLK examples. The public Research screen no longer exposes developer validation controls.
+
+
+## v9.2 — Flexible Seasonality
+Seasonality now supports a 1–25 year range slider plus Specific Years selection, including Previous Year and Current YTD shortcuts.
