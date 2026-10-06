@@ -1,0 +1,13 @@
+node_modules/
+test-results/
+playwright-report/
+evidence/
+*.zip
+*.log
+.env
+.env.*
+.dev.vars*
+.wrangler/
+*.pem
+*.key
+.DS_Store

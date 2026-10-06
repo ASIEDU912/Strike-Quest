@@ -1,0 +1,5 @@
+{
+  "marketDataApi": "https://strikequests-market-data.strikequests.workers.dev",
+  "marketDataMode": "shared-eod",
+  "version": "v10.0.3-review"
+}

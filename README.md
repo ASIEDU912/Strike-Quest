@@ -1,4 +1,29 @@
-# StrikeQuestss — Strike Price Calculator
+# StrikeQuests - Strike Price Calculator
+
+## v10.1.1 review update
+
+The proposed v10.1.1 frontend starts in private Demo mode with clearly labeled synthetic examples. Private Manual mode also disables provider, health and remote symbol-search requests. Automatic mode is an explicit choice and uses the public shared-service configuration in `config.json`, with the existing optional owner fallbacks.
+
+This update preserves all eight original Quick Picks and adds three more, with local identifying icons and ETF provider labels. It adds five contextual horizons, prominent Low/Mid/High scenario prices, synchronized 0-30% correction sliders, input/history validation, source and coverage labels, and distinct artwork for nine research milestones. Previously earned badges migrate without granting missing awards; Thoughtful Return remains a separate companion. A new browser starts with zero earned badges. Notes and badge progress stay on that device; shared summaries exclude notes, history and keys.
+
+See [v10.1.1 behavior, validation and limitations](README-V10.1.md). The review branch does not publish the site. The existing GitHub Pages source is `main` / repository root, so merging to `main` can trigger publication and requires release approval.
+
+### Local checks
+
+Serve the repository root with a local HTTP server, for example `python -m http.server 8000`, and open `http://localhost:8000`. Opening a file URL does not exercise the service worker.
+
+With Node.js and the declared development dependency installed:
+
+```sh
+npm test
+npm run test:browser
+```
+
+Browser tests use Playwright's Chromium by default. Set `CHROMIUM_EXECUTABLE` to an installed Chrome/Chromium executable when needed. All provider traffic in tests is intercepted with synthetic fixtures. Screenshots and test output go to ignored `test-results/`, or the directory specified by `EVIDENCE_DIR`.
+
+## Historical v9.x documentation
+
+The following notes are retained from the original app. Their automatic startup, badge/XP and validation-preset descriptions are superseded by the v10.1 review notes above.
 
 **Research the market. Find your strike. Complete the quest.**
 
