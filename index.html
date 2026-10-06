@@ -210,6 +210,34 @@
     /* v9.2: flexible seasonality range + specific calendar-year selection */
     .season-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#081018;border:1px solid #2a3745;border-radius:14px;padding:5px;margin-bottom:12px}.season-mode-btn{border:0;border-radius:10px;padding:9px 8px;background:transparent;color:#92a3b4;font-weight:800;font-size:10px}.season-mode-btn.active{background:#2499ff;color:#04111d}.season-range-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}.season-range-value{font-size:11px;font-weight:900;color:#eaf4ff;border:1px solid #34485b;background:#09121c;border-radius:999px;padding:5px 9px;white-space:nowrap}.season-range-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.season-range-row input[type=range]{width:100%}.season-range-hints{display:flex;justify-content:space-between;color:#718497;font-size:8px;margin-top:4px}.season-specific-panel{display:none}.season-specific-panel.show{display:block}.season-range-panel.hide{display:none}.season-year-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}.season-mini-btn{border:1px solid #304255;border-radius:999px;background:#0a121b;color:#b7c6d5;padding:6px 9px;font-size:9px;font-weight:800}.season-mini-btn:active{transform:scale(.98)}.season-year-chips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.season-year-chip{border:1px solid #314254;border-radius:9px;background:#091119;color:#9fb0c0;padding:7px 3px;font-size:9px;font-weight:850;text-align:center}.season-year-chip.selected{border-color:#2a9fff;background:#0e2a43;color:#eaf6ff;box-shadow:0 0 0 1px #2a9fff44}.season-year-chip.current-year::after{content:' YTD';font-size:6px;color:#6fb8f4}.season-selection-note{margin-top:8px;color:#8496a8;font-size:8px;line-height:1.4}.season-source-line{display:flex;justify-content:flex-end;margin-top:7px}
     @media(max-width:390px){.stage-strip{grid-template-columns:repeat(2,1fr)}.season-grid{grid-template-columns:repeat(3,1fr)}.season-year-chips{grid-template-columns:repeat(4,minmax(0,1fr))}.analysis-tab{font-size:10px}}
+/* Original local design. No remote fonts, imagery, logos, or tracking. */
+progress{-webkit-appearance:none;appearance:none;border:0;background:#0b1d2e;border-radius:6px;overflow:hidden}progress::-webkit-progress-bar{background:#0b1d2e}progress::-webkit-progress-value{background:linear-gradient(90deg,#339cde,#edca75)}progress::-moz-progress-bar{background:linear-gradient(90deg,#339cde,#edca75)}
+:root{--sq-gold:#f0ce77;--sq-muted:#a9bad0;--sq-line:#294663;--sq-blue:#39aaff}
+html{scroll-padding-bottom:110px}body{background:radial-gradient(ellipse at 40% 0,#183656 0,#091522 45%,#060e18 100%);color:#eff6ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}button{touch-action:manipulation}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #8ed9ff;outline-offset:3px}
+.shell{max-width:1120px;padding:24px 24px calc(120px + env(safe-area-inset-bottom));margin:auto}.top{margin-bottom:20px}.brand{gap:12px}.brand h1{font-size:24px;letter-spacing:-.8px}.brand h1 span{color:var(--sq-gold)}.brand p{font-size:11px;color:var(--sq-muted)}.logo{width:55px;height:55px;border:0;background:none;box-shadow:none}.logo svg{width:100%;height:100%}.settings-btn{border:1px solid #31506c;border-radius:14px;background:#102238;color:#b9d8f2;width:44px;height:44px;font-size:22px}
+.card{background:linear-gradient(145deg,#152b43,#0d1d30);border:1px solid #29425c;border-radius:24px;padding:22px;box-shadow:0 12px 28px #0002,inset 0 1px #80b8eb0c}.section-title{font-size:17px;letter-spacing:-.2px}.section-kicker,.eyebrow{font-size:10px;letter-spacing:1.8px;color:#83c9ff}.subtle,.consumer-note,.notice{color:var(--sq-muted);line-height:1.55}.btn{min-height:44px;border-radius:12px;font-size:12px}.btn.primary{background:linear-gradient(135deg,#22aaff,#317bf5);color:#fff;box-shadow:0 5px 18px #008cff22}.btn.secondary{background:#1b334b;border:1px solid #35506a;color:#e7f1fb}
+.mode-banner{margin-bottom:16px;padding:14px 18px;border:1px solid #395974;border-radius:16px;background:#10263c;display:flex;align-items:center;justify-content:space-between;gap:14px}.mode-banner strong{display:block;font-size:12px;color:#f2d27f}.mode-banner p{margin:3px 0 0;font-size:11px;color:#adbed0}.mode-buttons{display:flex;gap:5px;flex-wrap:wrap}.mode-buttons button{border:1px solid #3d5871;border-radius:10px;padding:9px 13px;background:#0d1e30;color:#a9c0d5;font-size:11px;min-height:40px}.mode-buttons button[aria-pressed=true]{background:#193e61;border-color:#53b9ff;color:#fff}.privacy-note{font-size:11px;color:#bad1e5}
+#viewResearch.active{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}#viewResearch>.card{margin:0}.quest-hero,.quick-card,.data-quality,.share-card{grid-column:1/-1}.quest-hero{background:radial-gradient(ellipse at top right,#17433e55,transparent 50%),linear-gradient(135deg,#193952,#11263d);padding:24px}.quest-grid{grid-template-columns:1fr auto;gap:20px}.quest-hero h2{font-size:27px;max-width:600px;margin:9px 0}.quest-hero p{max-width:600px;color:#b3c9dc;font-size:12px}.quest-orb{width:83px;height:83px}.orb-core{font-size:20px}.badge-row{margin-top:13px}.mood-pill,.score-pill{font-size:10px}.research-progress{max-width:500px}.stage-strip{margin-top:18px;gap:8px}.stage-mini{background:#07152466;border:1px solid #34516a;border-radius:12px;padding:10px;min-height:80px}.stage-mini b{font-size:10px}.stage-mini span{font-size:9px;color:#a7c0d6}.progress-track{height:5px}
+.quick-picks{grid-template-columns:repeat(8,minmax(0,1fr));gap:9px}.quick-pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:108px;border-radius:16px;background:linear-gradient(160deg,#203b57,#102238);border:1px solid #37536f;color:#f3f7fb;transition:transform .15s,border-color .15s}.quick-pick:hover{transform:translateY(-2px);border-color:#67bcf3}.quick-pick[aria-pressed=true]{border-color:#52b7ff;box-shadow:inset 0 0 0 1px #52b7ff44}.quick-pick .company-icon{width:36px;height:36px;display:block;margin:0 0 3px}.company-icon svg{width:100%;height:100%}.quick-pick b{font-size:12px}.quick-pick span{font-size:9px;line-height:1.3;color:#b0c2d5}.quick-note{font-size:10px;color:#92aac1;margin:12px 0 0}
+.mission-controls .tabs{background:#08172a;border:1px solid #37536f;padding:5px;border-radius:15px;gap:3px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:16px}.mission-controls .tab{padding:11px 2px;min-height:62px;border:1px solid transparent;border-radius:11px;background:transparent;color:#a7c0d5;font-size:13px}.mission-controls .tab small{display:block;font-size:8px;font-weight:500;margin-top:4px;line-height:1.15}.mission-controls .tab.active{background:linear-gradient(#238ed8,#195393);border-color:#80d4ff;color:#fff;box-shadow:0 0 15px #299bff44}.horizon-prompt{padding:13px 0 5px;min-height:44px;font-size:12px;color:#d0e2f4;line-height:1.5}.horizon-basis{font-size:10px;color:#92afc9;min-height:29px;line-height:1.5}.range-line input{min-width:0}input[type=range]{accent-color:#36aafa;height:32px;cursor:pointer}.range-endpoints{display:flex;justify-content:space-between;color:#95b1c8;font-size:10px;margin-top:1px}.correction-control{padding-top:14px}.correction-label{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;color:#d4e7f8}.correction-label output{font-size:20px;font-weight:800;color:#fff}.correction-control input{width:100%;margin:5px 0 0}.correction-help{font-size:10px;color:#a9bfd3;margin:8px 0 0;line-height:1.45}.assumptions-grid{margin-top:15px;padding-top:14px;border-top:1px solid #29425b}.mission-controls input,.market-inputs input,.mission-controls select{background:#081a2c;border:1px solid #34516a;border-radius:12px;color:#f0f6fc;min-height:44px}.mission-controls label,.market-inputs label{color:#a6bfd5;font-size:11px}
+.target-card{position:relative}.target-card .title-row{margin-bottom:13px}.target-card h2{margin:0;font-size:17px}.target-context{font-size:10px;color:#bbcee1;margin:5px 0 14px;line-height:1.45}.targets{display:grid;grid-template-columns:1fr;gap:9px}.target{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;text-align:left;border-radius:14px;padding:13px 14px;border:1px solid;min-height:82px;position:relative;overflow:hidden}.target.low{background:linear-gradient(110deg,#123e36,#0d282b);border-color:#397a68;box-shadow:inset 3px 0 #55d5a2}.target.mid{background:linear-gradient(110deg,#403b22,#292a24);border-color:#817444;box-shadow:inset 3px 0 #efcd69}.target.high{background:linear-gradient(110deg,#442839,#2c2130);border-color:#81465b;box-shadow:inset 3px 0 #f27b90}.target-icon{width:31px;height:31px}.target-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.7}.target.low{color:#83e6bb}.target.mid{color:#f3da89}.target.high{color:#ffa1b1}.target small.tier{font-size:14px;font-weight:750;letter-spacing:.1px}.target .n{font-size:29px;line-height:1.05;color:#fff;letter-spacing:-.6px;font-weight:800}.target .target-detail{font-size:9px;line-height:1.4;max-width:125px;color:#c0cfdb}.target .target-delta{color:inherit;font-size:10px;margin-top:5px;white-space:nowrap}.target-price{text-align:right}.scenario-note{font-size:10px;line-height:1.5;color:#acbfd1;margin:12px 0 0}.target-card .correction-control{border-top:1px solid #30445b;margin-top:15px}.target-card [aria-live]{min-height:0}.target-invalid{font-size:12px;color:#ffd18c;margin:10px 0}.reset-btn{background:none;color:#9bcaed;border:0;text-decoration:underline;min-height:35px;font-size:10px;padding:4px}
+.quality-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.quality-row strong{font-size:12px}.quality-row span{font-size:10px}.data-quality p{font-size:11px;line-height:1.6;margin:8px 0;color:#b5c9dc}.data-quality details{font-size:11px;color:#9bb6ce}.data-quality summary{cursor:pointer;padding:6px 0}.data-quality ul{padding-left:18px;line-height:1.6}.quality-badge{background:#183c52;color:#94d6ff;border-radius:999px;padding:6px 9px}.quality-badge.warn{background:#44341e;color:#f6cd86}.mode-banner .privacy-note{margin-top:4px}.market-inputs .status{line-height:1.45}.analysis-card{grid-column:1/-1}.analysis-pane .targets{display:none}.analysis-card .hero{margin-bottom:10px}.analysis-tabs{gap:6px;padding:5px}.analysis-tab{min-height:41px}.mode-label{color:#f4d182;font-size:11px}.research-notes{margin-top:14px}.research-notes textarea{display:block;width:100%;min-height:90px;border:1px solid #34516a;border-radius:12px;padding:11px;background:#0a1c2f;color:#dceafa;font-size:12px;resize:vertical}.note-meta{font-size:10px;color:#97b2c9;margin-top:7px}.review-step{display:flex;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid #29425b;font-size:12px;color:#d2e3f0}.review-step input{width:20px;height:20px;accent-color:#39aaff;flex:none}.review-step small{display:block;color:#9bb5cb;font-size:10px;margin-top:4px}.review-note{font-size:11px;color:#abc0d2;line-height:1.6}.quest-legacy{display:none!important}.foot{font-size:9px;line-height:1.6;padding:20px 0}.bottom-nav{width:min(680px,100%);max-width:680px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border:1px solid #34516a;border-bottom:0;border-radius:18px 18px 0 0;background:#0c1c2ff5;backdrop-filter:blur(14px)}.nav-btn{min-height:44px}.nav-btn span:last-child{font-size:10px}.nav-icon{font-size:17px}.modal .sheet{background:#12273f;border:1px solid #31516e;max-height:85dvh;overflow:auto;padding-bottom:40px}.screen-title p{font-size:12px;color:#a9bfd3}.app-splash{display:none!important}.install-banner{display:none!important}
+@media(max-width:700px){.shell{padding:14px 14px calc(115px + env(safe-area-inset-bottom));max-width:490px}.brand h1{font-size:23px}.mode-banner{display:block;padding:12px 14px}.mode-buttons{margin-top:10px}.mode-buttons button{flex:1}.card{padding:17px;border-radius:20px}#viewResearch.active{display:flex;flex-direction:column;gap:13px}#viewResearch>.card{width:100%}.quest-hero{padding:18px}.quest-hero h2{font-size:23px;line-height:1.15}.quest-orb{width:63px;height:63px}.orb-core{font-size:15px}.quest-grid{gap:10px}.stage-strip{display:none}.quick-picks{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-pick{min-height:103px;padding:11px 4px}.quick-note{font-size:9px}.quick-pick .company-icon{width:34px;height:34px}.target{padding:11px 12px;gap:9px;min-height:76px}.target .n{font-size:28px}.target-card{scroll-margin-top:12px;scroll-margin-bottom:100px}.target-card .correction-control{padding-top:12px;margin-top:12px}.correction-help,.scenario-note{font-size:10px}.target-detail{max-width:110px}.mission-controls .tab small{font-size:8px}.quality-row{align-items:flex-start}.mission-controls .tabs{margin-top:14px}.research-progress{margin-top:12px}.analysis-card .price strong{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media(max-width:350px){.shell{padding-left:10px;padding-right:10px}.card{padding:14px}.target{grid-template-columns:27px 1fr auto;gap:6px}.target-icon{width:25px}.target .n{font-size:24px}.target-detail{max-width:85px}.brand h1{font-size:21px}}
+.share-card textarea{width:100%;background:#0a1c2f;color:#dceafa;border:1px solid #34516a;border-radius:12px;padding:12px;min-height:95px;font:inherit;font-size:12px;resize:vertical}.share-card .row{margin-top:14px;flex-wrap:wrap}.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.new-badge{background:radial-gradient(ellipse at top,#27466444,transparent 75%),#0e2034;border:1px solid #365472;border-radius:18px;padding:18px 12px;text-align:center}.new-badge.earned{border-color:#b99a51;background:radial-gradient(ellipse at top,#ad8b3033,transparent 75%),#10243a;box-shadow:inset 0 1px #e8c97755,0 0 24px #cba45111}.new-badge.in-progress{border-color:#418bbd}.new-badge svg{width:76px;height:83px;display:block;margin:0 auto 10px}.new-badge b{font-size:12px;display:block}.badge-state{display:inline-block;margin-top:7px;font-size:9px;color:#a6c8e2}.earned .badge-state{color:#f2d186}.new-badge p{font-size:10px;line-height:1.5;color:#a8bfd3;min-height:46px}.new-badge small{font-size:9px;color:#91adc5}.new-badge progress,.next-badge progress{display:block;width:100%;height:6px;accent-color:#e3be64;margin:11px 0;border-radius:10px}.next-badge{background:linear-gradient(120deg,#204264,#142940);border:1px solid #3d6688;border-radius:16px;padding:16px}.next-badge b{font-size:15px;color:#f0d18a}.next-badge p{font-size:12px;color:#b5cbe0;margin:8px 0}.badge-toast{position:fixed;z-index:100;left:50%;transform:translate(-50%,20px);bottom:calc(94px + env(safe-area-inset-bottom));width:min(400px,calc(100% - 32px));padding:17px 20px;background:linear-gradient(135deg,#244968,#192d46);border:1px solid #dcc077;border-radius:17px;box-shadow:0 10px 40px #0008;color:#ffe9b8;font-size:12px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}.badge-toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.badge-grid{grid-template-columns:repeat(2,1fr);gap:10px}.new-badge{padding:15px 10px}.target .n{font-weight:800;margin:0}.target small{color:inherit;text-transform:none}.mission-controls .grow{min-width:0}}
+
+/* v10.1.1: individual milestone illustrations, including recognizable locked art. */
+.target .n{font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-1px;overflow-wrap:anywhere}.target-price{min-width:0}.target .target-delta{white-space:normal}.target-card .target{overflow:visible}
+@media(max-width:700px){.target-card .target{grid-template-columns:28px minmax(0,1fr);gap:4px 9px;padding:8px 12px;min-height:110px}.target-card .target-icon{width:27px;height:27px;grid-column:1;grid-row:1}.target-card .target>div:not(.target-price){grid-column:2;display:flex;align-items:center;gap:8px;min-width:0}.target-card .target-detail{max-width:none;font-size:9px}.target-card .target-price{grid-column:1/-1;text-align:center}.target-card .target .n{font-size:clamp(32px,10.8vw,44px);margin:0}.target-card .target-delta{margin-top:2px;font-size:10px}.target-card .targets{gap:7px}.target-card .target-context{margin-bottom:10px}.target-card .title-row{margin-bottom:8px}}
+.quick-picks{grid-template-columns:repeat(6,minmax(0,1fr))}.quick-pick{min-height:132px;justify-content:flex-start;padding:15px 6px}.quick-pick .company-icon{flex:none}.quick-pick .provider-label{font-size:8px;color:#8faec9;line-height:1.35;display:block}.quick-pick span{min-height:12px}.quick-note{line-height:1.5}
+.badge-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.new-badge{--badge-accent:#86c9ee;position:relative;background:radial-gradient(ellipse at 50% 10%,color-mix(in srgb,var(--badge-accent) 12%,transparent),transparent 65%),#102238;border:1px solid #35516a;padding:22px 14px 18px;isolation:isolate}.new-badge.earned{border-color:color-mix(in srgb,var(--badge-accent) 68%,#324a5e);background:radial-gradient(ellipse at top,color-mix(in srgb,var(--badge-accent) 20%,transparent),transparent 70%),#102238;box-shadow:inset 0 1px color-mix(in srgb,var(--badge-accent) 40%,transparent),0 6px 19px #0002}.new-badge.in-progress{border-color:color-mix(in srgb,var(--badge-accent) 48%,#263c52)}.new-badge svg{width:100px;height:104px;filter:drop-shadow(0 5px 8px #0004);margin:0 auto 14px}.new-badge.locked svg{filter:saturate(.65) drop-shadow(0 4px 5px #0003);opacity:.78}.new-badge.in-progress svg{filter:saturate(.9) drop-shadow(0 4px 7px #0004)}.new-badge b{font-size:13px;line-height:1.4}.new-badge .badge-state{color:#b3c6d9;font-size:10px;margin-top:8px}.new-badge.earned .badge-state{color:var(--badge-accent)}.new-badge p{font-size:11px;line-height:1.5;min-height:50px;margin:12px 0}.new-badge progress{height:5px}.new-badge progress::-webkit-progress-value{background:var(--badge-accent)}.new-badge progress::-moz-progress-bar{background:var(--badge-accent)}.new-badge small{font-size:9px}.new-badge[data-badge=complete]{background:radial-gradient(ellipse at 50% 0,#e5b53c22,transparent 70%),#182636}.new-badge[data-badge=complete] svg{width:108px}
+#completeResearchBtn{display:block;max-width:340px;width:100%;margin:20px auto 0}#completeResearchBtn:disabled{opacity:.6;cursor:default}.reflection-milestone{margin-top:25px;padding-top:20px;border-top:1px solid #2b435b}.reflection-milestone h3{font-size:16px;color:#cae8df;margin:0 0 15px}.reflection-milestone .new-badge{display:grid;grid-template-columns:90px 1fr;column-gap:18px;text-align:left;align-items:start;max-width:none}.reflection-milestone svg{grid-column:1;grid-row:1/7;width:85px;height:96px;margin:0}.reflection-milestone .new-badge p{min-height:0;margin:8px 0}.reflection-milestone .new-badge .badge-state{margin-top:3px}.reflection-milestone progress{margin:6px 0}.note-validation{font-size:12px;color:#f1cf89;line-height:1.5;min-height:0}.note-validation:empty{display:none}textarea[aria-invalid=true]{border-color:#ffc875;outline:1px solid #ffc875}.review-context-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.review-context-actions button{flex:1}
+@media(max-width:700px){.quick-picks{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.quick-pick{min-height:132px;padding:12px 3px}.quick-pick span{font-size:8px}.quick-pick .provider-label{font-size:7px;min-height:20px}.badge-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.new-badge{padding:17px 10px 15px}.new-badge svg{width:90px;height:96px}.new-badge b{font-size:12px}.new-badge p{font-size:10px;min-height:60px}.new-badge[data-badge=complete]{grid-column:1/-1}.new-badge[data-badge=complete] p{min-height:0}.reflection-milestone .new-badge{grid-template-columns:70px 1fr;column-gap:12px}.reflection-milestone svg{width:70px;height:85px}.reflection-milestone .new-badge p{min-height:0}}
+@media(max-width:350px){.quick-picks{grid-template-columns:repeat(3,minmax(0,1fr))}.new-badge{padding-left:8px;padding-right:8px}.new-badge svg{width:80px}.reflection-milestone .new-badge{display:block;text-align:center}.reflection-milestone svg{margin:0 auto 10px}}
+
 </style>
 </head>
 <body>
@@ -227,13 +255,14 @@
 <div class="shell">
   <div class="top">
     <div class="brand">
-      <div class="logo">SQ</div>
-      <div><h1>StrikeQuests</h1><p>Research the market. Find your strike.</p></div>
+      <div class="logo"><svg viewBox="0 0 64 64" role="img" aria-label="SQ rising research chart"><defs><linearGradient id="sqSilver" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#8ca9c2"/></linearGradient><linearGradient id="sqGold" x2="1" y2="1"><stop stop-color="#ffe5a4"/><stop offset="1" stop-color="#b78b32"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="15" fill="#122c47" stroke="#47bfff" stroke-width="1.5"/><path d="M12 43V22m12 18V16m12 17V11m12 15V8" stroke="#235481"/><path d="m10 35 12-10 10 3L51 11m-9 0h9v9" fill="none" stroke="#2aaaff" stroke-width="3" stroke-linejoin="round"/><text x="11" y="51" font-family="system-ui" font-size="31" font-weight="900" fill="url(#sqSilver)">S</text><text x="31" y="52" font-family="system-ui" font-size="31" font-weight="900" fill="url(#sqGold)">Q</text></svg></div>
+      <div><h1>Strike<span>Quests</span></h1><p>Research the market. Find your strike.</p></div>
     </div>
     <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
   </div>
 
-  <main id="viewResearch" class="app-view active">
+  <section class="mode-banner" aria-label="Data privacy mode"><div><strong id="modeTitle">DEMO • SYNTHETIC EXAMPLE</strong><p id="modeDescription">Generated learning values. No provider connection.</p></div><div class="mode-buttons"><button type="button" data-private-mode="demo" aria-pressed="true">Demo</button><button type="button" data-private-mode="manual" aria-pressed="false">Manual</button><button type="button" data-private-mode="auto_eod" aria-pressed="false">Automatic</button></div></section>
+<main id="viewResearch" class="app-view active">
     <section class="card quest-hero">
       <div class="quest-grid">
         <div>
@@ -242,10 +271,10 @@
           <p id="missionLine">Apple Inc. (AAPL) • Auto EOD • 10% correction</p>
           <div class="badge-row">
             <span class="mood-pill mid" id="moodPill">🟡 Exploring</span>
-            <span class="score-pill">Research score <b id="researchScore">40</b></span>
+            <span class="score-pill">Badges <b id="researchScore">0/9</b></span>
           </div>
           <div class="research-progress">
-            <div class="research-progress-head"><span>Research progress</span><span id="researchProgressText">1 / 5</span></div>
+            <div class="research-progress-head"><span>Thoughtful discoveries</span><span id="researchProgressText">1 / 5</span></div>
             <div class="progress-track"><div class="progress-fill" id="researchProgressFill"></div></div>
           </div>
         </div>
@@ -260,44 +289,46 @@
       </div>
     </section>
 
-    <section class="card">
-      <div class="section-kicker">Discover</div><h2 class="section-title">Quick Picks</h2>
-      <div class="quick-picks" id="quickPicks">
-        <button type="button" class="quick-pick" data-quick="AAPL">AAPL<span>Apple</span></button>
-        <button type="button" class="quick-pick" data-quick="MSFT">MSFT<span>Microsoft</span></button>
-        <button type="button" class="quick-pick" data-quick="NVDA">NVDA<span>NVIDIA</span></button>
-        <button type="button" class="quick-pick" data-quick="XLK">XLK<span>Technology ETF</span></button>
-        <button type="button" class="quick-pick" data-quick="SPY">SPY<span>S&amp;P 500 ETF</span></button>
-        <button type="button" class="quick-pick" data-quick="QQQ">QQQ<span>Nasdaq ETF</span></button>
-        <button type="button" class="quick-pick" data-quick="SMH">SMH<span>Semiconductor ETF</span></button>
-        <button type="button" class="quick-pick" data-quick="AMZN">AMZN<span>Amazon</span></button>
-      </div>
-    </section>
+    <section class="card quick-card">
+      <div class="section-kicker">Choose a starting point</div><h2 class="section-title">Quick Picks</h2>
+      <div class="quick-picks" id="quickPicks"><button type="button" class="quick-pick" data-quick="AAPL" aria-label="Explore AAPL, Apple"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M25 9c-1-5 3-7 6-8 1 4-1 7-6 8" fill="#8fdeac"/><path d="M24 13c-6-6-17-1-16 9 0 8 6 18 11 18 3 0 4-2 7-2s4 2 7 2c4 0 8-6 10-11-8-4-8-10-2-14-6-6-13-4-17-2Z" fill="#dfecf9"/></svg></span><b>AAPL</b><span>Apple</span></button>
+<button type="button" class="quick-pick" data-quick="MSFT" aria-label="Explore MSFT, Microsoft"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="#f35325" d="M5 5h17v17H5z"/><path fill="#81bc06" d="M25 5h17v17H25z"/><path fill="#05a6f0" d="M5 25h17v17H5z"/><path fill="#ffba08" d="M25 25h17v17H25z"/></svg></span><b>MSFT</b><span>Microsoft</span></button>
+<button type="button" class="quick-pick" data-quick="NVDA" aria-label="Explore NVDA, NVIDIA"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M4 24C17 6 34 8 45 24 33 41 15 41 4 24Z" fill="none" stroke="#8eda37" stroke-width="4"/><path d="M14 24c7-11 19-9 22 0-5 10-16 9-22 0" fill="none" stroke="#8eda37" stroke-width="3"/><circle cx="25" cy="24" r="5" fill="#8eda37"/></svg></span><b>NVDA</b><span>NVIDIA</span></button>
+<button type="button" class="quick-pick" data-quick="XLK" aria-label="Explore XLK, Technology, ETF from State Street · SPDR"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="10" y="10" width="28" height="28" rx="7" fill="#234873" stroke="#62d4fc" stroke-width="2"/><path d="M17 17h14v14H17ZM16 4v6m8-6v6m8-6v6M16 38v6m8-6v6m8-6v6M4 16h6m-6 8h6m-6 8h6m28-16h6m-6 8h6m-6 8h6" stroke="#62d4fc" stroke-width="2" fill="none"/><path d="m20 25 4-6 4 6-4 5Z" fill="#a9f5ff"/></svg></span><b>XLK</b><span>Technology ETF</span><small class=provider-label>State Street · SPDR</small></button>
+<button type="button" class="quick-pick" data-quick="SPY" aria-label="Explore SPY, S&amp;P 500, ETF from State Street · SPDR"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="m24 3 19 11v20L24 45 5 34V14Z" fill="#2c3264" stroke="#b9a4ff" stroke-width="2"/><path d="M13 18h22M15 20v12m6-12v12m6-12v12m6-12v12M12 34h24M11 16l13-6 13 6Z" fill="none" stroke="#e1d6ff" stroke-width="2"/></svg></span><b>SPY</b><span>S&amp;P 500 ETF</span><small class=provider-label>State Street · SPDR</small></button>
+<button type="button" class="quick-pick" data-quick="QQQ" aria-label="Explore QQQ, Nasdaq-100, ETF from Invesco"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 4 44 39H4Z" fill="none" stroke="#75caff" stroke-width="3"/><path d="m14 29 6-8 5 7 6-11 7 12" fill="none" stroke="#75caff" stroke-width="2"/></svg></span><b>QQQ</b><span>Nasdaq-100 ETF</span><small class=provider-label>Invesco</small></button>
+<button type="button" class="quick-pick" data-quick="SMH" aria-label="Explore SMH, Semiconductors, ETF from VanEck"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="m24 3 20 35H4Z" fill="#244844" stroke="#91e0af" stroke-width="2"/><path d="m11 32 9-18 5 12 5-8 8 14" fill="none" stroke="#cef5d2" stroke-width="3"/><rect x="19" y="30" width="10" height="9" rx="2" fill="#172a39" stroke="#e3c47c" stroke-width="2"/></svg></span><b>SMH</b><span>Semiconductors ETF</span><small class=provider-label>VanEck</small></button>
+<button type="button" class="quick-pick" data-quick="AMZN" aria-label="Explore AMZN, Amazon"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><text x="13" y="32" fill="#fff" font-size="35" font-weight="800" font-family="system-ui">a</text><path d="M6 36q17 10 35 0m-7-1 7 1-3 6" fill="none" stroke="#ffb647" stroke-width="3"/></svg></span><b>AMZN</b><span>Amazon</span></button>
+<button type="button" class="quick-pick" data-quick="GOOGL" aria-label="Explore GOOGL, Alphabet"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M38 12A18 18 0 1 0 39 35" fill="none" stroke="#4285f4" stroke-width="8"/><path d="M38 12a18 18 0 0 0-24 0" fill="none" stroke="#ea4335" stroke-width="8"/><path d="M9 17a18 18 0 0 0 0 17" fill="none" stroke="#fbbc05" stroke-width="8"/><path d="M12 37a18 18 0 0 0 27-2" fill="none" stroke="#34a853" stroke-width="8"/><path d="M25 25h17v11" fill="none" stroke="#4285f4" stroke-width="7"/></svg></span><b>GOOGL</b><span>Alphabet</span></button>
+<button type="button" class="quick-pick" data-quick="TSLA" aria-label="Explore TSLA, Tesla"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 10q16-9 32 0M11 15q13-6 26 0M24 14v28m-7-25 7 7 7-7" fill="none" stroke="#f76e7a" stroke-width="4"/></svg></span><b>TSLA</b><span>Tesla</span></button>
+<button type="button" class="quick-pick" data-quick="VOO" aria-label="Explore VOO, S&amp;P 500, ETF from Vanguard"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="m7 12 17 27 17-27M14 12l10 17 10-17" fill="none" stroke="#ef7a83" stroke-width="4"/></svg></span><b>VOO</b><span>S&amp;P 500 ETF</span><small class=provider-label>Vanguard</small></button></div><p class="quick-note">Local identifying illustrations • ETF badges represent the fund provider, not a separate company stock.</p></section>
 
-    <section class="card">
-      <div class="title-row"><h2 class="section-title" style="margin:0">Mission controls</h2><span class="consumer-tag">Predictive search</span></div>
+    <section class="card mission-controls">
+      <div class="title-row"><h2 class="section-title" style="margin:0">Mission controls</h2><span class="consumer-tag">Change your perspective</span></div>
       <div class="row">
         <div class="grow">
-          <label>Ticker search</label>
+          <label for="ticker">Ticker or company</label>
           <div class="ticker-search-wrap"><input id="ticker" value="AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ticker or company name"><div id="tickerSuggestions" class="search-suggestions" role="listbox" aria-label="Ticker search suggestions"></div></div>
           <div id="selectedInstrument" class="selected-instrument">Apple Inc. • AAPL</div>
         </div>
         <button id="analyzeBtn" class="btn primary" style="align-self:end">Analyze</button>
       </div>
-      <div class="tabs" id="periodTabs"><button class="tab" data-p="3m">3M</button><button class="tab" data-p="6m">6M</button><button class="tab active" data-p="1y">1Y</button><button class="tab" data-p="2y">2Y</button><button class="tab" data-p="3y">3Y</button></div>
-      <div class="grid2" style="margin-top:12px"><div><label>Correction amount</label><div class="range-line"><input id="correction" type="range" min="0" max="30" step="1" value="10"><div class="pct"><span id="corrLabel">10</span>%</div></div></div><div></div></div>
-      <div class="grid2" style="margin-top:10px"><div><label>Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="2"></div><div><label>Strike increment</label><select id="increment"><option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select></div></div>
+      <div class="tabs" id="periodTabs" role="group" aria-label="Research horizon"><button class="tab" data-p="3m" aria-pressed="false">3M<small>Near term</small></button><button class="tab" data-p="6m" aria-pressed="false">6M<small>Half year</small></button><button class="tab active" data-p="1y" aria-pressed="true">1Y<small>Full year</small></button><button class="tab" data-p="2y" aria-pressed="false">2Y<small>Wider view</small></button><button class="tab" data-p="3y" aria-pressed="false">3Y<small>Longer story</small></button></div><p class="horizon-prompt" id="horizonPrompt"></p><p class="horizon-basis" id="horizonBasis"></p>
+      <div class="correction-control"><label class="correction-label" for="correction">Correction assumption <span><span id="corrLabel">10</span>%</span></label><input id="correction" type="range" min="0" max="30" step="1" value="10" aria-describedby="correctionHelp"><div class="range-endpoints"><span>0%</span><span>15%</span><span>30%</span></div><p class="correction-help" id="correctionHelp">Stress the same scenario below. This assumption is not a likelihood of loss.</p></div>
+      <div class="grid2" style="margin-top:10px"><div><label for="divisor">Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="2"></div><div><label for="increment">Hypothetical level increment</label><select id="increment"><option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select></div></div>
     </section>
 
-    <section class="card">
-      <div class="row" style="align-items:center;justify-content:space-between"><h2 class="section-title" style="margin:0">Market data</h2><span class="source-badge" id="sourceBadge">Auto EOD</span></div>
-      <div class="grid2" style="margin-top:10px"><div><label>Current price</label><input id="price" type="number" step="0.01" value="192.75"></div><div><label>Historical performance ($)</label><input id="perf" type="number" step="0.01" value="39.57"></div></div>
+    <section class="card target-card" id="scenarioSection" aria-labelledby="scenarioHeading"><div class="title-row"><h2 id="scenarioHeading">Strike-zone scenarios</h2><span class="consumer-tag">Hypothetical</span></div><p class="target-context" id="targetContext"></p><div class="targets" id="targetsRow"><div class="target low"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m16 3 11 5v8c0 7-11 13-11 13S5 23 5 16V8Z"/><path d="m11 16 3 3 7-7"/></svg></span><div><small class="tier">Low</small><div class="target-detail">Larger assumed pullback</div></div><div class="target-price"><div class="n" id="low">—</div><div class="target-delta" id="lowDelta"></div></div></div><div class="target mid"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 4v24M5 10h22M9 10l-5 9h10Zm14 0-5 9h10ZM9 28h14"/></svg></span><div><small class="tier">Mid</small><div class="target-detail">Half the correction</div></div><div class="target-price"><div class="n" id="mid">—</div><div class="target-delta" id="midDelta"></div></div></div><div class="target high"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M11 21C9 11 17 5 28 4c-1 11-7 19-17 17ZM18 10l4 4M11 21l-5 5m3-10-5 2 1 6m10-1-1 6-6-1"/></svg></span><div><small class="tier">High</small><div class="target-detail">Uncorrected calculation</div></div><div class="target-price"><div class="n" id="high">—</div><div class="target-delta" id="highDelta"></div></div></div></div><div class="correction-control"><label class="correction-label" for="targetCorrection">Correction assumption <output id="targetCorrectionLabel" for="targetCorrection">10%</output></label><input id="targetCorrection" type="range" min="0" max="30" step="1" value="10" aria-describedby="targetCorrectionHelp"><div class="range-endpoints"><span>0%</span><span>15%</span><span>30%</span></div><p class="correction-help" id="targetCorrectionHelp">Drag to compare. Low and Mid update immediately; High stays at the uncorrected level.</p></div><button type="button" class="reset-btn" id="resetScenario">Reset correction to 10%</button><p class="target-invalid" id="targetInvalid"></p><p class="scenario-note">Colors and icons identify scenarios—not safety or profit probability. The shield does not mean principal protection. These are not listed option strikes, Greeks or profit forecasts.</p><details><summary>How these levels are calculated</summary><pre id="details"></pre><div class="notice" id="extra"></div></details></section>
+<section class="card market-inputs">
+      <div class="row" style="align-items:center;justify-content:space-between"><h2 class="section-title" style="margin:0">Scenario inputs</h2><span class="source-badge" id="sourceBadge">Auto EOD</span></div>
+      <p class="mode-label" id="modeLabel">Synthetic values</p><div class="grid2" style="margin-top:10px"><div><label for="price">Reference price</label><input id="price" type="number" step="0.01" value="192.75"></div><div><label for="perf">Historical dollar change</label><input id="perf" type="number" step="0.01" value="39.57"></div></div>
       <div class="row" style="margin-top:10px"><button class="btn secondary grow" id="refreshBtn">Refresh EOD data</button><button class="btn secondary" id="watchCurrentBtn">☆ Watch</button></div>
       <div class="status" id="status">Ready.</div>
     </section>
 
-    <section class="card">
-      <div class="topline"><h2 class="section-title" style="margin:0">Analysis</h2><span class="subtle">Research → context → targets</span></div>
+    <section class="card data-quality"><div class="quality-row"><strong>Know what is behind the numbers</strong><span class="quality-badge" id="qualityBadge">Synthetic</span></div><p id="qualitySummary"></p><details><summary>Sample size, coverage & limitations</summary><p id="coverageSummary"></p><p id="sampleCount"></p><div class="review-context-actions"><button type="button" class="btn secondary" id="reviewTrendsBtn">I reviewed the trend context</button><button type="button" class="btn secondary" id="reviewRangeBtn">I reviewed the 52-week range</button></div><button type="button" class="btn secondary" id="reviewSampleBtn">I reviewed the sample and its limits</button><p class="notice">A small or large historical sample is never a guarantee of an outcome.</p></details></section>
+<section class="card analysis-card">
+      <div class="topline"><h2 class="section-title" style="margin:0">Research context</h2><span class="subtle">Evidence → assumptions → scenarios</span></div>
       <div class="hero"><div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div><div class="price"><span class="subtle">Current</span><br><strong id="outPrice">$192.75</strong></div></div>
       <div class="analysis-tabs" id="analysisTabs"><button type="button" class="analysis-tab active" data-analysis="overview">Overview</button><button type="button" class="analysis-tab" data-analysis="performance">Performance</button><button type="button" class="analysis-tab" data-analysis="seasonality">Seasonality</button><button type="button" class="analysis-tab" data-analysis="targets">Targets</button></div>
 
@@ -334,13 +365,11 @@
         <div class="season-foot" id="seasonalityFoot">Seasonality describes historical tendencies, not a forecast. It is one research input alongside trend, range, performance, and strike-zone calculations.</div>
       </div>
 
-      <div id="analysisTargets" class="analysis-pane">
-        <div class="targets" id="targetsRow"><div class="target low"><small class="tier">Low</small><div class="n" id="low">$192</div><div class="subtle">defensive</div><div class="caption">For patient entries and deeper pullbacks.</div></div><div class="target mid"><small class="tier">Mid</small><div class="n" id="mid">$202</div><div class="subtle">balanced</div><div class="caption">Middle zone between patience and momentum.</div></div><div class="target high"><small class="tier">High</small><div class="n" id="high">$213</div><div class="subtle">aggressive</div><div class="caption">Closest zone to the projected level.</div></div></div>
-        <div class="mini-card" style="margin-top:13px"><h3>5. Strike Zone Calculation</h3><details><summary>Show calculation</summary><pre id="details"></pre></details><div class="notice" id="extra"></div></div>
-      </div>
+      <div id="analysisTargets" class="analysis-pane"><p>Scenario controls are above, beside the hypothetical targets.</p></div>
     </section>
 
-    <section class="card"><h2 class="section-title">Share this result</h2><div class="sharebar"><button class="btn primary" id="shareResultBtn">Share result</button><button class="btn secondary" id="copyResultBtn">Copy summary</button></div><div class="notice">Sharing includes only the summary — never saved history or any API key.</div></section>
+    <section class="card share-card"><h2 class="section-title">Keep your reasoning</h2><label for="researchReason">What did you notice, and what would change your mind?</label><textarea aria-describedby="noteValidation" id="researchReason" maxlength="2000" rows="3" placeholder="Compare horizons, note the sample size, or record an assumption to revisit…"></textarea><p id="noteValidation" class="note-validation" role="status"></p><p class="note-meta">Private on this device. Notes are excluded from Share and Copy summary.</p><div class="row"><button type="button" class="btn primary" id="saveReasonBtn">Save research note</button><button type="button" class="btn secondary" id="reviewHypothesisBtn" disabled>Mark saved idea reviewed</button></div></section>
+<section class="card share-card"><h2 class="section-title">Share this result</h2><div class="sharebar"><button class="btn primary" id="shareResultBtn">Share result</button><button class="btn secondary" id="copyResultBtn">Copy summary</button></div><div class="notice">Sharing includes only the summary — never saved history or any API key.</div></section>
   </main>
 
   <main id="viewWatchlist" class="app-view">
@@ -359,13 +388,13 @@
 
   <main id="viewQuests" class="app-view">
     <div class="screen-title"><div><div class="section-kicker">Quests</div><h2>Research Progress</h2><p>Progress rewards completed research steps — not trading frequency or profits.</p></div></div>
-    <section class="level-card"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle" class="level-subtitle-strong">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
-    <section class="card"><h2 class="section-title">Research Stats</h2><div class="progress-stats"><div class="progress-stat"><b id="statAnalyses">0</b><span>Analyses</span></div><div class="progress-stat"><b id="statSaved">0</b><span>Saved</span></div><div class="progress-stat"><b id="statWatch">0</b><span>Watchlist</span></div><div class="progress-stat"><b id="statCompare">0</b><span>Compares</span></div></div></section>
-    <section class="card"><h2 class="section-title">Badges</h2><div class="badge-grid" id="badgeGrid"></div></section>
-    <section class="card"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
+    <section class="level-card quest-legacy"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle" class="level-subtitle-strong">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
+    <section class="card quest-legacy"><h2 class="section-title">Research Stats</h2><div class="progress-stats"><div class="progress-stat"><b id="statAnalyses">0</b><span>Analyses</span></div><div class="progress-stat"><b id="statSaved">0</b><span>Saved</span></div><div class="progress-stat"><b id="statWatch">0</b><span>Watchlist</span></div><div class="progress-stat"><b id="statCompare">0</b><span>Compares</span></div></div></section>
+    <section class="card"><div class="section-kicker">Small steps. Real understanding.</div><h2 class="section-title">Your research badges</h2><div class="next-badge"><b id="nextBadgeTitle"></b><p id="nextBadgeText"></p><progress id="nextBadgeProgress" max="2" value="0" aria-label="Next badge progress"></progress></div><p class="review-note">Unlock each badge once through a distinct learning task. Progress stays on this device. No trading, profit targets, streaks or penalties.</p><div class="badge-grid" id="badgeGrid"></div><button type="button" id="completeResearchBtn" class="btn primary">Finish this research run</button><div class="reflection-milestone"><h3>Keep reflecting</h3><div id="reflectionBadge"></div></div></section>
+    <section class="card quest-legacy"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">StrikeQuests v9.2 • flexible seasonality years • Auto EOD • share-safe • informational only</div>
+  <div class="foot">StrikeQuests v10.1.1 review • learning before action • hypothetical scenarios • not published</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -381,35 +410,42 @@
   <div class="sheet">
     <div class="sheet-head"><h3>Settings & data</h3><button class="close-btn" id="closeSettings">×</button></div>
     <label>Market data source</label>
-    <div class="seg" id="dataSeg">
-      <button class="active" data-mode="auto_eod">Auto EOD</button>
-      <button data-mode="manual">Manual</button>
+    <div class="seg" id="dataSeg" style="grid-template-columns:repeat(3,1fr)">
+      <button data-mode="demo">Demo</button><button data-mode="auto_eod">Automatic</button>
+      <button data-mode="manual">Private Manual</button>
     </div>
     <div id="manualBox" class="hidden" style="margin-top:12px"><div class="consumer-note">Manual mode lets you type the current price and historical performance yourself.</div></div>
     <div id="apiBox" style="margin-top:12px">
-      <label>Automatic provider</label>
-      <select id="providerSelect"><option value="auto">Auto — Barchart when available, otherwise Alpha Vantage</option><option value="alpha">Alpha Vantage EOD</option><option value="barchart">Barchart OnDemand</option></select>
-      <div class="provider-row">
-        <div class="provider-card"><b>Alpha Vantage — temporary EOD + seasonality</b><p>Uses daily, weekly, and monthly history. The free key is stored only in this browser. No key is included in the public GitHub files.</p><div class="key-row"><input id="alphaKey" type="password" placeholder="Alpha Vantage API key"><button class="btn ghost" id="forgetAlphaBtn">Forget</button></div><a class="source-link" href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px">Get a free Alpha Vantage key ↗</a></div>
-        <div class="provider-card"><b>Barchart OnDemand — future primary</b><p>Keep this ready for your Barchart approval. Auto mode will prefer Barchart once a key is available.</p><div class="key-row"><input id="apiKey" type="password" placeholder="Barchart API key"><button class="btn ghost" id="forgetBtn">Forget</button></div><a class="source-link" id="barchartLink" href="https://www.barchart.com/etfs-funds/quotes/AAPL/performance" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px">Open Barchart ↗</a></div>
+      <div class="provider-card shared-data-card">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><b>StrikeQuests Shared Market Data</b><p>Public end-of-day market data is fetched through the StrikeQuests backend. Visitors do not need an API key, and provider credentials are never shipped in the website code.</p></div><span class="source-badge" id="sharedApiState">Checking…</span></div>
+        <div class="status" id="sharedApiStatus">Connecting to the shared EOD service…</div>
       </div>
-      <button class="btn secondary" id="fetchBtn" style="width:100%;margin-top:10px">Save keys & load EOD</button>
-      <div class="consumer-note" style="margin-top:8px"><b>Share-safe:</b> API keys stay in local browser storage and are never included in shared results, Watchlist exports, or the GitHub repository. Other people can use the app with manual mode or add their own key.</div>
+      <label style="margin-top:12px">Automatic provider</label>
+      <select id="providerSelect"><option value="shared">StrikeQuests Shared EOD (recommended)</option><option value="auto">Advanced — shared first, then my local provider</option><option value="alpha">My Alpha Vantage key</option><option value="barchart">My Barchart OnDemand key</option></select>
+      <button class="btn secondary" id="fetchBtn" style="width:100%;margin-top:10px">Load shared EOD</button>
+      <details style="margin-top:12px"><summary>Advanced / owner fallback</summary>
+        <div class="consumer-note" style="margin:9px 0">Optional private fallback keys stay only in this browser. Ordinary visitors do not need these fields.</div>
+        <div class="provider-row">
+          <div class="provider-card"><b>Alpha Vantage — private fallback</b><p>Used only when you explicitly select it or shared data is unavailable in Advanced Auto mode.</p><div class="key-row"><input id="alphaKey" type="password" placeholder="Alpha Vantage API key"><button class="btn ghost" id="forgetAlphaBtn">Forget</button></div><a class="source-link" href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px">Alpha Vantage ↗</a></div>
+          <div class="provider-card"><b>Barchart OnDemand — private fallback</b><p>Keep this ready for Barchart approval. The shared backend can be upgraded to Barchart later without requiring visitors to change anything.</p><div class="key-row"><input id="apiKey" type="password" placeholder="Barchart API key"><button class="btn ghost" id="forgetBtn">Forget</button></div><a class="source-link" id="barchartLink" href="https://www.barchart.com/etfs-funds/quotes/AAPL/performance" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px">Open Barchart ↗</a></div>
+        </div>
+      </details>
+      <div class="consumer-note" style="margin-top:8px"><b>Share-safe:</b> public visitors receive market data from the shared service; the Alpha Vantage/Barchart secret remains on the backend. Browser fallback keys, if you add them, remain local to your device.</div>
     </div>
     <div style="margin-top:14px">
-      <label>Default strike increment</label>
+      <label for="settingsIncrement">Default hypothetical level increment</label>
       <select id="settingsIncrement"><option value="0.5">$0.50</option><option value="1">$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select>
     </div>
     <details style="margin-top:14px">
       <summary style="cursor:pointer;font-weight:800">Diagnostics & validation</summary>
-      <div class="consumer-note" style="margin-top:10px">Developer test presets use fixed 2026 market snapshots to verify the strike-zone formula. Loading a preset temporarily switches the calculator to Manual mode.</div>
+      <div class="consumer-note" style="margin-top:10px">Synthetic formula fixtures verify arithmetic only; these prices are not verified market data. Presets use private Manual mode.</div>
       <div class="validation-grid">
         <button class="btn secondary" type="button" onclick="loadPreset('aapl')">AAPL 2026</button>
         <button class="btn secondary" type="button" onclick="loadPreset('xlk')">XLK 2026</button>
       </div>
       <div class="status" id="validation" style="margin-top:10px">Choose a 2026 preset to run a formula check.</div>
     </details>
-    <div class="consumer-note" style="margin-top:12px"><b>Default:</b> Auto EOD. Alpha Vantage supplies the temporary daily/weekly/monthly data path; Barchart can take over when your OnDemand key is approved. Cached data is reused to reduce API requests. Targets and seasonality are informational, not investment recommendations.</div>
+    <div class="consumer-note" style="margin-top:12px"><b>Default:</b> private, synthetic Demo mode. Automatic mode connects only when selected. The public app uses a secure shared backend and global cache; visitors do not need their own provider key. Advanced local-provider controls are optional fallbacks. Targets and seasonality are informational, not investment recommendations.</div>
   </div>
 </div>
 
@@ -419,6 +455,7 @@
   <button class="btn secondary" id="dismissInstall" style="width:100%">Got it</button>
 </div>
 
+<div id="badgeToast" class="badge-toast" role="status" aria-live="polite"></div>
 <script>
 const $=id=>document.getElementById(id);
 const PERIODS={
@@ -428,7 +465,12 @@ const PERIODS={
   "2y":{label:"2-Year",months:24,divisor:1.5},
   "3y":{label:"3-Year",months:36,divisor:2}
 };
-let state={period:"1y",mode:"auto_eod",extra:{}};
+let state={period:"1y",mode:"demo",correction:10,extra:{},sharedApiBase:"",sharedApiReady:false};
+let marketRequestSerial=0;
+function invalidateMarketRequest(){
+  marketRequestSerial++;
+  $("fetchBtn").disabled=false;
+}
 const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
 let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1;
 
@@ -447,12 +489,13 @@ function localSymbolSearch(q){
     .filter(x=>x.score<9).sort((a,b)=>a.score-b.score||a.symbol.localeCompare(b.symbol)).slice(0,8);
 }
 async function barchartSymbolSearch(q){
+  if(sqPrivate())return [];
   const key=localStorage.getItem("splab_barchart_key");
   if(!key||q.trim().length<2)return [];
   if(searchAbort)searchAbort.abort();
   searchAbort=new AbortController();
   const url=`https://ondemand.websol.barchart.com/getSymbolLookUp.json?apikey=${encodeURIComponent(key)}&keyword=${encodeURIComponent(q)}&limit=10&moreBestMatches=true&moreBestMatchLimit=4&fields=type`;
-  const res=await fetch(url,{signal:searchAbort.signal});
+  const res=await sqFetch(url,{signal:searchAbort.signal});
   if(!res.ok)throw new Error("Symbol lookup unavailable");
   const data=await res.json();
   if(data?.status?.code!==200)return [];
@@ -499,7 +542,7 @@ async function runPredictiveSearch(){
     renderSuggestions(local,local.length?"":"Type at least 2 characters for full Barchart search.");
     return;
   }
-  const hasKey=!!localStorage.getItem("splab_barchart_key");
+  const hasKey=!sqPrivate()&&!!localStorage.getItem("splab_barchart_key");
   if(!hasKey){
     renderSuggestions(local,local.length?"":"Add a Barchart key in Settings for full symbol/company search.");
     return;
@@ -591,7 +634,7 @@ function renderSeasonality(){
   let season=state.extra.seasonality;
   if(raw?.monthly?.length){season=computeSeasonality(raw.monthly,cfg);state.extra.seasonality=season}
   const grid=$("seasonalityGrid");if(!grid)return;
-  if(!season?.months){grid.innerHTML='<div class="compare-empty" style="grid-column:1/-1">Seasonality needs monthly market history. Add an Alpha Vantage key in Settings and load EOD data.</div>';$("seasonalityHit").textContent='—';$("seasonalityAvg").textContent='—';$("seasonalityObs").textContent='—';return}
+  if(!season?.months){grid.innerHTML='<div class="compare-empty" style="grid-column:1/-1">No complete monthly sample is available. Explore the labeled Demo, or load supported history in Automatic mode.</div>';$("seasonalityHit").textContent='—';$("seasonalityAvg").textContent='—';$("seasonalityObs").textContent='—';return}
   const cur=season.currentMonth,sig=seasonSignal(cur),monthName=MONTH_NAMES[new Date().getMonth()];$("seasonalitySignal").className=`season-signal ${sig.cls}`;$("seasonalitySignal").textContent=sig.label;$("seasonalityCurrent").querySelector('h3').textContent=`${monthName} seasonal profile`;
   const rangeText=season.mode==='specific'?`Selected calendar years: ${season.usedYears.length?season.usedYears.join(', '):'none'}`:`Calendar range ${season.rangeStart}–${season.rangeEnd} (${season.lookback} ${season.lookback===1?'year':'years'})`;
   $("seasonalityCurrentText").textContent=`${rangeText}. ${cur.observations||0} ${monthName} observation${cur.observations===1?' was':'s were'} available. Strongest average month: ${season.strongest?.name||'—'} ${signedPct(season.strongest?.avgReturn)}. Weakest: ${season.weakest?.name||'—'} ${signedPct(season.weakest?.avgReturn)}.`;
@@ -601,8 +644,8 @@ function renderSeasonality(){
 }
 function roundUp(v,inc){return Math.ceil((v-1e-9)/inc)*inc}
 function calc(){
-  const p=+$("price").value, perf=+$("perf").value, div=+$("divisor").value, c=+$("correction").value/100, inc=+$("increment").value;
-  if(![p,perf,div,c,inc].every(Number.isFinite)||div<=0||inc<=0)return null;
+  const p=+$("price").value, perf=+$("perf").value, div=+$("divisor").value, c=Number(state.correction)/100, inc=+$("increment").value;
+  if(![p,perf,div,c,inc].every(Number.isFinite)||!$("price").value.trim()||!$("perf").value.trim()||p<=0||div<=0||inc<=0||c<0||c>.3||p+perf/div<=0||!Number.isFinite(p+perf/div)||!Number.isFinite((p+perf/div)/inc))return null;
   const adjusted=perf/div;
   const projected=p+adjusted;
   const highRaw=projected;
@@ -683,22 +726,7 @@ function renderQuest(r){
   if(checkCorrection)earned.push([`${Math.round(r.c*100)}% correction`,'mid']);
   if(score===100)earned.push(['🏆 Quest complete','good']);
   $("badgeStrip").innerHTML=earned.map(([label,cls])=>`<span class="quest-badge ${cls}">${label}</span>`).join('') || '<span class="quest-badge">Start the analysis to earn badges.</span>';
-  $("questSummary").textContent=`StrikeQuests frames the targets as defensive, balanced, and aggressive entry zones. Use the score and badges as a research checklist, not a promise of outcome.`;
-}
-function loadSaved(id){
-  const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
-  const x=arr.find(v=>String(v.id)===String(id));
-  if(!x)return;
-  if(x.ticker)$("ticker").value=x.ticker;
-  if(x.instrument)$("selectedInstrument").textContent=x.instrument;
-  if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);
-  if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);
-  if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);
-  if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);
-  if(Number.isFinite(Number(x.correction))){$("correction").value=String(x.correction);$("corrLabel").textContent=String(x.correction)}
-  setMode('manual');
-  setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');
-  status(`Loaded saved analysis for ${x.ticker||'ticker'}.`,'good');
+  $("questSummary").textContent=`The Low, Mid and High levels use different correction assumptions. Badge progress records learning tasks and does not rate an investment.`;
 }
 
 function render(){
@@ -739,11 +767,13 @@ Rounded upward to nearest ${money(r.inc,r.inc<1?2:0)} strike increment.`;
   renderQuest(r);
 }
 function setPeriod(p){
+  if(state.period!==p)invalidateMarketRequest();
   state.period=p;
   document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.p===p));
   $("divisor").value=PERIODS[p].divisor; markPeriod(p); render();
 }
 function setMode(m){
+  if(state.mode!==m)invalidateMarketRequest();
   state.mode=m;
   document.querySelectorAll("#dataSeg button").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));
   $("manualBox").classList.toggle("hidden",m!=="manual");
@@ -793,22 +823,51 @@ function loadCachedEod(silent=false){
   render();renderSeasonality();
   return true;
 }
-function providerPreference(){return localStorage.getItem("sq_provider_pref")||"auto"}
+function providerPreference(){return localStorage.getItem("sq_provider_pref")||"shared"}
+function localFallbackProvider(){
+  const bk=localStorage.getItem("splab_barchart_key"),ak=localStorage.getItem("sq_alpha_key");
+  if(bk)return "barchart"; if(ak)return "alpha"; return null;
+}
 function activeProvider(){
   const pref=providerPreference(),bk=localStorage.getItem("splab_barchart_key"),ak=localStorage.getItem("sq_alpha_key");
+  if(pref==="shared")return state.sharedApiReady?"shared":null;
   if(pref==="barchart")return bk?"barchart":null;
   if(pref==="alpha")return ak?"alpha":null;
-  if(bk)return "barchart";
-  if(ak)return "alpha";
-  return null;
+  if(state.sharedApiReady)return "shared";
+  return bk?"barchart":ak?"alpha":null;
+}
+function normalizeApiBase(v){return String(v||"").trim().replace(/\/+$/,'')}
+async function loadPublicConfig(){
+  if(sqPrivate())return;
+  const epoch=marketRequestSerial;
+  try{
+    const r=await sqFetch(`./config.json?ts=${Date.now()}`,{cache:"no-store"});
+    if(!r.ok)throw new Error(`config ${r.status}`);
+    const cfg=await r.json(),base=normalizeApiBase(cfg.marketDataApi);
+    if(!base||base.includes("REPLACE-WITH-YOUR-WORKER"))throw new Error("Shared backend URL has not been configured yet.");
+    state.sharedApiBase=base;
+    const h=await sqFetch(`${base}/health`,{cache:"no-store"});
+    if(!h.ok)throw new Error(`health ${h.status}`);
+    const health=await h.json();
+    if(!health.ok||!health.cacheConfigured||!health.providerConfigured)throw new Error("Shared backend setup is incomplete.");
+    if(sqPrivate()||epoch!==marketRequestSerial)return;
+    state.sharedApiReady=true;
+    if($("sharedApiState"))$("sharedApiState").textContent="Online";
+    if($("sharedApiStatus")){$("sharedApiStatus").textContent="Shared backend is connected. Market-data availability is checked when loading a ticker. No visitor API key is required.";$("sharedApiStatus").className="status good"}
+  }catch(e){
+    if(sqPrivate()||epoch!==marketRequestSerial)return;
+    state.sharedApiReady=false;
+    if($("sharedApiState"))$("sharedApiState").textContent="Setup needed";
+    if($("sharedApiStatus")){$("sharedApiStatus").textContent=`Shared service not connected yet: ${e.message||e}. Owner fallback keys and cached data remain available.`;$("sharedApiStatus").className="status warn"}
+  }
 }
 function alphaCacheStore(){try{return JSON.parse(localStorage.getItem("sq_alpha_raw_cache")||"{}")}catch(e){return {}}}
 function getAlphaRaw(symbol){return alphaCacheStore()[symbol]||null}
 function setAlphaRaw(symbol,payload){const cache=alphaCacheStore();cache[symbol]=payload;const trimmed=Object.entries(cache).sort((a,b)=>(b[1]?.savedAt||0)-(a[1]?.savedAt||0)).slice(0,20);localStorage.setItem("sq_alpha_raw_cache",JSON.stringify(Object.fromEntries(trimmed)))}
-function parseAlphaSeries(series){return Object.entries(series||{}).map(([date,v])=>({date,open:Number(v['1. open']),high:Number(v['2. high']),low:Number(v['3. low']),close:Number(v['5. adjusted close']??v['4. close']),volume:Number(v['6. volume']??v['5. volume'])})).filter(r=>Number.isFinite(r.close)).sort((a,b)=>new Date(a.date)-new Date(b.date))}
+function parseAlphaSeries(series){return Object.entries(series||{}).map(([date,v])=>({date,open:Number(v['1. open']),high:Number(v['2. high']),low:Number(v['3. low']),close:Number(v['5. adjusted close']??v['4. close']),volume:Number(v['6. volume']??v['5. volume'])})).sort((a,b)=>new Date(a.date)-new Date(b.date))}
 function alphaError(payload){return payload?.['Error Message']||payload?.Note||payload?.Information||null}
 function alphaOnOrBefore(records,target){const t=target.getTime();return records.filter(r=>new Date(`${r.date}T12:00:00`).getTime()<=t).sort((a,b)=>new Date(b.date)-new Date(a.date))[0]||null}
-function applyAlphaRaw(ticker,raw){
+function applyAlphaRaw(ticker,raw,providerLabel="Alpha Vantage"){
   const daily=raw.daily||[],weekly=raw.weekly||[],monthly=raw.monthly||[];if(!daily.length||!weekly.length)throw new Error("Alpha Vantage returned incomplete daily/weekly history.");
   const latest=daily[daily.length-1],spot=Number(latest.close),quoteDate=latest.date,now=isoDay(quoteDate);const target=shiftMonths(now,-PERIODS[state.period].months);const baseline=alphaOnOrBefore(weekly,target);if(!baseline)throw new Error("No weekly baseline was available for this horizon.");
   const perf=spot-Number(baseline.close),oneYearAgo=new Date(now);oneYearAgo.setDate(oneYearAgo.getDate()-370);const recent52=weekly.filter(r=>isoDay(r.date)>=oneYearAgo&&isoDay(r.date)<=now),periodRecords=weekly.filter(r=>isoDay(r.date)>=isoDay(baseline.date)&&isoDay(r.date)<=now);
@@ -816,29 +875,87 @@ function applyAlphaRaw(ticker,raw){
   const trendAt=months=>{const rec=alphaOnOrBefore(weekly,shiftMonths(now,-months));if(!rec)return "—";return spot>rec.close?"Up":spot<rec.close?"Down":"Flat"};
   const seasonality=computeSeasonality(monthly,seasonalityOptions(monthly));
   $("price").value=spot.toFixed(2);$("perf").value=perf.toFixed(2);const meta=symbolMeta(ticker),instrument=`${meta.name||ticker} • ${ticker}${meta.exchange?` • ${meta.exchange}`:''}`;$("selectedInstrument").textContent=instrument;
-  state.extra={baselineDate:baseline.date,baselineClose:baseline.close,returnPct:baseline.close?(perf/baseline.close)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Alpha Vantage",tradeTimestamp:quoteDate,seasonality};
-  writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Alpha EOD";render();renderSeasonality();return {spot,perf,quoteDate};
+  state.extra={baselineDate:baseline.date,baselineClose:baseline.close,returnPct:baseline.close?(perf/baseline.close)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:providerLabel,tradeTimestamp:quoteDate,seasonality};
+  writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent=`${providerLabel} EOD`;render();renderSeasonality();return {spot,perf,quoteDate};
 }
-async function fetchAlphaData(ticker,key,force=false){
-  const cached=getAlphaRaw(ticker),ttl=12*60*60*1000;if(cached&&!force&&(Date.now()-(cached.savedAt||0)<ttl)){const out=applyAlphaRaw(ticker,cached);status(`Alpha Vantage cached EOD loaded for ${ticker}: ${money(out.spot)} on ${out.quoteDate}.`,"good");return}
+async function fetchAlphaData(ticker,key,force=false,isCurrent=()=>true){
+  if(sqPrivate())return;
+  const cached=getAlphaRaw(ticker),ttl=12*60*60*1000;if(cached&&!force&&(Date.now()-(cached.savedAt||0)<ttl)){if(!isCurrent())return;const out=applyAlphaRaw(ticker,cached);status(`Alpha Vantage cached EOD loaded for ${ticker}: ${money(out.spot)} on ${out.quoteDate}.`,"good");return}
   status(`Loading Alpha Vantage EOD + weekly + monthly history for ${ticker}…`);const base="https://www.alphavantage.co/query";const urls=[`?function=TIME_SERIES_DAILY&symbol=${encodeURIComponent(ticker)}&outputsize=compact&apikey=${encodeURIComponent(key)}`,`?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=${encodeURIComponent(ticker)}&apikey=${encodeURIComponent(key)}`,`?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${encodeURIComponent(ticker)}&apikey=${encodeURIComponent(key)}`].map(q=>base+q);
-  const responses=await Promise.all(urls.map(u=>fetch(u)));if(responses.some(r=>!r.ok))throw new Error(`Alpha Vantage request failed (${responses.map(r=>r.status).join('/')}).`);const [d,w,m]=await Promise.all(responses.map(r=>r.json()));const err=alphaError(d)||alphaError(w)||alphaError(m);if(err)throw new Error(err);
-  const raw={daily:parseAlphaSeries(d['Time Series (Daily)']),weekly:parseAlphaSeries(w['Weekly Adjusted Time Series']||w['Weekly Time Series']),monthly:parseAlphaSeries(m['Monthly Adjusted Time Series']||m['Monthly Time Series']),savedAt:Date.now()};if(!raw.daily.length||!raw.weekly.length||!raw.monthly.length)throw new Error("Alpha Vantage did not return all required time series.");setAlphaRaw(ticker,raw);const out=applyAlphaRaw(ticker,raw);status(`Alpha Vantage EOD loaded for ${ticker}: ${money(out.spot)} on ${out.quoteDate}. Historical performance: ${money(out.perf)}.`,"good")
+  const responses=await Promise.all(urls.map(u=>sqFetch(u)));if(responses.some(r=>!r.ok))throw new Error(`Alpha Vantage request failed (${responses.map(r=>r.status).join('/')}).`);const [d,w,m]=await Promise.all(responses.map(r=>r.json()));for(const response of [d,w,m]){const symbol=response?.["Meta Data"]?.["2. Symbol"];if(symbol&&symbol!==ticker)throw new Error("Response ticker does not match the requested ticker.");}const err=alphaError(d)||alphaError(w)||alphaError(m);if(err)throw new Error(err);
+  const raw={daily:parseAlphaSeries(d['Time Series (Daily)']),weekly:parseAlphaSeries(w['Weekly Adjusted Time Series']||w['Weekly Time Series']),monthly:parseAlphaSeries(m['Monthly Adjusted Time Series']||m['Monthly Time Series']),savedAt:Date.now()};if(!raw.daily.length||!raw.weekly.length||!raw.monthly.length)throw new Error("Alpha Vantage did not return all required time series.");if(!isCurrent())return;sqValidateRaw(raw,ticker);setAlphaRaw(ticker,raw);const out=applyAlphaRaw(ticker,raw);status(`Alpha Vantage EOD loaded for ${ticker}: ${money(out.spot)} on ${out.quoteDate}. Historical performance: ${money(out.perf)}.`,"good")
 }
-async function fetchBarchartData(ticker,key){
+async function fetchSharedData(ticker,isCurrent=()=>true){
+  if(sqPrivate())return;
+  if(!state.sharedApiReady||!state.sharedApiBase)throw new Error("StrikeQuests shared market data is not configured yet.");
+  status(`Loading shared EOD + history for ${ticker}…`);
+  const r=await sqFetch(`${state.sharedApiBase}/v1/market?symbol=${encodeURIComponent(ticker)}`,{headers:{"Accept":"application/json"}});
+  let payload=null;try{payload=await r.json()}catch(_){ }
+  if(!r.ok||!payload?.ok)throw new Error(payload?.error||`Shared market data request failed (${r.status}).`);
+  if(payload.symbol!==ticker)throw new Error("Response ticker does not match the requested ticker.");
+  const raw={symbol:payload.symbol,daily:payload.daily||[],weekly:payload.weekly||[],monthly:payload.monthly||[],savedAt:Number(payload.fetchedAt)||null,stale:payload.cache==="stale",source:payload.source};
+  sqValidateRaw(raw,ticker);
+  if(!raw.daily.length||!raw.weekly.length||!raw.monthly.length)throw new Error("Shared market data returned incomplete history.");
+  if(!isCurrent())return;
+  setAlphaRaw(ticker,raw);
+  const label=payload.source?`StrikeQuests · ${payload.source}`:"StrikeQuests Shared";
+  const out=applyAlphaRaw(ticker,raw,label);
+  const cacheText=payload.cache==="hit"?"shared cache":payload.cache==="stale"?"stale-safe cache":"fresh provider refresh";
+  status(`StrikeQuests shared EOD loaded for ${ticker}: ${money(out.spot)} on ${out.quoteDate} (${cacheText}).`,payload.cache==="stale"?"warn":"good");
+  return out;
+}
+async function fetchBarchartData(ticker,key,isCurrent=()=>true){
+  if(sqPrivate())return;
   const endpoint="https://ondemand.websol.barchart.com",now=new Date(),target=shiftMonths(now,-PERIODS[state.period].months),historyType=state.period==="3y"?"weekly":"daily",historyStart=new Date(Math.min(target.getTime()-16*86400000,shiftMonths(now,-13).getTime())),end=new Date(now);end.setDate(end.getDate()+2);
   const quoteUrl=`${endpoint}/getQuoteEod.json?apikey=${encodeURIComponent(key)}&symbols=${encodeURIComponent(ticker)}&fields=previousClose`,histUrl=`${endpoint}/getHistory.json?apikey=${encodeURIComponent(key)}&symbol=${encodeURIComponent(ticker)}&type=${historyType}&startDate=${ymd(historyStart)}&endDate=${ymd(end)}&order=asc&splits=true&dividends=true&maxRecords=2000`;
-  const [qr,hr]=await Promise.all([fetch(quoteUrl),fetch(histUrl)]);if(!qr.ok||!hr.ok)throw new Error(`Barchart request failed (${qr.status}/${hr.status}).`);const q=await qr.json(),h=await hr.json();if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart EOD request failed.");if(h?.status?.code!==200)throw new Error(h?.status?.message||"Barchart history request failed.");
-  const quote=q?.results?.[0],records=h?.results||[];if(!quote||!records.length)throw new Error("Barchart returned no EOD/history data for this ticker.");const spot=Number(quote.close??quote.lastPrice??quote.settlement);if(!Number.isFinite(spot))throw new Error("Barchart EOD response did not include a usable closing price.");const quoteDate=quote.date||records[records.length-1]?.tradingDay||"",baseline=recordOnOrBefore(records,target);if(!baseline)throw new Error("Barchart history did not include a baseline close for this horizon.");const baselineClose=Number(baseline.close),perf=spot-baselineClose,quoteTime=quoteDate?isoDay(quoteDate).getTime():Date.now(),oneYearAgo=quoteTime-370*86400000,recent52=records.filter(r=>isoDay(r.tradingDay).getTime()>=oneYearAgo&&isoDay(r.tradingDay).getTime()<=quoteTime),highs52=recent52.map(r=>Number(r.high)).filter(Number.isFinite),lows52=recent52.map(r=>Number(r.low)).filter(Number.isFinite),baselineTime=isoDay(baseline.tradingDay).getTime(),periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime&&isoDay(r.tradingDay).getTime()<=quoteTime),highs=periodRecords.map(r=>Number(r.high)).filter(Number.isFinite),lows=periodRecords.map(r=>Number(r.low)).filter(Number.isFinite),eodDateObj=quoteDate?isoDay(quoteDate):now;
+  const [qr,hr]=await Promise.all([sqFetch(quoteUrl),sqFetch(histUrl)]);if(!qr.ok||!hr.ok)throw new Error(`Barchart request failed (${qr.status}/${hr.status}).`);const q=await qr.json(),h=await hr.json();if(q?.status?.code!==200)throw new Error(q?.status?.message||"Barchart EOD request failed.");if(h?.status?.code!==200)throw new Error(h?.status?.message||"Barchart history request failed.");
+  if(!isCurrent())return;const quote=q?.results?.[0],records=h?.results||[];if(!quote||!records.length)throw new Error("Barchart returned no EOD/history data for this ticker.");sqValidateBarchart(ticker,quote,records);const spot=Number(quote.close??quote.lastPrice??quote.settlement);if(!Number.isFinite(spot))throw new Error("Barchart EOD response did not include a usable closing price.");const quoteDate=quote.date||records[records.length-1]?.tradingDay||"",baseline=recordOnOrBefore(records,shiftMonths(isoDay(quoteDate),-PERIODS[state.period].months));if(!baseline)throw new Error("Barchart history did not include a baseline close for this horizon.");const baselineClose=Number(baseline.close),perf=spot-baselineClose,quoteTime=quoteDate?isoDay(quoteDate).getTime():Date.now(),oneYearAgo=quoteTime-370*86400000,recent52=records.filter(r=>isoDay(r.tradingDay).getTime()>=oneYearAgo&&isoDay(r.tradingDay).getTime()<=quoteTime),highs52=recent52.map(r=>Number(r.high)).filter(Number.isFinite),lows52=recent52.map(r=>Number(r.low)).filter(Number.isFinite),baselineTime=isoDay(baseline.tradingDay).getTime(),periodRecords=records.filter(r=>isoDay(r.tradingDay).getTime()>=baselineTime&&isoDay(r.tradingDay).getTime()<=quoteTime),highs=periodRecords.map(r=>Number(r.high)).filter(Number.isFinite),lows=periodRecords.map(r=>Number(r.low)).filter(Number.isFinite),eodDateObj=quoteDate?isoDay(quoteDate):now;
   const trendAt=months=>{const rec=recordOnOrBefore(records,shiftMonths(eodDateObj,-months));if(!rec)return "—";const close=Number(rec.close);return spot>close?"Up":spot<close?"Down":"Flat"};$("price").value=spot.toFixed(2);$("perf").value=perf.toFixed(2);const instrument=`${quote.name||ticker} • ${ticker}`;$("selectedInstrument").textContent=instrument;
-  const alphaRaw=getAlphaRaw(ticker),seasonality=alphaRaw?.monthly?.length?computeSeasonality(alphaRaw.monthly,seasonalityOptions(alphaRaw.monthly)):null;state.extra={baselineDate:baseline.tradingDay,baselineClose,returnPct:baselineClose?(perf/baselineClose)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Barchart",tradeTimestamp:quoteDate,seasonality};writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Barchart EOD";status(`Barchart EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");render();renderSeasonality()
+  const alphaRaw=getAlphaRaw(ticker),seasonality=alphaRaw?.monthly?.length?computeSeasonality(alphaRaw.monthly,seasonalityOptions(alphaRaw.monthly)):null;state.extra={baselineDate:baseline.tradingDay,baselineClose,returnPct:baselineClose?(perf/baselineClose)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Barchart",tradeTimestamp:quoteDate,seasonality};sqBarchartMeta(ticker,records,quoteDate);writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Barchart EOD";status(`Barchart EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");render();renderSeasonality()
 }
 function maybeAutoLoadEod(){
-  if(state.mode!=="auto_eod")return;const provider=activeProvider();if(provider){fetchData(false);return}if(!loadCachedEod(false))status("Auto EOD is ready. Add a free Alpha Vantage key in Settings now, or your Barchart key when approved. Manual values remain available until then.","warn")
+  if(state.mode!=="auto_eod")return;const provider=activeProvider();if(provider){fetchData(false);return}if(!loadCachedEod(false))status("Shared EOD is waiting for backend setup. Cached data, Manual mode, or an Advanced owner fallback can still be used.","warn")
 }
 async function fetchData(force=false){
-  const ticker=$("ticker").value.trim().toUpperCase();if(!ticker){status("Enter a ticker first.","warn");return}const alphaInput=$("alphaKey")?.value.trim()||"",barchartInput=$("apiKey")?.value.trim()||"";if(alphaInput)localStorage.setItem("sq_alpha_key",alphaInput);if(barchartInput)localStorage.setItem("splab_barchart_key",barchartInput);const provider=activeProvider();if(!provider){if(!loadCachedEod(false))status("Add an Alpha Vantage key (free) or Barchart key in Settings to enable automatic EOD data.","warn");return}
-  if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;$("fetchBtn").disabled=true;try{if(provider==="alpha")await fetchAlphaData(ticker,localStorage.getItem("sq_alpha_key"),force);else await fetchBarchartData(ticker,localStorage.getItem("splab_barchart_key"));const wl=getWatchlist(),wi=wl.find(x=>x.symbol===ticker);if(wi){wi.snapshot=makeSnapshot(ticker);wi.updatedAt=new Date().toISOString();setWatchlist(wl)}}catch(e){const pref=providerPreference(),alphaFallback=provider==="barchart"&&pref==="auto"&&localStorage.getItem("sq_alpha_key");if(alphaFallback){try{status(`Barchart unavailable. Falling back to Alpha Vantage for ${ticker}…`,"warn");await fetchAlphaData(ticker,localStorage.getItem("sq_alpha_key"),force);return}catch(e2){e=new Error(`${e?.message||"Barchart failed"} Alpha fallback: ${e2?.message||"failed"}`)}}const msg=(e&&e.message)?e.message:`${provider} EOD fetch failed.`;if(loadCachedEod(true))status(`${msg} Showing the last cached EOD snapshot instead.`,"warn");else status(`${msg} Manual inputs are still available.`,"warn")}finally{$("fetchBtn").disabled=false}
+  if(state.mode!=="auto_eod")return;
+  const ticker=$("ticker").value.trim().toUpperCase();
+  if(!ticker){status("Enter a ticker first.","warn");return}
+  const alphaInput=$("alphaKey")?.value.trim()||"",barchartInput=$("apiKey")?.value.trim()||"";
+  if(alphaInput)localStorage.setItem("sq_alpha_key",alphaInput);
+  if(barchartInput)localStorage.setItem("splab_barchart_key",barchartInput);
+  const provider=activeProvider();
+  if(!provider){if(!loadCachedEod(false))status("Shared EOD is not connected yet. Manual inputs and saved data remain available.","warn");return}
+  const requestId=++marketRequestSerial,period=state.period,pref=providerPreference(),apiBase=state.sharedApiBase;
+  const isCurrent=()=>requestId===marketRequestSerial&&state.mode==="auto_eod"&&state.period===period&&providerPreference()===pref&&state.sharedApiBase===apiBase&&$("ticker").value.trim().toUpperCase()===ticker;
+  const updateWatchlist=()=>{
+    const wl=getWatchlist(),wi=wl.find(x=>x.symbol===ticker);
+    if(wi){wi.snapshot=makeSnapshot(ticker);wi.updatedAt=new Date().toISOString();setWatchlist(wl)}
+  };
+  const loadProvider=selected=>selected==="shared"?fetchSharedData(ticker,isCurrent):selected==="alpha"?fetchAlphaData(ticker,localStorage.getItem("sq_alpha_key"),force,isCurrent):fetchBarchartData(ticker,localStorage.getItem("splab_barchart_key"),isCurrent);
+  if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
+  $("fetchBtn").disabled=true;
+  try{
+    await loadProvider(provider);
+    if(isCurrent())updateWatchlist();
+  }catch(e){
+    if(!isCurrent())return;
+    let fallback=(provider==="shared"&&pref==="auto")?localFallbackProvider():null;
+    if(!fallback&&provider==="barchart"&&pref==="auto"&&localStorage.getItem("sq_alpha_key"))fallback="alpha";
+    if(fallback){
+      try{
+        status(`Primary data source unavailable. Falling back to your local ${fallback==="alpha"?"Alpha Vantage":"Barchart"} provider.`,"warn");
+        await loadProvider(fallback);
+        if(isCurrent())updateWatchlist();
+        return;
+      }catch(e2){e=new Error(`${e?.message||"Primary source failed"} Fallback: ${e2?.message||"failed"}`)}
+    }
+    if(!isCurrent())return;
+    const msg="Market data could not be verified or loaded. Check source availability and use valid data.";
+    if(loadCachedEod(true))status(`${msg} Showing the last cached EOD snapshot instead.`,"warn");
+    else status(`${msg} Manual inputs are still available.`,"warn");
+  }finally{
+    if(requestId===marketRequestSerial)$("fetchBtn").disabled=false;
+  }
 }
 function loadPreset(which){
   setMode("manual");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
@@ -932,7 +1049,7 @@ function renderComparePanel(){
   const selected=getCompareSelection(),list=getWatchlist();if(count)count.textContent=selected.length?`${selected.length} selected • choose up to 3`:'Select 2–3 watchlist items';
   const items=selected.map(s=>list.find(x=>x.symbol===s)).filter(Boolean);
   if(items.length<2){panel.innerHTML='<div class="compare-empty">Select at least two Watchlist items using the Compare button. Analysis snapshots are used for the side-by-side view.</div>';return}
-  panel.innerHTML=items.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div><div class="compare-score">Score ${s.score??'—'}</div></div><div class="compare-metrics"><div class="compare-metric"><span>Current</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
+  panel.innerHTML=items.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div><div class="compare-score">Score ${s.score??'—'}</div></div><div class="compare-metrics"><div class="compare-metric"><span>Reference</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
   recordProgressEvent('compare');awardAchievement('compare');
 }
 function recordProgressEvent(type){
@@ -988,7 +1105,7 @@ function setView(view){
 }
 function setAnalysisTab(tab){document.querySelectorAll('.analysis-tab').forEach(b=>b.classList.toggle('active',b.dataset.analysis===tab));document.querySelectorAll('.analysis-pane').forEach(p=>p.classList.remove('active'));const ids={overview:'analysisOverview',performance:'analysisPerformance',seasonality:'analysisSeasonality',targets:'analysisTargets'};$(ids[tab]||ids.overview)?.classList.add('active');if(tab==='seasonality')renderSeasonality()}
 function symbolMeta(symbol){return LOCAL_SYMBOLS.find(x=>x.symbol===symbol)||{symbol,name:symbol,exchange:'',type:''}}
-function applySymbol(symbol){const m=symbolMeta(symbol);$("ticker").value=symbol;$("selectedInstrument").textContent=`${m.name} • ${symbol}${m.exchange?` • ${m.exchange}`:''}`;render();if(state.mode==='auto_eod'&&localStorage.getItem('splab_barchart_key'))fetchData()}
+function applySymbol(symbol){if($("ticker").value.trim().toUpperCase()!==symbol.toUpperCase())invalidateMarketRequest();const m=symbolMeta(symbol);$("ticker").value=symbol;$("selectedInstrument").textContent=`${m.name} • ${symbol}${m.exchange?` • ${m.exchange}`:''}`;render();if(state.mode==='auto_eod')maybeAutoLoadEod()}
 function renderQuickPick(symbol){applySymbol(symbol);setView('research')}
 function getWatchlist(){return JSON.parse(localStorage.getItem('sq_watchlist')||'[]')}
 function setWatchlist(v){localStorage.setItem('sq_watchlist',JSON.stringify(v))}
@@ -1000,9 +1117,295 @@ function addToWatchlist(symbol){
 function removeWatch(symbol){setWatchlist(getWatchlist().filter(x=>x.symbol!==symbol));setCompareSelection(getCompareSelection().filter(x=>x!==symbol));renderWatchlist();renderComparePanel()}
 function renderWatchlist(){
   const el=$("watchlist");if(!el)return;const list=getWatchlist(),selected=getCompareSelection();if(!list.length){el.innerHTML='<div class="watch-empty">No Watchlist tickers yet. Add the current ticker or use Quick Picks, then return here to compare research snapshots.</div>';renderComparePanel();return}
-  el.innerHTML=list.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Current</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Score</span><b>${s.score??'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
+  el.innerHTML=list.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Reference</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Score</span><b>${s.score??'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
 }
-function loadSaved(id){const arr=JSON.parse(localStorage.getItem('splab_history')||'[]');const x=arr.find(v=>String(v.id)===String(id));if(!x)return;if(x.ticker)applySymbol(x.ticker);if(x.instrument)$("selectedInstrument").textContent=x.instrument;if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);if(Number.isFinite(Number(x.correction))){$("correction").value=String(x.correction);$("corrLabel").textContent=String(x.correction)}setMode('manual');setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');setView('research');status(`Loaded saved analysis for ${x.ticker}.`,'good')}
+function loadSaved(id){
+  const arr=JSON.parse(localStorage.getItem('splab_history')||'[]');
+  const x=arr.find(v=>String(v.id)===String(id));
+  if(!x)return;
+  // Stop automatic loading before changing the ticker or restoring saved values.
+  invalidateMarketRequest();
+  setMode('manual');
+  state.extra={};
+  if(x.ticker)applySymbol(x.ticker);
+  if(x.instrument)$("selectedInstrument").textContent=x.instrument;
+  // The period supplies a default divisor; restore the saved override afterward.
+  setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');
+  if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);
+  if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);
+  if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);
+  if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);
+  const correction=x.correction??x.c;
+  if(Number.isFinite(Number(correction)))sqSetCorrection(correction,{persist:false});
+  render();renderSeasonality();setView('research');
+  status(`Loaded saved analysis for ${x.ticker||'ticker'}.`,'good');
+}
+// v10.1.1 review: private learning modes, finite validation and local research badges.
+const SQ_HINTS={
+ '3m':['Near-term lens','What changes when you shorten the research window?'],
+ '6m':['Half-year view','Look for a different perspective across six months.'],
+ '1y':['Full-year context','Compare a full year before testing your assumptions.'],
+ '2y':['Wider perspective','Does your reasoning hold across two years?'],
+ '3y':['Longer story','Explore the longer history, including its limitations.']
+};
+const sqControllers=new Set();
+let sqRestoring=false,sqDataIssue='',sqToastTimer;
+function sqPrivate(){return state.mode!=='auto_eod'}
+function sqJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch{return fallback}}
+function sqPersist(){if(sqRestoring)return;localStorage.setItem('sq_next_session',JSON.stringify({mode:state.mode,ticker:$('ticker').value,period:state.period,correction:state.correction,price:$('price').value,perf:$('perf').value,divisor:$('divisor').value,increment:$('increment').value,reason:$('researchReason')?.value||'',savedOrigin:state.savedOrigin||null}));}
+async function sqFetch(url,options={}){
+ if(sqPrivate())throw new Error('Private mode: provider requests are disabled.');
+ const controller=new AbortController();sqControllers.add(controller);
+ const cancel=()=>controller.abort();options.signal?.addEventListener('abort',cancel,{once:true});
+ const timer=setTimeout(cancel,20000);
+ try{return await fetch(url,{...options,signal:controller.signal})}
+ finally{clearTimeout(timer);sqControllers.delete(controller);options.signal?.removeEventListener('abort',cancel)}
+}
+function sqCancel(){for(const c of sqControllers)c.abort();sqControllers.clear();if(searchAbort)searchAbort.abort();clearTimeout(searchTimer)}
+function sqSetCorrection(value,{persist=true}={}){
+ const n=Number(value);state.correction=Number.isFinite(n)?Math.max(0,Math.min(30,Math.round(n))):10;
+ for(const id of ['correction','targetCorrection']){const e=$(id);if(e){e.value=String(state.correction);e.setAttribute('aria-valuetext',`${state.correction} percent correction`);}}
+ $('corrLabel').textContent=String(state.correction);$('targetCorrectionLabel').textContent=state.correction+'%';
+ render();if(persist)sqPersist();
+}
+function sqValidDate(value){return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value+'T12:00:00Z'))&&new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value}
+function sqValidateRaw(raw,symbol){
+ if(raw.symbol&&raw.symbol!==symbol)throw new Error('Response ticker does not match the requested ticker.');
+ for(const name of ['daily','weekly','monthly']){
+  const rows=raw[name];if(!Array.isArray(rows)||!rows.length)throw new Error(`Missing ${name} history.`);
+  let previous='';for(const r of rows){
+   if(!sqValidDate(r.date)||r.date<=previous||!Number.isFinite(r.close)||r.close<=0)throw new Error(`Invalid, duplicate or out-of-order ${name} history.`);
+   if(r.high!=null&&(!Number.isFinite(r.high)||r.high<=0))throw new Error(`Invalid ${name} high.`);
+   if(r.low!=null&&(!Number.isFinite(r.low)||r.low<=0))throw new Error(`Invalid ${name} low.`);
+   if(r.high!=null&&r.low!=null&&Number(r.high)<Number(r.low))throw new Error(`Inverted ${name} high/low range.`);
+   previous=r.date;
+  }
+ }
+ const latest=raw.daily.at(-1).date;if(Date.parse(latest+'T12:00:00Z')>Date.now()+86400000)throw new Error('Future-dated quote cannot be used.');
+ return raw;
+}
+function sqCoverage(raw,quoteDate){
+ const weekly=raw.weekly||[],start=Date.parse(quoteDate)-370*86400000,recent=weekly.filter(r=>Date.parse(r.date)>=start&&r.date<=quoteDate);
+ const fullRange=recent.length>=50&&weekly.some(r=>Date.parse(r.date)<=start+7*86400000)&&recent.every((r,i)=>!i||(Date.parse(r.date)-Date.parse(recent[i-1].date))<=14*86400000);
+ const gaps=(raw.monthly||[]).slice(1).filter((r,i)=>sqMonthNumber(r.date)-sqMonthNumber(raw.monthly[i].date)!==1).length;
+ return {fullRange,monthlyGaps:gaps,weeklyPoints:recent.length};
+}
+function sqMonthNumber(date){return Number(date.slice(0,4))*12+Number(date.slice(5,7))-1}
+function sqValidateBarchart(ticker,quote,records){
+ if(quote.symbol&&quote.symbol!==ticker||records.some(r=>r.symbol&&r.symbol!==ticker))throw new Error('Response ticker does not match the requested ticker.');
+ const rows=records.map(r=>({...r,date:r.tradingDay,close:Number(r.close),high:r.high==null?null:Number(r.high),low:r.low==null?null:Number(r.low)}));
+ const latest={date:quote.date||rows.at(-1)?.date,close:Number(quote.close??quote.lastPrice??quote.settlement)};
+ sqValidateRaw({daily:[latest],weekly:rows,monthly:rows},ticker);
+}
+function sqBarchartMeta(symbol,records,session){
+ const recent=records.filter(r=>r.tradingDay<=session&&Date.parse(r.tradingDay)>=Date.parse(session)-370*86400000);
+ const weekly=state.period==='3y',required=weekly?50:240;
+ const complete=recent.length>=required&&records.some(r=>Date.parse(r.tradingDay)<=Date.parse(session)-363*86400000)&&recent.every((r,i)=>!i||Date.parse(r.tradingDay)-Date.parse(recent[i-1].tradingDay)<=(weekly?14:7)*86400000);
+ if(!complete){state.extra.high52=NaN;state.extra.low52=NaN;}
+ const offset=Math.round((shiftMonths(isoDay(session),-PERIODS[state.period].months)-isoDay(state.extra.baselineDate))/86400000);
+ state.dataMeta={symbol,source:'Barchart',session,fetchedAt:Date.now(),stale:false,baselineOffset:offset,coverage:{fullRange:complete},issue:[!complete?'52-week range unavailable: insufficient history coverage.':'',offset>10?`Baseline is ${offset} days before the requested horizon; comparison is approximate.`:''].filter(Boolean).join(' ')};
+}
+function sqSynthetic(symbol){
+ const base={AAPL:200,MSFT:320,NVDA:140,GOOGL:180,AMZN:210,TSLA:240,VOO:500,QQQ:460,XLK:220,SPY:550,SMH:280}[symbol]||160;
+ const end=Date.UTC(2026,8,30),value=months=>base-(months*1.35)+Math.sin(months*0.7)*5;
+ const row=(date,close)=>({date,open:close,high:close+4,low:close-4,close,volume:1000});
+ const monthly=Array.from({length:121},(_,i)=>{const d=new Date(Date.UTC(2016,9+i,0));return row(d.toISOString().slice(0,10),Math.max(15,value(120-i)))});
+ const weekly=Array.from({length:211},(_,i)=>{const d=new Date(end-(210-i)*7*86400000);return row(d.toISOString().slice(0,10),Math.max(15,value((210-i)*7/30.4375)))});
+ const daily=[row('2026-09-30',base)];return {symbol,daily,weekly,monthly,savedAt:null,source:'Synthetic learning example',synthetic:true};
+}
+function sqApplyDemo(){const symbol=$('ticker').value.trim().toUpperCase()||'AAPL';state.demoRaw=sqSynthetic(symbol);sqApplyRaw(symbol,state.demoRaw,'Synthetic example');status('Synthetic example • 30 Sep 2026 • generated values, not market quotes.','warn');}
+const sqOldGetRaw=getAlphaRaw;
+getAlphaRaw=function(symbol){return sqPrivate()?(state.mode==='demo'&&symbol===$('ticker').value.trim().toUpperCase()?state.demoRaw||null:null):sqOldGetRaw(symbol)};
+const sqOldApplyRaw=applyAlphaRaw;
+let sqApplyingRaw=false;
+function sqApplyRaw(symbol,raw,label){
+ sqValidateRaw(raw,symbol);
+ let out;sqApplyingRaw=true;try{out=sqOldApplyRaw(symbol,raw,label)}finally{sqApplyingRaw=false}const coverage=sqCoverage(raw,out.quoteDate);
+ state.dataMeta={symbol,source:label,session:out.quoteDate,fetchedAt:Number(raw.savedAt)||null,stale:!!raw.stale,synthetic:!!raw.synthetic,coverage};
+ if(!coverage.fullRange){state.extra.high52=NaN;state.extra.low52=NaN;}
+ const target=shiftMonths(isoDay(out.quoteDate),-PERIODS[state.period].months);
+ const delta=Math.round((target-isoDay(state.extra.baselineDate))/86400000);
+ state.dataMeta.baselineOffset=delta;
+ state.dataMeta.issue=[!coverage.fullRange?'52-week range unavailable: insufficient weekly coverage.':'',coverage.monthlyGaps?`${coverage.monthlyGaps} monthly gap(s); returns across gaps are excluded.`:'',delta>10?`Baseline is ${delta} days before the requested horizon; comparison is approximate.`:''].filter(Boolean).join(' ');
+ writeEodCache({price:out.spot,perf:out.perf,extra:state.extra,instrument:$('selectedInstrument').textContent,eodDate:out.quoteDate,savedAt:Date.now()});
+ sqDataIssue='';render();return out;
+}
+applyAlphaRaw=sqApplyRaw;
+const sqOldWriteCache=writeEodCache;
+writeEodCache=function(payload){if(sqPrivate()||sqApplyingRaw)return;sqOldWriteCache({...payload,origin:state.dataMeta||null})};
+const sqOldSeason=computeSeasonality;
+computeSeasonality=function(rows,opts=10){
+ // Keep the existing return formula; omit gaps, nonpositive data and unfinished months.
+ const safe=(rows||[]).filter(r=>sqValidDate(r.date||r.tradingDay)&&Number(r.close)>0&&Number.isFinite(Number(r.close))).map(r=>({...r,date:r.date||r.tradingDay})).sort((a,b)=>a.date.localeCompare(b.date));
+ const unique=safe.filter((r,i)=>!i||r.date!==safe[i-1].date);
+ const now=new Date(),current=now.getFullYear()*12+now.getMonth();
+ const complete=unique.filter(r=>sqMonthNumber(r.date)<current);
+ const pieces=[];let group=[];for(const r of complete){if(group.length&&sqMonthNumber(r.date)-sqMonthNumber(group.at(-1).date)!==1){if(group.length>1)pieces.push(group);group=[];}group.push(r)}if(group.length>1)pieces.push(group);
+ if(!pieces.length)return null;
+ // Compute once over only valid adjacent pairs, grouped by chosen calendar-year policy.
+ const years=[...new Set(complete.map(r=>Number(r.date.slice(0,4))))],latest=Math.max(...years),cfg=typeof opts==='number'?{mode:'range',lookbackYears:opts}:opts;
+ const start=latest-Math.max(1,Math.min(25,cfg?.lookbackYears||10))+1,selected=new Set(cfg?.selectedYears||[]),values=Array.from({length:12},()=>[]),used=new Set();
+ for(const part of pieces)for(let i=1;i<part.length;i++){const r=part[i],year=Number(r.date.slice(0,4));if(cfg?.mode==='specific'?!selected.has(year):year<start)continue;const ret=(Number(r.close)/Number(part[i-1].close)-1)*100;values[Number(r.date.slice(5,7))-1].push(ret);used.add(year);}
+ const months=values.map((v,i)=>({month:i,name:MONTH_NAMES[i],observations:v.length,hitRate:v.length?v.filter(x=>x>0).length/v.length*100:NaN,avgReturn:v.length?v.reduce((a,b)=>a+b,0)/v.length:NaN,medianReturn:median(v)}));
+ const ranked=months.filter(m=>m.observations).slice().sort((a,b)=>b.avgReturn-a.avgReturn);
+ return {lookback:cfg?.lookbackYears||10,mode:cfg?.mode||'range',selectedYears:cfg?.selectedYears||[],usedYears:[...used].sort(),rangeStart:start,rangeEnd:latest,months,currentMonth:months[now.getMonth()],strongest:ranked[0]||null,weakest:ranked.at(-1)||null,totalMonths:months.reduce((a,m)=>a+m.observations,0)};
+};
+const sqOldMode=setMode;
+setMode=function(mode){
+ const next=['demo','manual','auto_eod'].includes(mode)?mode:'demo';const changed=state.mode!==next;
+ state.mode=next;sqCancel();invalidateMarketRequest();
+ if(changed){state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;sqDataIssue='';if(next!=='demo'){$('price').value='';$('perf').value='';}}
+ sqOldMode(next);
+ if(next==='demo'&&!sqRestoring)sqApplyDemo();
+ if(next==='manual')status('Private Manual mode • your inputs stay in this browser. No provider requests.','warn');
+ render();sqPersist();
+};
+const sqOldPeriod=setPeriod;
+setPeriod=function(period){if(!PERIODS[period])return;if(period!==state.period&&!sqRestoring&&state.mode!=='demo'){state.extra={};state.dataMeta=null;$('perf').value='';}sqOldPeriod(period);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqVisitHorizon();renderSeasonality();sqPersist();};
+const sqOldSymbol=applySymbol;
+applySymbol=function(symbol){const changed=$('ticker').value.trim().toUpperCase()!==symbol.toUpperCase();if(changed){state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$('price').value='';$('perf').value='';sqDataIssue='';}sqOldSymbol(symbol);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqPersist();};
+const sqOldSuggestion=chooseSuggestion;
+chooseSuggestion=function(button){applySymbol(button.dataset.symbol||'');$('tickerSuggestions').classList.remove('show');$('tickerSuggestions').innerHTML='';};
+const sqOldTab=setAnalysisTab;
+setAnalysisTab=function(tab){if(tab==='targets'){$('scenarioSection').scrollIntoView({behavior:'auto',block:'start'});return}sqOldTab(tab)};
+const sqOldCacheLoad=loadCachedEod;
+loadCachedEod=function(silent=false){if(sqPrivate())return false;const item=readEodCache()[eodCacheKey()];if(!item||!(Number(item.price)>0)||!Number.isFinite(Number(item.perf)))return false;const ok=sqOldCacheLoad(true);state.dataMeta={...(item.origin||{}),symbol:$('ticker').value.trim().toUpperCase(),source:item.extra?.dataProvider||'Previously saved provider snapshot',session:item.eodDate,fetchedAt:item.origin?.fetchedAt||item.savedAt,stale:true};if(!silent)status('Showing a previously cached snapshot. Verify its session and age before using it.','warn');render();return ok;};
+const sqOldRender=render;
+render=function(){
+ const r=calc();sqOldRender();
+ const contextPanel=document.querySelector('.analysis-card');if(contextPanel)contextPanel.style.display=r?'':'none';
+ if(!r){for(const id of ['low','mid','high','outPrice','outPerf','outAdjusted','outProjected','perfMirror','adjustedMirror','projectedMirror'])if($(id))$(id).textContent='—';$('details').textContent='Enter a finite positive price, a finite historical change, a positive divisor and a positive increment.';}
+ $('targetInvalid').textContent=r?'':'Enter valid inputs to see hypothetical levels. Previous targets are hidden.';
+ const mode=state.mode||'demo',privateMode=sqPrivate(),symbol=$('ticker').value.trim().toUpperCase();
+ $('orbTicker').textContent=symbol.slice(0,5)||'-';
+ if(!r)for(const id of ['stageTrendMini','stageRangeMini','stagePowerMini','stageSeasonMini','stageStrikeMini'])$(id).textContent='Unavailable until valid inputs are loaded.';
+ $('modeTitle').textContent=mode==='demo'?'DEMO • SYNTHETIC EXAMPLE':mode==='manual'?'PRIVATE MANUAL • UNVERIFIED INPUTS':'AUTOMATIC EOD • VERIFY SOURCE & SESSION';
+ $('modeDescription').textContent=mode==='demo'?'Explore the research flow with generated values. Nothing here is a live quote.':mode==='manual'?'Your inputs and notes stay on this device. Provider connections are off.':'Uses the configured provider when you request data. Availability and permissions still need verification.';
+ for(const b of document.querySelectorAll('[data-private-mode]'))b.setAttribute('aria-pressed',String(b.dataset.privateMode===mode));
+ for(const b of document.querySelectorAll('#periodTabs [data-p]'))b.setAttribute('aria-pressed',String(b.dataset.p===state.period));
+ for(const b of document.querySelectorAll('[data-quick]'))b.setAttribute('aria-pressed',String(b.dataset.quick===symbol));
+ $('missionTitle').textContent=`Explore the ${PERIODS[state.period].label.toLowerCase()} perspective`;
+ $('missionLine').textContent=`${symbol||'Choose an instrument'} • ${mode==='demo'?'Synthetic learning example':mode==='manual'?'Your unverified inputs':'Provider data, subject to availability'}`;
+ $('moodPill').textContent='✧ Research, then reflect';$('moodPill').className='mood-pill mid';
+ $('horizonPrompt').textContent=SQ_HINTS[state.period][1];
+ $('horizonBasis').textContent=state.dataMeta?.session&&state.extra.baselineDate?`Basis: ${state.extra.baselineDate} → ${state.dataMeta.session}. Dollar change; ${state.dataMeta.baselineOffset>10?'approximate date match.':'weekly baseline on or before the requested date.'}`:mode==='manual'?'Manual basis: supply the historical dollar change for this selected horizon.':'Load supported history to inspect this horizon’s baseline.';
+ $('targetContext').textContent=`${symbol||'Instrument'} • ${PERIODS[state.period].label} • ${mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC':mode==='manual'?'MANUAL / UNVERIFIED':state.dataMeta?.stale?'STALE SNAPSHOT':'EOD'} • Reference ${r?money(r.p):'unavailable'}`;
+ for(const key of ['low','mid','high'])$(key+'Delta').textContent=r?`${signedPct((r[key]/r.p-1)*100)} vs input price`:'Unavailable';
+ $('sourceBadge').textContent=mode==='demo'?'Synthetic demo':mode==='manual'?'Manual · unverified':state.dataMeta?.stale?'Stale EOD':state.extra.dataProvider||'No verified quote';
+ const meta=state.dataMeta,age=meta?.session?Math.max(0,Math.floor((Date.now()-Date.parse(meta.session))/86400000)):null;
+ $('qualityBadge').textContent=mode==='demo'?'Synthetic':mode==='manual'?'User supplied':meta?(meta.stale||age>4?'Stale / verify':'Session recorded'):'Unavailable';
+ $('qualityBadge').className='quality-badge'+(mode!=='demo'&&(!meta||meta.stale||age>4)?' warn':'');
+ $('qualitySummary').textContent=mode==='demo'?'Generated learning data • example session 30 Sep 2026. No market provider is contacted.':mode==='manual'?'Manual values are not independently verified. No historical chart or seasonal claim is invented.':meta?`${meta.source||'Provider snapshot'} • session ${meta.session||'unknown'} • fetched ${meta.fetchedAt?new Date(meta.fetchedAt).toISOString().replace('T',' ').slice(0,16)+' UTC':'unknown'}. ${meta.stale||age>4?'This is not a current quote.':''}`:'No usable provider snapshot is loaded. Health alone does not verify market-data availability.';
+ const season=state.extra.seasonality,observations=season?.currentMonth?.observations||0;
+ $('coverageSummary').textContent=`Current-month seasonal sample: ${observations?observations+' observations':'unavailable'}. ${meta?.issue||''} ${observations&&observations<5?'Small sample: results are especially uncertain.':''} History adjustment conventions are inherited and not normalized by this update.`;
+ $('refreshBtn').textContent=privateMode?'Private mode · no refresh':'Refresh EOD data';$('refreshBtn').disabled=privateMode;$('fetchBtn').disabled=privateMode;
+ if($('modeLabel'))$('modeLabel').textContent=mode==='demo'?'Synthetic values':mode==='manual'?'Your inputs — not verified quotes':'Provider snapshot';
+ $('price').readOnly=mode==='demo';$('perf').readOnly=mode==='demo';
+ if($('sampleCount'))$('sampleCount').textContent=observations?`${observations} monthly observations in this selection`:'No monthly sample available';
+ sqRenderBadges();
+};
+// Milestone artwork, migration and learning actions live in badges.js.
+const sqOldSaved=loadSaved;
+loadSaved=function(id){const item=sqJSON('splab_history',[]).find(x=>String(x.id)===String(id));if(!item)return;sqRestoring=true;sqOldSaved(id);sqSetCorrection(item.correction??item.c??10,{persist:false});state.savedOrigin=item.inputMode||'manual';state.loadedResearchId=item.id;$('researchReason').value=String(item.reason||'');sqRestoring=false;state.dataMeta=null;state.extra={};render();renderSeasonality();sqPersist();status(`Loaded saved ${item.inputMode==='demo'?'synthetic demo':'manual / unverified'} analysis for ${item.ticker}. Provider connections stay off.`,'warn');};
+const sqOldPreset=loadPreset;
+loadPreset=function(which){state.correction=10;sqOldPreset(which);sqSetCorrection(10);state.savedOrigin='demo';render();status('Synthetic formula test fixture • not verified market prices.','warn');sqPersist()};
+const sqOldSummary=resultSummary;
+resultSummary=function(){const r=calc();if(!r)return 'StrikeQuests: valid inputs are required.';return `${state.mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC EXAMPLE — NOT MARKET DATA':state.mode==='manual'?'MANUAL / UNVERIFIED INPUTS':'EOD SNAPSHOT — VERIFY SESSION'}\n${sqOldSummary()}\nHypothetical price levels only; not listed option strikes, Greeks or profit forecasts. Notes and saved history are not included.`};
+function sqInitNext(){
+ const saved=sqJSON('sq_next_session',null);sqRestoring=true;state.mode=['demo','manual','auto_eod'].includes(saved?.mode)?saved.mode:'demo';state.correction=10;
+ if(saved){if(PERIODS[saved.period])setPeriod(saved.period);if(/^[A-Z0-9.^-]{1,15}$/.test(saved.ticker||''))$('ticker').value=saved.ticker;for(const id of ['price','perf','divisor','increment'])if(saved[id]!=null)$(id).value=String(saved[id]);$('researchReason').value=String(saved.reason||'').slice(0,2000);state.savedOrigin=saved.savedOrigin||null;}
+ sqSetCorrection(saved?.correction??10,{persist:false});sqRestoring=false;
+ $('targetCorrection').addEventListener('input',e=>sqSetCorrection(e.target.value));
+ for(const b of document.querySelectorAll('[data-private-mode]'))b.addEventListener('click',async()=>{setMode(b.dataset.privateMode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}});
+ $('resetScenario').addEventListener('click',()=>sqSetCorrection(10));
+ $('researchReason').addEventListener('input',()=>{$('researchReason').setAttribute('aria-invalid','false');$('noteValidation').textContent='';sqPersist();sqRenderBadges()});
+ $('saveReasonBtn').addEventListener('click',sqSaveNote);
+ $('reviewSampleBtn').addEventListener('click',()=>{if(!state.extra.seasonality?.totalMonths){status('No monthly sample is available to review. Explore the labeled demo or load valid history.','warn');return}sqEarn('season')});
+ $('reviewHypothesisBtn').addEventListener('click',()=>{const x=sqJSON('splab_history',[]).find(x=>x.id===state.loadedResearchId);if(x?.reason?.trim().length>=12)sqEarn('review')});
+ $('reviewTrendsBtn').addEventListener('click',()=>{if(sqHasTrend())sqEarn('trend')});
+ $('reviewRangeBtn').addEventListener('click',()=>{if(sqHasRange())sqEarn('range')});
+ $('completeResearchBtn').addEventListener('click',()=>{if(sqBadgeProgress('complete',sqBadges())===8)sqEarn('complete')});
+ if(state.mode==='demo')sqApplyDemo();else if(state.mode==='manual'){state.extra={};state.dataMeta=null;render();status('Restored private Manual mode. Values remain unverified.','warn')}else{$('price').value='';$('perf').value='';render();loadPublicConfig().then(maybeAutoLoadEod)}
+ sqVisitHorizon();render();sqPersist();
+}
+
+// Nine original research milestones, plus the retained reflection milestone.
+const SQ_BADGES=[
+ {id:'first',name:'First Analysis',detail:'Explore your first scenario.',color:'#ffc762',steps:2},
+ {id:'trend',name:'Trend Checked',detail:'Review the one- and three-month trend context.',color:'#5dcfff',steps:2},
+ {id:'range',name:'52W Range Reviewed',detail:'Explore where the reference sits in a supported range.',color:'#5ce0bc',steps:2},
+ {id:'season',name:'Seasonality Scout',detail:'Inspect a monthly sample and acknowledge its limits.',color:'#c19aff',steps:2},
+ {id:'multi',name:'Multi-Timeframe',detail:'Explore two supported horizons and save a takeaway.',color:'#edaa72',steps:3},
+ {id:'saved',name:'Saved Analysis',detail:'Save your first research analysis.',color:'#83b9ff',steps:2},
+ {id:'watch',name:'Watchlist Builder',detail:'Keep an instrument with a valid research snapshot.',color:'#ff8eac',steps:2},
+ {id:'compare',name:'Side-by-Side',detail:'Compare two different instruments with saved snapshots.',color:'#79dfe8',steps:3},
+ {id:'complete',name:'Full Research Run',detail:'Complete the eight core milestones, then finish your run.',color:'#f4ce66',steps:9},
+ {id:'review',name:'Thoughtful Return',detail:'Revisit a saved note and mark your hypothesis reviewed.',color:'#8bd5b5',steps:2}
+];
+const SQ_CORE=SQ_BADGES.filter(b=>b.id!=='review'),SQ_BADGE_KEY='sq_badges_v1011';
+function sqEarnedRecord(value){return value&&typeof value==='object'&&!Array.isArray(value)&&typeof value.at==='string'&&Number.isFinite(Date.parse(value.at))}
+function sqBadges(){
+ let b=sqJSON(SQ_BADGE_KEY,null);
+ if(b?.version===1&&b.earned&&typeof b.earned==='object')return {...b,horizons:Array.isArray(b.horizons)?b.horizons:[]};
+ b={version:1,earned:{},horizons:[]};
+ const legacy=sqJSON('sq_progress',{}),previous=sqJSON('sq_badges_next',{});
+ for(const badge of SQ_CORE){const entry=legacy?.earned?.[badge.id];if(sqEarnedRecord(entry))b.earned[badge.id]={at:entry.at,origin:'legacy-v9',mode:'previously earned'};}
+ for(const [oldId,newId] of Object.entries({note:'saved',sample:'season',compare:'multi',review:'review'})){
+  const entry=previous?.earned?.[oldId];if(!b.earned[newId]&&sqEarnedRecord(entry))b.earned[newId]={at:entry.at,mode:entry.mode||'previously earned',origin:'v10.1'};
+ }
+ b.horizons=[...new Set((Array.isArray(previous?.horizons)?previous.horizons:[]).filter(p=>Object.hasOwn(PERIODS,p)))];
+ // Never infer earned awards from counters, selected periods or data availability.
+ // Leave both older stores intact so existing history is not reset.
+ sqBadgeSave(b);return b;
+}
+function sqBadgeSave(b){localStorage.setItem(SQ_BADGE_KEY,JSON.stringify(b))}
+function sqEarn(id){
+ const badge=SQ_BADGES.find(x=>x.id===id);if(!badge)return;
+ const b=sqBadges();if(b.earned[id])return;
+ b.earned[id]={at:new Date().toISOString(),mode:state.mode,origin:'v10.1.1'};sqBadgeSave(b);
+ $('badgeToast').textContent=`Milestone unlocked: ${badge.name}. ${badge.detail}`;$('badgeToast').classList.add('show');
+ clearTimeout(sqToastTimer);sqToastTimer=setTimeout(()=>$('badgeToast').classList.remove('show'),3800);sqRenderBadges();
+}
+function sqVisitHorizon(){if(!calc()||!state.extra.baselineDate||state.dataMeta?.baselineOffset>10)return;const b=sqBadges();b.horizons=[...new Set([...b.horizons,state.period])];sqBadgeSave(b)}
+function sqHasTrend(){return ['Up','Down','Flat'].includes(state.extra.trend1m)&&['Up','Down','Flat'].includes(state.extra.trend3m)}
+function sqHasRange(){return Number.isFinite(state.extra.high52)&&Number.isFinite(state.extra.low52)&&state.extra.high52>=state.extra.low52&&state.extra.low52>0}
+function sqCompareSnapshots(){const selected=[...new Set(getCompareSelection())],list=getWatchlist();return selected.filter(symbol=>{const item=list.find(x=>x.symbol===symbol),s=item?.snapshot||latestSavedSnapshot(symbol);return s&&Number.isFinite(s.price)&&s.price>0&&['low','mid','high'].every(k=>Number.isFinite(s[k]))})}
+const SQ_ART={
+ first:`<path d="m48 9 11 24 27 4-19 19 5 27-24-13-24 13 5-27L10 37l27-4Z" fill="url(#ART)" stroke="#ffe7a7" stroke-width="2"/><path d="M48 9v44L10 37m38 16L29 56m19-3 24 30" fill="none" stroke="#a96225" stroke-opacity=".5"/><path d="m48 23 6 16 17 2-13 11 3 17-13-8-14 8 3-17-12-11 17-2Z" fill="#fff0b0" fill-opacity=".55"/><path d="M10 13v10m-5-5h10M85 69v12m-6-6h12M74 10v6m-3-3h6" stroke="#ffdf88" stroke-width="2"/>`,
+ trend:`<circle cx="45" cy="49" r="32" fill="#113449" stroke="#68cfff" stroke-width="3"/><circle cx="45" cy="49" r="25" fill="none" stroke="#367ba1" stroke-dasharray="2 6"/><path d="M27 65V52m12 13V43m12 22V35" stroke="#5cb6df" stroke-width="7"/><path d="m25 54 18-17 12 7 24-28m-16 0h17v17" fill="none" stroke="url(#ART)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="m42 73 6 14 5-16" fill="#84dfff"/>`,
+ range:`<path d="M12 65a36 36 0 1 1 72 0" fill="#0d3337" stroke="#378e86" stroke-width="10"/><path d="M12 65a36 36 0 0 1 58-30" fill="none" stroke="url(#ART)" stroke-width="10" stroke-linecap="round"/><path d="m47 64 22-21" stroke="#ecffcf" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="64" r="8" fill="#a5f3da" stroke="#28766e" stroke-width="3"/><path d="M18 83h60" stroke="#18353b" stroke-width="9" stroke-linecap="round"/><path d="M22 83h29" stroke="#68e5be" stroke-width="5" stroke-linecap="round"/><circle cx="57" cy="83" r="5" fill="#f4d885"/><path d="M20 49l6 2m2-16 5 5m15-19v7m17 8-4 5" stroke="#c3fff0" stroke-width="2"/>`,
+ season:`<path d="m18 19 63 6-7 62-62-7Z" fill="#563675" stroke="#9775cc" stroke-width="2"/><rect x="14" y="18" width="65" height="63" rx="10" fill="url(#ART)" stroke="#e0caff" stroke-width="2"/><path d="M15 37h63" stroke="#634393" stroke-width="3"/><path d="M29 10v18m35-18v18" stroke="#efe5ff" stroke-width="6" stroke-linecap="round"/><path d="M28 49h9m9 0h9M28 61h9m9 0h9" stroke="#70439d" stroke-width="5" stroke-linecap="round"/><path d="m69 49 5 10 11 2-8 7 2 11-10-5-10 5 2-11-8-7 11-2Z" fill="#ffe297" stroke="#b88746" stroke-width="1.5"/>`,
+ multi:`<path d="m8 27 23-11 24 56-25 11Z" fill="#af734d" stroke="#f2b180" stroke-width="2"/><rect x="26" y="14" width="35" height="65" rx="6" fill="#5f4594" stroke="#c6a3f8" stroke-width="2"/><path d="m49 22 32 7-12 59-32-7Z" fill="url(#ART)" stroke="#a0e8f3" stroke-width="2"/><path d="M16 35l17 35m1-37v33m11-41v41m10-22-5 27m14-35-8 35m17-30-7 32" stroke="#eff8ff" stroke-width="4" stroke-linecap="round"/><path d="M9 88h71" stroke="#537590" stroke-width="3" stroke-linecap="round"/>`,
+ saved:`<path d="m22 14 57 4v67l-57-4Z" fill="#142b46" stroke="#4975a1" stroke-width="2"/><path d="M18 12h54a7 7 0 0 1 7 7v60H25a7 7 0 0 0-7 7Z" fill="url(#ART)" stroke="#a1d5ff" stroke-width="2"/><path d="M26 12v67m-8 4c0-4 3-6 7-6h54v9H25c-4 0-7-1-7-3Z" fill="#d3e7f6" stroke="#426585" stroke-width="2"/><path d="M52 13h13v30l-6-5-7 5Z" fill="#ffce78"/><path d="M35 48h29m-29 9h20" stroke="#c9e9ff" stroke-width="3" stroke-linecap="round"/><path d="m76 48 8 4-16 30-9 6 1-11Z" fill="#d7a461" stroke="#f8ddae" stroke-width="1.5"/>`,
+ watch:`<path d="M48 82C33 71 9 53 10 32 11 11 36 6 48 26 60 6 85 11 86 32c1 21-23 39-38 50Z" fill="url(#ART)" stroke="#ffc4d0" stroke-width="2"/><path d="M48 26v56L20 45Z" fill="#db4278" fill-opacity=".6"/><path d="M24 28c4-6 11-6 15-1" fill="none" stroke="#ffe3e9" stroke-width="5" stroke-linecap="round"/><path d="M81 68v16m-8-8h16" stroke="#ffd08e" stroke-width="4" stroke-linecap="round"/><circle cx="12" cy="73" r="3" fill="#ef9eae"/>`,
+ compare:`<rect x="8" y="16" width="35" height="57" rx="7" fill="#207fa1" stroke="#85e8fa" stroke-width="2" transform="rotate(-7 25 45)"/><rect x="53" y="28" width="35" height="57" rx="7" fill="#ab7f36" stroke="#ffe2a0" stroke-width="2" transform="rotate(7 70 55)"/><path d="m22 35 7-6 8 8m25 27 7-7 8 10" stroke="#edffff" stroke-width="3" fill="none"/><path d="M29 49h43m-8-8 9 8-9 8M66 65H24m8-8-9 8 9 8" fill="none" stroke="url(#ART)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+ complete:`<path d="M25 22H11v12c0 13 9 19 23 20m37-32h14v12c0 13-9 19-23 20" fill="none" stroke="#f0b447" stroke-width="7"/><path d="M23 12h50v20c0 17-11 27-25 28-14-1-25-11-25-28Z" fill="url(#ART)" stroke="#ffe9a4" stroke-width="2"/><path d="M48 14v43c-12-2-21-10-21-25V16Z" fill="#fff0b5" fill-opacity=".35"/><path d="M43 59h10v15H43Z" fill="#c6872d"/><path d="m32 72 32 0 5 12H27Z" fill="#f5cb6e" stroke="#a8742f" stroke-width="2"/><rect x="23" y="84" width="50" height="6" rx="2" fill="#6d4d2a"/><path d="m48 22 4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1Z" fill="#aa7227"/><path d="m12 58 8 12m64-12-8 12" stroke="#6fc7e8" stroke-width="4" stroke-linecap="round"/>`,
+ review:`<path d="M18 36C30 7 69 11 80 35m-1-14 3 17-17-1" fill="none" stroke="#8de0ba" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 45q17-7 32 1 15-8 32-1v35q-17-8-32-1-15-7-32 1Z" fill="url(#ART)" stroke="#d4f7dc" stroke-width="2"/><path d="M48 47v31M25 54l14 2m-14 9 14 2m17-11 14-2m-14 13 14-2" stroke="#376e63" stroke-width="2"/><circle cx="78" cy="76" r="12" fill="#427f71" stroke="#a8e5c1" stroke-width="2"/><path d="m72 76 4 4 8-9" stroke="#dffff0" stroke-width="3" fill="none"/>`
+};
+const SQ_PALETTES={first:['#fff3b7','#d98d34'],trend:['#b8f4ff','#39a4ea'],range:['#c0fbdc','#27b9a6'],season:['#edceff','#a775db'],multi:['#79e4f0','#458fbd'],saved:['#86caff','#376fc2'],watch:['#ffb5bb','#e75289'],compare:['#baf4ff','#ffd181'],complete:['#fff0ab','#dc9b32'],review:['#d7f1cf','#6fb598']};
+function sqBadgeArt(b){const [a,z]=SQ_PALETTES[b.id],id='sq-art-'+b.id;return `<svg viewBox="0 0 96 100" aria-hidden="true" data-art="${b.id}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${z}"/></linearGradient></defs>${SQ_ART[b.id].replaceAll('#ART','#'+id)}</svg>`}
+function sqBadgeProgress(id,b){if(id==='complete')return SQ_CORE.filter(x=>x.id!=='complete'&&b.earned[x.id]).length;if(id==='multi')return Math.min(2,b.horizons.length);if(id==='compare')return Math.min(2,sqCompareSnapshots().length);if(id==='trend')return sqHasTrend()?1:0;if(id==='range')return sqHasRange()?1:0;if(id==='season')return state.extra.seasonality?.totalMonths?1:0;if(id==='review')return state.loadedResearchId?1:0;return calc()?1:0}
+function sqRenderBadges(){
+ const b=sqBadges(),count=SQ_CORE.filter(x=>b.earned[x.id]).length;
+ const card=x=>{const earned=!!b.earned[x.id],n=earned?x.steps:sqBadgeProgress(x.id,b);return `<article class="new-badge ${earned?'earned':n?'in-progress':'locked'}" data-badge="${x.id}" style="--badge-accent:${x.color}">${sqBadgeArt(x)}<b>${x.name}</b><span class="badge-state">${earned?'Earned':n?'In progress':'Locked · ready to discover'}</span><p>${x.detail}</p><progress aria-label="${x.name} progress" max="${x.steps}" value="${n}"></progress><small>${earned?'Saved on this device':`${n} / ${x.steps} steps`}</small></article>`};
+ $('researchScore').textContent=`${count}/9`;$('researchProgressText').textContent=`${count} / 9 milestones`;$('researchProgressFill').style.width=`${count/9*100}%`;
+ $('badgeGrid').innerHTML=SQ_CORE.map(card).join('');$('reflectionBadge').innerHTML=card(SQ_BADGES.find(x=>x.id==='review'));
+ const next=SQ_CORE.find(x=>!b.earned[x.id]);$('nextBadgeTitle').textContent=next?`Next milestone: ${next.name}`:'A full research journey';$('nextBadgeText').textContent=next?next.detail:'Nine thoughtful steps completed. Keep testing your assumptions as evidence changes.';
+ $('nextBadgeProgress').max=next?next.steps:9;$('nextBadgeProgress').value=next?sqBadgeProgress(next.id,b):9;
+ $('reviewHypothesisBtn').disabled=!state.loadedResearchId;$('reviewTrendsBtn').disabled=!sqHasTrend();$('reviewRangeBtn').disabled=!sqHasRange();
+ $('completeResearchBtn').disabled=!!b.earned.complete||sqBadgeProgress('complete',b)<8;$('completeResearchBtn').textContent=b.earned.complete?'Research run complete':'Finish this research run';
+}
+// Rendering, repeated selections and legacy counters cannot farm rewards.
+awardAchievement=function(){};markPeriod=function(){};updateResearchProgress=function(){};recordProgressEvent=function(){};renderProgressScreens=function(){if($('nextBadgeTitle'))sqRenderBadges()};
+async function sqAnalyze(){const symbol=$('ticker').value,period=state.period,mode=state.mode;if(mode==='auto_eod')await fetchData();else render();if(symbol===$('ticker').value&&period===state.period&&mode===state.mode&&calc()&&(mode!=='auto_eod'||state.dataMeta?.symbol===symbol))sqEarn('first')}
+const sqOriginalSave=saveCurrent;
+saveCurrent=function(){if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqJSON('splab_history',[]);if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,inputMode:state.mode,sourceContext:state.dataMeta||null});localStorage.setItem('splab_history',JSON.stringify(list));sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
+function sqSaveNote(){const valid=$('researchReason').value.trim().length>=12;$('researchReason').setAttribute('aria-invalid',String(!valid));$('noteValidation').textContent=valid?'':'Add a little more detail: use at least 12 characters to capture your reasoning.';if(valid&&saveCurrent())$('noteValidation').textContent='Research note saved on this device.'}
+const sqOriginalWatch=addToWatchlist;
+addToWatchlist=function(symbol){sqOriginalWatch(symbol);const current=(symbol||$('ticker').value).trim().toUpperCase(),item=getWatchlist().find(x=>x.symbol===current);if(item?.snapshot?.price>0&&['low','mid','high'].every(k=>Number.isFinite(item.snapshot[k])))sqEarn('watch')};
+const sqOriginalCompare=toggleCompare;
+toggleCompare=function(symbol){sqOriginalCompare(symbol);if(sqCompareSnapshots().length>=2)sqEarn('compare');sqRenderBadges()};
+
 $("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
 $("ticker").addEventListener("keydown",e=>{
   const rows=[...document.querySelectorAll("#tickerSuggestions .suggest-row")];
@@ -1027,15 +1430,15 @@ if($("watchCurrentBtn"))$("watchCurrentBtn").addEventListener('click',()=>addToW
 if($("watchAddBtn"))$("watchAddBtn").addEventListener('click',()=>addToWatchlist($("ticker").value));
 if($("compareClearBtn"))$("compareClearBtn").addEventListener("click",clearCompare);
 
-$("periodTabs").addEventListener("click",e=>{if(e.target.dataset.p){setPeriod(e.target.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
-$("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode)});
-["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",render));
-$("ticker").addEventListener("input",()=>{render();schedulePredictiveSearch();});
-$("correction").addEventListener("input",()=>{$("corrLabel").textContent=$("correction").value;render()});
-$("analyzeBtn").addEventListener("click",()=>{recordProgressEvent("analysis");state.mode==="auto_eod"?fetchData():render()});
+$("periodTabs").addEventListener("click",e=>{const button=e.target.closest("[data-p]");if(button){setPeriod(button.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
+$("dataSeg").addEventListener("click",async e=>{if(e.target.dataset.mode){setMode(e.target.dataset.mode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}}});
+["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",()=>{render();sqPersist()}));
+$("ticker").addEventListener("input",()=>{invalidateMarketRequest();state.extra={};state.dataMeta=null;state.demoRaw=null;$("price").value="";$("perf").value="";render();schedulePredictiveSearch();sqPersist();});
+$("correction").addEventListener("input",e=>sqSetCorrection(e.target.value));
+$("analyzeBtn").addEventListener("click",sqAnalyze);
 $("fetchBtn").addEventListener("click",()=>fetchData(true));
 $("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device.")}); if($("forgetAlphaBtn"))$("forgetAlphaBtn").addEventListener("click",()=>{localStorage.removeItem("sq_alpha_key");$("alphaKey").value="";status("Alpha Vantage API key removed from this device.")});
-if($("providerSelect"))$("providerSelect").addEventListener("change",()=>{localStorage.setItem("sq_provider_pref",$("providerSelect").value);if(state.mode==="auto_eod")maybeAutoLoadEod()});
+if($("providerSelect"))$("providerSelect").addEventListener("change",()=>{invalidateMarketRequest();localStorage.setItem("sq_provider_pref",$("providerSelect").value);if(state.mode==="auto_eod")maybeAutoLoadEod()});
 if($("seasonModeSwitch"))$("seasonModeSwitch").addEventListener("click",e=>{const btn=e.target.closest('[data-season-mode]');if(btn)setSeasonalityMode(btn.dataset.seasonMode)});
 if($("seasonalityLookback"))$("seasonalityLookback").addEventListener("input",()=>{localStorage.setItem("sq_seasonality_lookback",$("seasonalityLookback").value);if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`;recomputeSeasonality()});
 if($("seasonalityYearChips"))$("seasonalityYearChips").addEventListener("click",e=>{const btn=e.target.closest('[data-season-year]');if(!btn)return;const y=Number(btn.dataset.seasonYear),years=selectedSeasonYears();saveSelectedSeasonYears(years.includes(y)?years.filter(v=>v!==y):[...years,y]);recomputeSeasonality()});
@@ -1051,11 +1454,11 @@ function resultSummary(){
 }
 async function shareResult(){const text=resultSummary();try{if(navigator.share){await navigator.share({title:"StrikeQuests — Strike Price Calculator",text})}else{await navigator.clipboard.writeText(text);status("Result copied to clipboard.","good")}}catch(e){}}
 async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
-function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference()}
+function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference();if($("sharedApiState"))$("sharedApiState").textContent=state.sharedApiReady?"Online":"Setup needed"}
 function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view))}
 const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=localStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback")){$("seasonalityLookback").value=localStorage.getItem("sq_seasonality_lookback")||"10";if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`}
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
-markPeriod(state.period);renderHistory();renderWatchlist();renderProgressScreens();render();renderSeasonality();setMode(state.mode||"auto_eod");setTimeout(maybeAutoLoadEod,250);
+renderHistory();renderWatchlist();sqInitNext();renderSeasonality();
 const splash=$("appSplash");
 if(splash){
   const hideSplash=()=>splash.classList.add("hide");

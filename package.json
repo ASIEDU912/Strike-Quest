@@ -1,0 +1,12 @@
+{
+  "name": "strikequests-regression-checks",
+  "private": true,
+  "version": "10.1.1-review",
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "scripts": {
+    "test": "node test/regressions.cjs && node test/shared-regressions.cjs && node test/service-worker.cjs && node test/data-integrity.cjs && node test/badge-migration.cjs",
+    "test:browser": "node test/browser-regressions.cjs && node test/browser-flows.cjs && node test/next-build.cjs"
+  }
+}
