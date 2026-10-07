@@ -1,4 +1,4 @@
-// Real elapsed-time motion regression. All application requests are fulfilled from
+// Multi-host/context elapsed-time motion regression. All application requests are fulfilled from
 // local files; unexpected traffic is blocked. No provider or paid artifact service.
 'use strict';
 const assert = require('node:assert/strict');
@@ -8,10 +8,13 @@ const zlib = require('node:zlib');
 const crypto = require('node:crypto');
 const playwright = require('playwright');
 const root = path.resolve(__dirname, '..');
-const base = 'https://strikequests.motion.test';
+const base = 'https://strikequests.roles-motion.test';
 const engines = (process.env.MOTION_BROWSERS || 'chromium,webkit').split(',');
 const reports = [];
-let browser;
+let browser, activeHost='questsCompanionHost', activeContext='quests';
+const hostIds={research:'companionHost',quests:'questsCompanionHost',seasonality:'seasonalityCompanionHost',saved:'savedCompanionHost',watchlist:'watchlistCompanionHost'};
+const selector=s=>`#${activeHost} ${s}`;
+async function openHost(page,context){activeContext=context;activeHost=hostIds[context];await page.evaluate(context=>{if(context==='seasonality')sqOpenResearchTool('seasonality');else setView(context);},context);await page.locator('#'+activeHost).scrollIntoViewIfNeeded();await page.waitForTimeout(1100);}
 
 // Decode screenshot pixels rather than comparing compressed PNG bytes/metadata.
 function pngPixels(buffer) {
@@ -77,22 +80,22 @@ async function stage(page,xp) {
     sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T00:00:00Z',mode:'demo',origin:'motion-test'}])),horizons:[]});
     sqRenderBadges();
   },xp);
-  await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
+  await page.locator('#'+activeHost).scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
   assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
 }
 async function artClip(page) {
   // Fixed viewport crop. Cropping to a moving element would hide whole-art motion.
-  const box=await page.locator('#companionHost .sq-companion__art').boundingBox();
+  const box=await page.locator(selector('.sq-companion__art')).boundingBox();
   return {x:Math.floor(box.x)-12,y:Math.floor(box.y)-12,width:Math.ceil(box.width)+24,height:Math.ceil(box.height)+24};
 }
 async function trace(page,duration=4200) {
-  return page.evaluate(duration=>new Promise((resolve,reject)=>{
-    const samples=[],start=performance.now(),svg=document.querySelector('#companionHost svg');
+  return page.evaluate(({duration,host})=>new Promise((resolve,reject)=>{
+    const samples=[],start=performance.now(),svg=document.querySelector('#'+host+' svg');
     let frame;const watchdog=setTimeout(()=>{cancelAnimationFrame(frame);reject(new Error('Motion sampling stalled before '+duration+'ms'));},duration+7000);
     const parts={body:'.sq-mascot__body',head:'.sq-mascot__head',tail:'.sq-mascot__tail',eyes:'.sq-mascot__eyes',drone:'.sq-mascot__drone',archive:'.sq-mascot__archive',wings:'.sq-mascot__wings',aura:'.sq-mascot__aura'};
     const tick=now=>{
       try {
-      const art=document.querySelector('#companionHost .sq-companion__art'),r=art.getBoundingClientRect();
+      const art=document.querySelector('#'+host+' .sq-companion__art'),r=art.getBoundingClientRect();
       const sample={time:now-start,art:{x:r.x,y:r.y}};
       for(const [key,selector] of Object.entries(parts)) {
         const el=svg.querySelector(selector);if(!el)continue;
@@ -106,11 +109,11 @@ async function trace(page,duration=4200) {
       }catch(error){clearTimeout(watchdog);reject(error);}
     };
     frame=requestAnimationFrame(tick);
-  }),duration);
+  }),{duration,host:activeHost});
 }
 async function motion(page,label,emit=false) {
   const before=await page.evaluate(()=>JSON.stringify(sqBadges().earned));
-  assert.equal(await page.locator('#companionHost [data-mascot-motion]').textContent(),'Pause motion');
+  assert.equal(await page.locator(selector('[data-mascot-motion]')).textContent(),'Pause motion');
   assert.equal(await page.evaluate(()=>matchMedia('(prefers-reduced-motion: reduce)').matches),false);
   const clip=await artClip(page),frames=[];
   frames.push(await page.screenshot({clip,animations:'allow'}));
@@ -127,13 +130,13 @@ async function motion(page,label,emit=false) {
   assert.equal(await page.evaluate(()=>JSON.stringify(sqBadges().earned)),before);
   // Disable only the HTML layer in this isolated fixture. SVG parts must still
   // change the rendered pixels; a whole-image sway cannot hide frozen SVG paint.
-  await page.locator('#companionHost .sq-companion__art').evaluate(el=>{el.style.animation='none'});
+  await page.locator(selector('.sq-companion__art')).evaluate(el=>{el.style.animation='none'});
   const partClip=await artClip(page),partA=await page.screenshot({clip:partClip,animations:'allow'});
   await page.waitForTimeout(900);const partB=await page.screenshot({clip:partClip,animations:'allow'});
   await page.waitForTimeout(900);const partC=await page.screenshot({clip:partClip,animations:'allow'});
   const independentPaintPixels=Math.max(changedPixels(partA,partB),changedPixels(partA,partC));
   assert.ok(independentPaintPixels>40,`${label}: SVG parts must visibly repaint independently`);
-  await page.locator('#companionHost .sq-companion__art').evaluate(el=>{el.style.removeProperty('animation')});
+  await page.locator(selector('.sq-companion__art')).evaluate(el=>{el.style.removeProperty('animation')});
   const result={label,independentPaintPixels,elapsedMs:Math.round(samples.at(-1).time),samples:samples.length,htmlTravelPx:distanceRange(samples,'art'),bodyLocalTravel:distanceRange(samples,'body'),headLocalTravel:distanceRange(samples,'head'),tailLocalTravel:distanceRange(samples,'tail'),changedPixels:pixels};
   reports.push(result);console.log('SQ_MOTION_PASS '+JSON.stringify(result));
   if(emit)for(let i=0;i<frames.length;i++) {
@@ -148,45 +151,49 @@ async function still(page,label) {
   const clip=await artClip(page),a=await page.screenshot({clip,animations:'allow'}),samples=await trace(page,1200),b=await page.screenshot({clip,animations:'allow'});
   assert.equal(changedPixels(a,b),0,`${label}: paused/reduced art pixels must stay unchanged`);
   for(const key of ['art','body','head','tail'])assert.ok(distanceRange(samples,key)<.001,`${label}: ${key} must stay still`);
-  assert.equal(await page.locator('#companionHost .sq-companion__art, #companionHost .sq-mascot *').evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true);
+  assert.equal(await page.locator(selector('.sq-companion__art')+', '+selector('.sq-mascot *')).evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true);
   console.log('SQ_MOTION_PASS '+JSON.stringify({label,still:true,samples:samples.length}));
 }
 (async()=>{
-  for(const engine of engines) {
+  for(const engine of engines){
     assert.ok(['chromium','webkit'].includes(engine));
     browser=await playwright[engine].launch({headless:true,...(engine==='chromium'&&process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
     const {page,context,check}=await app(engine);
-    for(const xp of [0,50,150,375,500]){await stage(page,xp);await motion(page,`${engine}-390-${xp}xp`,xp===375);}
+    await openHost(page,'quests');
+    for(const xp of [0,50,150,375,500]){await stage(page,xp);await motion(page,`${engine}-quests-390-${xp}xp`,xp===500);}
     await stage(page,375);
-    const blink=await trace(page,5400);assert.ok(distanceRange(blink,'eyes')>3,`${engine}: eyes must blink over a complete cycle`);
-    await page.locator('#companionHost [data-mascot-motion]').click();await still(page,`${engine}-paused`);
-    await page.reload();await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
-    assert.equal(await page.locator('#companionHost [data-mascot-motion]').textContent(),'Resume motion');
-    await still(page,`${engine}-paused-reload`);
-    await page.locator('#companionHost [data-mascot-motion]').click();await motion(page,`${engine}-resumed-after-reload`);
-    await page.locator('#companionSummary').click();
-    assert.equal(await page.locator('#companionHost .sq-companion__art, #companionHost .sq-mascot *').evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true);
-    await page.reload();assert.equal(await page.locator('#companionPanel').evaluate(el=>el.open),false);
-    await page.locator('#companionSummary').click();await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
-    await motion(page,`${engine}-reopened-after-reload`);
-    await page.emulateMedia({reducedMotion:'reduce'});await still(page,`${engine}-reduced-motion`);
-    assert.equal(await page.locator('#companionHost [data-mascot-motion]').isVisible(),false);
-    await page.emulateMedia({reducedMotion:'no-preference'});await motion(page,`${engine}-motion-preference-restored`);
-    // A level-up's finite hop must settle back into the infinite idle animation.
-    await page.evaluate(()=>{sqCompanions.get('research').controller.update(500);});
-    await page.waitForTimeout(1700);
-    assert.equal(await page.locator('#companionHost .sq-mascot--idle').count(),1);
-    await motion(page,`${engine}-post-levelup-idle`);
-    // Returning from a hidden application view must restart visible motion.
-    await page.locator('[data-view="watchlist"]').click();await page.locator('[data-view="research"]').click();
-    await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);await motion(page,`${engine}-return-to-research`);
-    check();await context.close();
-    for(const width of [320,1440]) {
-      const x=await app(engine,width);await stage(x.page,375);await motion(x.page,`${engine}-${width}-375xp`);
-      assert.ok(await x.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-      x.check();await x.context.close();
+    for(const name of ['seasonality','saved','watchlist']){
+      await openHost(page,name);
+      const part=name==='watchlist'?'.sq-mascot__drone':'.sq-mascot__head';
+      const expected={seasonality:'sq-mascot-curious',saved:'sq-mascot-reflect',watchlist:'sq-mascot-scan'}[name];
+      assert.equal(await page.locator(selector(part)).evaluate(el=>getComputedStyle(el).animationName),expected);
+      await motion(page,`${engine}-${name}-390-375xp`,name==='seasonality');
     }
-    await browser.close();browser=null;
+    const researchBefore=await page.evaluate(()=>JSON.stringify({xp:sqResearchXp(),earned:sqBadges().earned,history:sqJSON('splab_history',[]),watch:getWatchlist()}));
+    await page.locator(selector('[data-mascot-motion]')).click();
+    assert.equal(await page.locator('[data-mascot-motion]').evaluateAll(nodes=>nodes.every(el=>el.getAttribute('aria-pressed')==='true')),true);
+    await still(page,`${engine}-watchlist-global-pause`);
+    await openHost(page,'quests');await still(page,`${engine}-quests-paused-from-watchlist`);
+    await page.reload();await openHost(page,'saved');await still(page,`${engine}-saved-pause-after-reload`);
+    await page.locator(selector('[data-mascot-motion]')).click();await motion(page,`${engine}-saved-resumed`);
+    assert.equal(await page.locator('[data-mascot-motion]').evaluateAll(nodes=>nodes.every(el=>el.getAttribute('aria-pressed')==='false')),true);
+    await page.locator('#savedCompanionSummary').click();
+    assert.equal(await page.locator('.sq-companion-panel').evaluateAll(nodes=>nodes.every(el=>!el.open)),true);
+    assert.equal(await page.locator('.sq-companion__art,.sq-mascot *').evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true);
+    await page.reload();await page.evaluate(()=>setView('quests'));await page.locator('#questsCompanionSummary').click();await openHost(page,'quests');
+    assert.equal(await page.locator('.sq-companion-panel').evaluateAll(nodes=>nodes.every(el=>el.open)),true);
+    await motion(page,`${engine}-quests-global-reopen`);
+    await page.emulateMedia({reducedMotion:'reduce'});
+    for(const name of ['quests','seasonality','saved','watchlist']){await openHost(page,name);await still(page,`${engine}-${name}-reduced-motion`);}
+    await page.emulateMedia({reducedMotion:'no-preference'});await openHost(page,'seasonality');await motion(page,`${engine}-seasonality-reduced-motion-restored`);
+    assert.equal(await page.locator('#questsCompanionHost .sq-companion__art, #questsCompanionHost .sq-mascot *').evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true,'Hidden Quests must stop motion');
+    assert.equal(await page.locator('.sq-companion__status').evaluateAll(nodes=>nodes.every(el=>!el.textContent)),true,'Navigation/motion must never announce earned XP');
+    assert.equal(await page.evaluate(()=>JSON.stringify({xp:sqResearchXp(),earned:sqBadges().earned,history:sqJSON('splab_history',[]),watch:getWatchlist()})),researchBefore);
+    for(const name of ['quests','seasonality','saved','watchlist']){
+      await page.setViewportSize({width:320,height:780});await openHost(page,name);
+      assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    }
+    check();await context.close();await browser.close();browser=null;
   }
-  console.log('SQ_MOTION_COMPLETE '+JSON.stringify({engines,temporalChecks:reports.length,liveProviderRequests:0,checks:reports}));
+  console.log('SQ_ROLES_MOTION_COMPLETE '+JSON.stringify({engines,temporalChecks:reports.length,liveProviderRequests:0,checks:reports}));
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();});

@@ -14,9 +14,9 @@ concurrency:
 
 jobs:
   fixture-browser:
-    if: github.event.pull_request.head.repo.full_name == github.repository && (github.head_ref == 'review/research-guidance-provenance' || github.head_ref == 'fix/lumi-visible-motion')
+    if: github.event.pull_request.head.repo.full_name == github.repository && (github.head_ref == 'review/research-guidance-provenance' || github.head_ref == 'fix/lumi-visible-motion' || github.head_ref == 'feat/lumi-contextual-guides')
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       CI: 'true'
       REVIEW_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
