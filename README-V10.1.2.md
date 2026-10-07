@@ -33,3 +33,9 @@ Review validation on 2026-10-07:
 The browser suite covers the next-step path, keyboard focus and visible evidence, repeated save/reload and correction flows, source labels, provider-edit detachment and 320px, 390px and desktop layouts. Browser checks must actually run before release: source checks and the Node DOM adapter do not establish visual correctness or accessibility.
 
 This branch is for a draft pull request. Merging to the existing GitHub Pages source (`main`, repository root) can publish the site and requires release approval.
+
+## Review browser workflow
+
+The approved `Review browser QA` workflow runs only for the same-repository `review/research-guidance-provenance` pull-request branch. It checks out the exact head SHA on a standard Ubuntu runner with read-only repository contents and no secrets, deployment, dependency cache or artifact upload. Dependencies use the pinned Playwright version.
+
+The job runs Node and all four fixture-only browser suites, then emits a bounded set of synthetic-data JPEG screenshots in its ordinary logs. Each image includes the tested commit, byte count and SHA-256 for verification before visual review. This evidence transport does not itself establish a visual pass; the decoded images must be inspected.

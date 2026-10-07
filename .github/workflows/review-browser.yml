@@ -1,0 +1,48 @@
+name: Review browser QA
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: strikequests-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  fixture-browser:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'review/research-guidance-provenance'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+      REVIEW_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      npm_config_update_notifier: 'false'
+    steps:
+      - name: Check out the exact review head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+      - name: Verify the tested commit
+        run: test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
+      - name: Install pinned test dependencies
+        id: dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - name: Install Chromium
+        id: chromium
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Run Node regression suites
+        run: npm test
+      - name: Run fixture-only browser suites
+        run: npm run test:browser
+      - name: Emit bounded fixture screenshots to logs
+        if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
+        run: node test/review-evidence.cjs
