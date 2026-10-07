@@ -85,7 +85,13 @@ async function fixture(width=390) {
   });
   await context.routeWebSocket('**/*',socket=>{unexpected.push(socket.url());socket.close();});
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(base);await page.waitForFunction(()=>document.querySelectorAll('[data-mascot-tap]').length===5);
+  // The visually hidden legacy splash still writes a session flag after 280ms.
+  // Let startup finish before attributing any storage write to artwork input.
+  await page.goto(base);await page.waitForFunction(()=>document.querySelectorAll('[data-mascot-tap]').length===5&&document.getElementById('appSplash').classList.contains('hide'));
+  const startup=await protectedState(page);
+  assert.ok(startup.writes.some(write=>write.store==='session'&&write.name==='setItem'&&write.args[0]==='strikequests_v9_splash_seen'),'Startup session write completed before the interaction baseline');
+  await page.waitForTimeout(1450);
+  assert.deepEqual(await protectedState(page),startup,'Untapped startup control has stable data and storage');
   return {page,context,check(){assert.deepEqual(errors,[],'No browser errors');assert.deepEqual(unexpected,[],'No unexpected/provider/WebSocket traffic');}};
 }
 async function visit(page,h) {
@@ -110,7 +116,7 @@ async function seedStage(page,xp) {
 async function protectedState(page) {
   return page.evaluate(()=>{
     const storage=store=>Object.fromEntries(Object.keys(store).sort().map(key=>[key,store.getItem(key)]));
-    return JSON.stringify({state,inputs:['ticker','price','perf','divisor','increment','researchReason'].map(id=>[id,$(id).value]),badges:sqBadges(),xp:sqResearchXp(),saved:sqJSON('splab_history',[]),watch:getWatchlist(),compare:getCompareSelection(),toast:$('badgeToast').textContent,local:storage(localStorage),session:storage(sessionStorage),writes:window.__tapStorageWrites});
+    return {writes:window.__tapStorageWrites,inputs:['ticker','price','perf','divisor','increment','researchReason'].map(id=>[id,$(id).value]),badges:sqBadges(),xp:sqResearchXp(),saved:sqJSON('splab_history',[]),watch:getWatchlist(),compare:getCompareSelection(),toast:$('badgeToast').textContent,local:storage(localStorage),session:storage(sessionStorage),state};
   });
 }
 async function reaction(page,h) {
@@ -235,7 +241,7 @@ async function finitePaint(page,h,input,label,emit=false) {
   assert.ok(painted>12,`${label}: moving SVG part must visibly repaint (${painted} pixels)`);
   assert.ok(live.at(-1).time-live[0].time>=650,`${label}: finite response is perceptible`);
   await clean(page,h);assert.equal(samples.at(-1)[kind].name,'none',`${label}: finite transform settles`);
-  assert.equal(await protectedState(page),before,`${label}: no XP, data, provider state, toast or storage writes`);
+  assert.deepEqual(await protectedState(page),before,`${label}: no XP, data, provider state, toast or storage writes`);
   if(emit)for(let i=0;i<frames.length;i++)emitImage(frames[i],`${label}-${kind}-frame-${i}.png`,i);
   return {kind,painted,travel:travel(live,kind)};
 }
@@ -250,7 +256,7 @@ async function matrix(page,engine) {
       assert.deepEqual(results.map(r=>r.kind).sort(),[...reactions].sort(),'Three successive taps include wave, head tilt and tail response');
       const before=await protectedState(page);await activate(page,h,'Space');
       assert.deepEqual(await reaction(page,h),[results[0].kind],'The three-response cycle repeats');await feedback(page,h);
-      await page.waitForTimeout(1150);await clean(page,h);assert.equal(await protectedState(page),before,'Space is cosmetic and storage-free');
+      await page.waitForTimeout(1150);await clean(page,h);assert.deepEqual(await protectedState(page),before,'Space is cosmetic and storage-free');
       pass(`${engine}/${h.context}/${stage}: pointer, touch, Enter, Space and finite SVG paint`,{xp,parts:results});
       await page.evaluate(()=>document.getElementById('tap-paint-isolation').remove());
     }
@@ -268,7 +274,7 @@ async function staticResponse(page,h,input,label,emit=false) {
   const samples=await page.evaluate(()=>window.__tapTrace);
   for(const key of ['art','wave','tilt','tail'])assert.ok(travel(samples,key)<.01,`${label}: ${key} does not animate`);
   assert.equal(await page.locator(select(h,'.sq-companion__art')+','+select(h,'.sq-mascot *')).evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true,'Motion preference suppresses every art animation');
-  await clean(page,h);assert.equal(await protectedState(page),before,`${label}: static acknowledgement changes no state/storage`);
+  await clean(page,h);assert.deepEqual(await protectedState(page),before,`${label}: static acknowledgement changes no state/storage`);
   if(emit) {
     await activate(page,h,input);await feedback(page,h);
     emitImage(await page.locator('#'+h.panel).screenshot({animations:'allow'}),label+'-static-feedback.png',0);
@@ -284,7 +290,7 @@ async function interruptionAndPreferences(page,engine) {
   await page.waitForTimeout(480);assert.deepEqual(await reaction(page,h),second,'The older timer cannot erase the newer response');await feedback(page,h);
   await page.waitForTimeout(650);await clean(page,h);
   for(let i=0;i<12;i++){await activate(page,h,i%2?'touch':'pointer');assert.equal((await reaction(page,h)).length,1);await feedback(page,h);}
-  await page.waitForTimeout(1150);await clean(page,h);assert.equal(await protectedState(page),before,'Rapid taps have no data/storage side effects');
+  await page.waitForTimeout(1150);await clean(page,h);assert.deepEqual(await protectedState(page),before,'Rapid taps have no data/storage side effects');
   pass(`${engine}: rapid replacement, no stacked classes, stale timer protection and settlement`);
 
   await activate(page,h,'pointer');await page.locator('[data-view="watchlist"]').click();
@@ -309,7 +315,7 @@ async function interruptionAndPreferences(page,engine) {
   await visit(page,h);await page.locator('#'+h.summary).click();
   const persisted=await page.evaluate(()=>({xp:sqResearchXp(),badges:JSON.stringify(sqBadges()),paused:localStorage.getItem('sq_companion_paused'),collapsed:localStorage.getItem('sq_companion_collapsed')}));
   assert.equal(persisted.paused,'true');assert.equal(persisted.collapsed,'true');
-  await page.reload();await page.waitForFunction(()=>document.querySelectorAll('[data-mascot-tap]').length===5);
+  await page.reload();await page.waitForFunction(()=>document.querySelectorAll('[data-mascot-tap]').length===5&&document.getElementById('appSplash').classList.contains('hide'));
   assert.deepEqual(await page.evaluate(()=>({xp:sqResearchXp(),badges:JSON.stringify(sqBadges()),paused:localStorage.getItem('sq_companion_paused'),collapsed:localStorage.getItem('sq_companion_collapsed')})),persisted,'XP and prior pause/collapse settings survive reload unchanged');
   for(const item of hosts){assert.equal(await page.locator('#'+item.panel).evaluate(el=>el.open),false);await clean(page,item);}
   await visit(page,h);await staticResponse(page,h,'Enter',`${engine}-paused-after-reload`);
@@ -332,7 +338,7 @@ async function responsive(page,engine,width) {
     await activate(page,h,'Enter',true);await feedback(page,h);await page.waitForTimeout(400);
     const after=await page.locator(select(h,'[data-mascot-tap]')).boundingBox();
     for(const key of ['x','y','width','height'])assert.ok(Math.abs(initial[key]-after[key])<.1,`${engine}/${width}/${h.context}: fixed target ${key}`);
-    await page.waitForTimeout(750);await clean(page,h);assert.equal(await protectedState(page),before);
+    await page.waitForTimeout(750);await clean(page,h);assert.deepEqual(await protectedState(page),before);
   }
   pass(`${engine}/${width}: all placements retain fixed 44px targets, focus and overflow safety`);
 }
