@@ -7,6 +7,7 @@
   },
   "scripts": {
     "test": "node test/regressions.cjs && node test/shared-regressions.cjs && node test/service-worker.cjs && node test/data-integrity.cjs && node test/badge-migration.cjs && node test/research-guidance.cjs && node test/core-experience.cjs && node test/mascot-assets.cjs && node test/mascot-controller.cjs",
-    "test:browser": "node test/browser-regressions.cjs && node test/browser-flows.cjs && node test/next-build.cjs && node test/research-guidance-browser.cjs"
+    "test:browser": "node test/browser-regressions.cjs && node test/browser-flows.cjs && node test/next-build.cjs && node test/research-guidance-browser.cjs",
+    "test:motion": "node test/mascot-motion-browser.cjs"
   }
 }
