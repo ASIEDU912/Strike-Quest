@@ -22,7 +22,8 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icon-180.png">
   <title>StrikeQuests — Strike Price Calculator</title>
-  <style>
+  <link rel="stylesheet" href="./mascot.css">
+<style>
     :root{
       --bg:#090C10;--bg2:#0D1218;--panel:#121820;--panel2:#17202A;--line:#27313D;
       --text:#F7FAFC;--muted:#98A6B7;--blue:#2F95FF;--green:#42D77D;--yellow:#FFB94C;--red:#FF6464;
@@ -238,6 +239,12 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 @media(max-width:700px){.quick-picks{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.quick-pick{min-height:132px;padding:12px 3px}.quick-pick span{font-size:8px}.quick-pick .provider-label{font-size:7px;min-height:20px}.badge-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.new-badge{padding:17px 10px 15px}.new-badge svg{width:90px;height:96px}.new-badge b{font-size:12px}.new-badge p{font-size:10px;min-height:60px}.new-badge[data-badge=complete]{grid-column:1/-1}.new-badge[data-badge=complete] p{min-height:0}.reflection-milestone .new-badge{grid-template-columns:70px 1fr;column-gap:12px}.reflection-milestone svg{width:70px;height:85px}.reflection-milestone .new-badge p{min-height:0}}
 @media(max-width:350px){.quick-picks{grid-template-columns:repeat(3,minmax(0,1fr))}.new-badge{padding-left:8px;padding-right:8px}.new-badge svg{width:80px}.reflection-milestone .new-badge{display:block;text-align:center}.reflection-milestone svg{margin:0 auto 10px}}
 
+/* Guided research and source-aware snapshots. */
+.mission-next{display:flex;align-items:center;gap:16px;margin-top:18px;padding-top:16px;border-top:1px solid #365570}.mission-next>div{flex:1;min-width:0}.mission-next b{font-size:13px;color:#f0d18a}.mission-next p{margin:6px 0 0;font-size:12px;line-height:1.5}.mission-next .btn{flex:none;max-width:100%;white-space:normal}.next-badge .btn{margin-top:8px}.snapshot-source{font-size:11px;line-height:1.5;color:#bbd5e9;margin:10px 0;overflow-wrap:anywhere}.snapshot-source.warn{color:#f2cf89}.snapshot-source b{display:block;font-size:11px}.snapshot-source span{display:block;color:#abc1d5}.review-evidence{font-size:12px;color:#d7e8f5;line-height:1.6}.research-jump{scroll-margin:16px 0 110px}.input-provenance-help{font-size:11px;color:#afc9df;line-height:1.5;margin:10px 0 0}.compare-context-note{font-size:11px;color:#afc9df;line-height:1.6;margin-top:8px}
+@media(max-width:700px){.mission-next{display:block}.mission-next .btn{width:100%;margin-top:12px}.history-top{flex-wrap:wrap}.watch-stat b,.compare-metric b{overflow-wrap:anywhere}.watch-snapshot{grid-template-columns:repeat(2,minmax(0,1fr))}.watch-actions{flex-wrap:wrap}.watch-actions .tiny-btn{min-height:44px}.next-badge .btn{width:100%}}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2>div,input,select{min-width:0}.analysis-card .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.analysis-card .hero>div{min-width:0}.analysis-card .price strong{overflow-wrap:anywhere}.metrics,.compare-metrics,.compare-target-row{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{min-width:0}.metric b,.compare-target-row b{overflow-wrap:anywhere}
+.core-access{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}.core-access button{display:grid;grid-template-columns:30px minmax(0,1fr);gap:3px 8px;align-items:center;text-align:left;min-height:76px;padding:13px;border:1px solid #49769a;border-radius:16px;background:linear-gradient(120deg,#234568,#122b44);color:#edf7ff}.core-access button>span{grid-row:1/3;font-size:27px;color:#e6cd86}.core-access b{font-size:14px}.core-access small{font-size:10px;color:#afcde6;line-height:1.5}.sq-companion-panel{margin-top:16px;border-top:1px solid #365570;padding-top:12px}.sq-companion-panel>summary{color:#c7dcf4;font-size:12px;min-height:44px;padding:10px 0;cursor:pointer}.sq-companion-panel:not([open]) .sq-mascot *{animation:none!important}.sq-companion__motion{min-height:44px!important}.mission-step-label{display:block;color:#a9c6df;font-size:10px;line-height:1.5;margin-top:5px}.mission-next progress{display:block;width:100%;height:5px;margin:10px 0 0}.core-access button:focus-visible,.sq-companion-panel summary:focus-visible{outline:3px solid #8ed9ff;outline-offset:3px}
+@media(max-width:350px){.core-access{gap:7px}.core-access button{grid-template-columns:minmax(0,1fr);padding:11px}.core-access button>span{display:none}.core-access b{font-size:13px}.core-access small{font-size:10px}}
 </style>
 </head>
 <body>
@@ -261,13 +268,14 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
     <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
   </div>
 
-  <section class="mode-banner" aria-label="Data privacy mode"><div><strong id="modeTitle">DEMO • SYNTHETIC EXAMPLE</strong><p id="modeDescription">Generated learning values. No provider connection.</p></div><div class="mode-buttons"><button type="button" data-private-mode="demo" aria-pressed="true">Demo</button><button type="button" data-private-mode="manual" aria-pressed="false">Manual</button><button type="button" data-private-mode="auto_eod" aria-pressed="false">Automatic</button></div></section>
+  <nav class="core-access" aria-label="Main research tools"><button type="button" id="openTargetsBtn"><span aria-hidden="true">◎</span><b>Low · Mid · High</b><small id="coreScenarioLabel">2-Year · 10% correction</small></button><button type="button" id="openSeasonalityBtn"><span aria-hidden="true">◷</span><b>Seasonality</b><small>Monthly patterns &amp; sample sizes</small></button></nav>
+  <section class="mode-banner research-jump" id="dataModes" tabindex="-1" aria-label="Data privacy mode"><div><strong id="modeTitle">DEMO • SYNTHETIC EXAMPLE</strong><p id="modeDescription">Generated learning values. No provider connection.</p></div><div class="mode-buttons"><button type="button" data-private-mode="demo" aria-pressed="true">Demo</button><button type="button" data-private-mode="manual" aria-pressed="false">Manual</button><button type="button" data-private-mode="auto_eod" aria-pressed="false">Automatic</button></div></section>
 <main id="viewResearch" class="app-view active">
     <section class="card quest-hero">
       <div class="quest-grid">
         <div>
           <div class="eyebrow">Active mission</div>
-          <h2 id="missionTitle">Mission: Find a 1-Year entry zone</h2>
+          <h2 id="missionTitle">Explore the 2-year perspective</h2>
           <p id="missionLine">Apple Inc. (AAPL) • Auto EOD • 10% correction</p>
           <div class="badge-row">
             <span class="mood-pill mid" id="moodPill">🟡 Exploring</span>
@@ -280,6 +288,8 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
         </div>
         <div class="quest-orb"><div class="orb-ring"></div><div class="orb-core" id="orbTicker">AAPL</div></div>
       </div>
+      <div class="mission-next"><div><b id="missionNextTitle">Your next research step</b><p id="missionNextText"></p><progress id="missionNextProgress" max="2" value="0" aria-label="Current research mission progress" aria-describedby="missionNextStepLabel"></progress><small id="missionNextStepLabel" class="mission-step-label"></small></div><button type="button" class="btn primary" id="missionNextAction" aria-describedby="missionNextText">Show my next step</button></div>
+      <details class="sq-companion-panel" id="companionPanel" open><summary id="companionSummary">Lumi · Rookie · 0 XP</summary><div id="companionHost"></div></details>
       <div class="stage-strip">
         <div class="stage-mini"><b>Trend check</b><span id="stageTrendMini">Waiting for market context.</span></div>
         <div class="stage-mini"><b>Range check</b><span id="stageRangeMini">52-week range will appear here.</span></div>
@@ -303,7 +313,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 <button type="button" class="quick-pick" data-quick="TSLA" aria-label="Explore TSLA, Tesla"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 10q16-9 32 0M11 15q13-6 26 0M24 14v28m-7-25 7 7 7-7" fill="none" stroke="#f76e7a" stroke-width="4"/></svg></span><b>TSLA</b><span>Tesla</span></button>
 <button type="button" class="quick-pick" data-quick="VOO" aria-label="Explore VOO, S&amp;P 500, ETF from Vanguard"><span class="company-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="m7 12 17 27 17-27M14 12l10 17 10-17" fill="none" stroke="#ef7a83" stroke-width="4"/></svg></span><b>VOO</b><span>S&amp;P 500 ETF</span><small class=provider-label>Vanguard</small></button></div><p class="quick-note">Local identifying illustrations • ETF badges represent the fund provider, not a separate company stock.</p></section>
 
-    <section class="card mission-controls">
+    <section class="card mission-controls research-jump" id="missionControls">
       <div class="title-row"><h2 class="section-title" style="margin:0">Mission controls</h2><span class="consumer-tag">Change your perspective</span></div>
       <div class="row">
         <div class="grow">
@@ -313,23 +323,23 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
         </div>
         <button id="analyzeBtn" class="btn primary" style="align-self:end">Analyze</button>
       </div>
-      <div class="tabs" id="periodTabs" role="group" aria-label="Research horizon"><button class="tab" data-p="3m" aria-pressed="false">3M<small>Near term</small></button><button class="tab" data-p="6m" aria-pressed="false">6M<small>Half year</small></button><button class="tab active" data-p="1y" aria-pressed="true">1Y<small>Full year</small></button><button class="tab" data-p="2y" aria-pressed="false">2Y<small>Wider view</small></button><button class="tab" data-p="3y" aria-pressed="false">3Y<small>Longer story</small></button></div><p class="horizon-prompt" id="horizonPrompt"></p><p class="horizon-basis" id="horizonBasis"></p>
+      <div class="tabs" id="periodTabs" role="group" aria-label="Research horizon"><button class="tab" data-p="3m" aria-pressed="false">3M<small>Near term</small></button><button class="tab" data-p="6m" aria-pressed="false">6M<small>Half year</small></button><button class="tab" data-p="1y" aria-pressed="false">1Y<small>Full year</small></button><button class="tab active" data-p="2y" aria-pressed="true">2Y<small>Wider view</small></button><button class="tab" data-p="3y" aria-pressed="false">3Y<small>Longer story</small></button></div><p class="horizon-prompt" id="horizonPrompt"></p><p class="horizon-basis" id="horizonBasis"></p>
       <div class="correction-control"><label class="correction-label" for="correction">Correction assumption <span><span id="corrLabel">10</span>%</span></label><input id="correction" type="range" min="0" max="30" step="1" value="10" aria-describedby="correctionHelp"><div class="range-endpoints"><span>0%</span><span>15%</span><span>30%</span></div><p class="correction-help" id="correctionHelp">Stress the same scenario below. This assumption is not a likelihood of loss.</p></div>
-      <div class="grid2" style="margin-top:10px"><div><label for="divisor">Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="2"></div><div><label for="increment">Hypothetical level increment</label><select id="increment"><option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select></div></div>
+      <div class="grid2" style="margin-top:10px"><div><label for="divisor">Holding divisor</label><input id="divisor" type="number" min="0.1" step="0.1" value="1.5"></div><div><label for="increment">Hypothetical level increment</label><select id="increment"><option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select></div></div>
     </section>
 
-    <section class="card target-card" id="scenarioSection" aria-labelledby="scenarioHeading"><div class="title-row"><h2 id="scenarioHeading">Strike-zone scenarios</h2><span class="consumer-tag">Hypothetical</span></div><p class="target-context" id="targetContext"></p><div class="targets" id="targetsRow"><div class="target low"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m16 3 11 5v8c0 7-11 13-11 13S5 23 5 16V8Z"/><path d="m11 16 3 3 7-7"/></svg></span><div><small class="tier">Low</small><div class="target-detail">Larger assumed pullback</div></div><div class="target-price"><div class="n" id="low">—</div><div class="target-delta" id="lowDelta"></div></div></div><div class="target mid"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 4v24M5 10h22M9 10l-5 9h10Zm14 0-5 9h10ZM9 28h14"/></svg></span><div><small class="tier">Mid</small><div class="target-detail">Half the correction</div></div><div class="target-price"><div class="n" id="mid">—</div><div class="target-delta" id="midDelta"></div></div></div><div class="target high"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M11 21C9 11 17 5 28 4c-1 11-7 19-17 17ZM18 10l4 4M11 21l-5 5m3-10-5 2 1 6m10-1-1 6-6-1"/></svg></span><div><small class="tier">High</small><div class="target-detail">Uncorrected calculation</div></div><div class="target-price"><div class="n" id="high">—</div><div class="target-delta" id="highDelta"></div></div></div></div><div class="correction-control"><label class="correction-label" for="targetCorrection">Correction assumption <output id="targetCorrectionLabel" for="targetCorrection">10%</output></label><input id="targetCorrection" type="range" min="0" max="30" step="1" value="10" aria-describedby="targetCorrectionHelp"><div class="range-endpoints"><span>0%</span><span>15%</span><span>30%</span></div><p class="correction-help" id="targetCorrectionHelp">Drag to compare. Low and Mid update immediately; High stays at the uncorrected level.</p></div><button type="button" class="reset-btn" id="resetScenario">Reset correction to 10%</button><p class="target-invalid" id="targetInvalid"></p><p class="scenario-note">Colors and icons identify scenarios—not safety or profit probability. The shield does not mean principal protection. These are not listed option strikes, Greeks or profit forecasts.</p><details><summary>How these levels are calculated</summary><pre id="details"></pre><div class="notice" id="extra"></div></details></section>
+    <section class="card target-card research-jump" id="scenarioSection" tabindex="-1" aria-labelledby="scenarioHeading"><div class="title-row"><h2 id="scenarioHeading">Strike-zone scenarios</h2><span class="consumer-tag">Hypothetical</span></div><p class="target-context" id="targetContext"></p><div class="targets" id="targetsRow"><div class="target low"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m16 3 11 5v8c0 7-11 13-11 13S5 23 5 16V8Z"/><path d="m11 16 3 3 7-7"/></svg></span><div><small class="tier">Low</small><div class="target-detail">Larger assumed pullback</div></div><div class="target-price"><div class="n" id="low">—</div><div class="target-delta" id="lowDelta"></div></div></div><div class="target mid"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 4v24M5 10h22M9 10l-5 9h10Zm14 0-5 9h10ZM9 28h14"/></svg></span><div><small class="tier">Mid</small><div class="target-detail">Half the correction</div></div><div class="target-price"><div class="n" id="mid">—</div><div class="target-delta" id="midDelta"></div></div></div><div class="target high"><span class="target-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M11 21C9 11 17 5 28 4c-1 11-7 19-17 17ZM18 10l4 4M11 21l-5 5m3-10-5 2 1 6m10-1-1 6-6-1"/></svg></span><div><small class="tier">High</small><div class="target-detail">Uncorrected calculation</div></div><div class="target-price"><div class="n" id="high">—</div><div class="target-delta" id="highDelta"></div></div></div></div><div class="correction-control"><label class="correction-label" for="targetCorrection">Correction assumption <output id="targetCorrectionLabel" for="targetCorrection">10%</output></label><input id="targetCorrection" type="range" min="0" max="30" step="1" value="10" aria-describedby="targetCorrectionHelp"><div class="range-endpoints"><span>0%</span><span>15%</span><span>30%</span></div><p class="correction-help" id="targetCorrectionHelp">Drag to compare. Low and Mid update immediately; High stays at the uncorrected level.</p></div><button type="button" class="reset-btn" id="resetScenario">Reset correction to 10%</button><p class="target-invalid" id="targetInvalid"></p><p class="scenario-note">Colors and icons identify scenarios—not safety or profit probability. The shield does not mean principal protection. These are not listed option strikes, Greeks or profit forecasts.</p><details><summary>How these levels are calculated</summary><pre id="details"></pre><div class="notice" id="extra"></div></details></section>
 <section class="card market-inputs">
       <div class="row" style="align-items:center;justify-content:space-between"><h2 class="section-title" style="margin:0">Scenario inputs</h2><span class="source-badge" id="sourceBadge">Auto EOD</span></div>
       <p class="mode-label" id="modeLabel">Synthetic values</p><div class="grid2" style="margin-top:10px"><div><label for="price">Reference price</label><input id="price" type="number" step="0.01" value="192.75"></div><div><label for="perf">Historical dollar change</label><input id="perf" type="number" step="0.01" value="39.57"></div></div>
-      <div class="row" style="margin-top:10px"><button class="btn secondary grow" id="refreshBtn">Refresh EOD data</button><button class="btn secondary" id="watchCurrentBtn">☆ Watch</button></div>
+      <p class="input-provenance-help">Editing a provider price or historical change switches to private Manual inputs. Correction and divisor remain scenario assumptions.</p><div class="row" style="margin-top:10px"><button class="btn secondary grow" id="refreshBtn">Refresh EOD data</button><button class="btn secondary" id="watchCurrentBtn">☆ Watch</button></div>
       <div class="status" id="status">Ready.</div>
     </section>
 
-    <section class="card data-quality"><div class="quality-row"><strong>Know what is behind the numbers</strong><span class="quality-badge" id="qualityBadge">Synthetic</span></div><p id="qualitySummary"></p><details><summary>Sample size, coverage & limitations</summary><p id="coverageSummary"></p><p id="sampleCount"></p><div class="review-context-actions"><button type="button" class="btn secondary" id="reviewTrendsBtn">I reviewed the trend context</button><button type="button" class="btn secondary" id="reviewRangeBtn">I reviewed the 52-week range</button></div><button type="button" class="btn secondary" id="reviewSampleBtn">I reviewed the sample and its limits</button><p class="notice">A small or large historical sample is never a guarantee of an outcome.</p></details></section>
-<section class="card analysis-card">
+    <section class="card data-quality research-jump" id="dataQuality"><div class="quality-row"><strong>Know what is behind the numbers</strong><span class="quality-badge" id="qualityBadge">Synthetic</span></div><p id="qualitySummary" role="status"></p><details id="qualityDetails"><summary>Sample size, coverage & limitations</summary><p id="coverageSummary"></p><p id="sampleCount"></p><p class="review-evidence" id="reviewTrendEvidence"></p><p class="review-evidence" id="reviewRangeEvidence"></p><div class="review-context-actions"><button type="button" class="btn secondary" id="reviewTrendsBtn" aria-describedby="reviewTrendEvidence">I reviewed the trend context</button><button type="button" class="btn secondary" id="reviewRangeBtn" aria-describedby="reviewRangeEvidence">I reviewed the 52-week range</button></div><button type="button" class="btn secondary" id="reviewSampleBtn" aria-describedby="coverageSummary sampleCount">I reviewed the sample and its limits</button><p class="notice">A small or large historical sample is never a guarantee of an outcome.</p></details></section>
+<section class="card analysis-card" id="researchContext">
       <div class="topline"><h2 class="section-title" style="margin:0">Research context</h2><span class="subtle">Evidence → assumptions → scenarios</span></div>
-      <div class="hero"><div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div><div class="price"><span class="subtle">Current</span><br><strong id="outPrice">$192.75</strong></div></div>
+      <div class="hero"><div><div class="ticker" id="outTicker">AAPL</div><div class="subtle" id="outHorizon">1-Year • 10% correction</div></div><div class="price"><span class="subtle">Reference</span><br><strong id="outPrice">$192.75</strong></div></div>
       <div class="analysis-tabs" id="analysisTabs"><button type="button" class="analysis-tab active" data-analysis="overview">Overview</button><button type="button" class="analysis-tab" data-analysis="performance">Performance</button><button type="button" class="analysis-tab" data-analysis="seasonality">Seasonality</button><button type="button" class="analysis-tab" data-analysis="targets">Targets</button></div>
 
       <div id="analysisOverview" class="analysis-pane active">
@@ -345,7 +355,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
         <div class="mini-card" style="margin-top:13px"><h3>3. Historical Performance</h3><p id="powerText">Performance data will summarize here.</p><div class="badge-strip" id="badgeStrip"></div></div>
       </div>
 
-      <div id="analysisSeasonality" class="analysis-pane">
+      <div id="analysisSeasonality" class="analysis-pane research-jump" tabindex="-1">
         <div class="season-mode-switch" id="seasonModeSwitch"><button type="button" class="season-mode-btn active" data-season-mode="range">Recent range</button><button type="button" class="season-mode-btn" data-season-mode="specific">Specific years</button></div>
         <div class="season-range-panel" id="seasonRangePanel">
           <div class="season-range-head"><label>Seasonality lookback</label><span class="season-range-value" id="seasonalityLookbackLabel">10 years</span></div>
@@ -368,15 +378,15 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
       <div id="analysisTargets" class="analysis-pane"><p>Scenario controls are above, beside the hypothetical targets.</p></div>
     </section>
 
-    <section class="card share-card"><h2 class="section-title">Keep your reasoning</h2><label for="researchReason">What did you notice, and what would change your mind?</label><textarea aria-describedby="noteValidation" id="researchReason" maxlength="2000" rows="3" placeholder="Compare horizons, note the sample size, or record an assumption to revisit…"></textarea><p id="noteValidation" class="note-validation" role="status"></p><p class="note-meta">Private on this device. Notes are excluded from Share and Copy summary.</p><div class="row"><button type="button" class="btn primary" id="saveReasonBtn">Save research note</button><button type="button" class="btn secondary" id="reviewHypothesisBtn" disabled>Mark saved idea reviewed</button></div></section>
+    <section class="card share-card"><h2 class="section-title">Keep your reasoning</h2><label for="researchReason">What did you notice, and what would change your mind?</label><textarea aria-describedby="noteValidation" id="researchReason" maxlength="2000" rows="3" placeholder="Compare horizons, note the sample size, or record an assumption to revisit…"></textarea><p id="noteValidation" class="note-validation" role="status"></p><p class="note-meta">Private on this device. Notes are excluded from Share and Copy summary. Load a saved note to mark it reviewed; changed inputs need a new save.</p><div class="row"><button type="button" class="btn primary" id="saveReasonBtn">Save research note</button><button type="button" class="btn secondary" id="reviewHypothesisBtn" disabled>Mark saved idea reviewed</button></div></section>
 <section class="card share-card"><h2 class="section-title">Share this result</h2><div class="sharebar"><button class="btn primary" id="shareResultBtn">Share result</button><button class="btn secondary" id="copyResultBtn">Copy summary</button></div><div class="notice">Sharing includes only the summary — never saved history or any API key.</div></section>
   </main>
 
   <main id="viewWatchlist" class="app-view">
     <div class="screen-title"><div><div class="section-kicker">Watchlist</div><h2>Research Queue</h2><p>Track analysis snapshots and compare up to three tickers.</p></div><button class="btn primary" id="watchAddBtn">Add current</button></div>
-    <section class="card"><div id="watchlist" class="watchlist-grid"></div></section>
+    <section class="card"><div id="watchlist" class="watchlist-grid research-jump" tabindex="-1"></div></section>
     <section class="card compare-section">
-      <div class="compare-toolbar"><div><h2 class="section-title" style="margin:0">Compare Mode</h2><div class="compare-count" id="compareCount">Select 2–3 watchlist items</div></div><button class="btn ghost" id="compareClearBtn" style="padding:8px 10px">Clear</button></div>
+      <div class="compare-toolbar"><div><h2 class="section-title" style="margin:0">Compare Mode</h2><div class="compare-count" id="compareCount">Select 2–3 watchlist items</div><p class="compare-context-note">Compare the assumptions too: sources, sessions, horizons and corrections may differ. These snapshots do not rank investments.</p></div><button class="btn ghost" id="compareClearBtn" style="padding:8px 10px">Clear</button></div>
       <div id="comparePanel" class="compare-grid"></div>
     </section>
   </main>
@@ -390,11 +400,11 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
     <div class="screen-title"><div><div class="section-kicker">Quests</div><h2>Research Progress</h2><p>Progress rewards completed research steps — not trading frequency or profits.</p></div></div>
     <section class="level-card quest-legacy"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle" class="level-subtitle-strong">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
     <section class="card quest-legacy"><h2 class="section-title">Research Stats</h2><div class="progress-stats"><div class="progress-stat"><b id="statAnalyses">0</b><span>Analyses</span></div><div class="progress-stat"><b id="statSaved">0</b><span>Saved</span></div><div class="progress-stat"><b id="statWatch">0</b><span>Watchlist</span></div><div class="progress-stat"><b id="statCompare">0</b><span>Compares</span></div></div></section>
-    <section class="card"><div class="section-kicker">Small steps. Real understanding.</div><h2 class="section-title">Your research badges</h2><div class="next-badge"><b id="nextBadgeTitle"></b><p id="nextBadgeText"></p><progress id="nextBadgeProgress" max="2" value="0" aria-label="Next badge progress"></progress></div><p class="review-note">Unlock each badge once through a distinct learning task. Progress stays on this device. No trading, profit targets, streaks or penalties.</p><div class="badge-grid" id="badgeGrid"></div><button type="button" id="completeResearchBtn" class="btn primary">Finish this research run</button><div class="reflection-milestone"><h3>Keep reflecting</h3><div id="reflectionBadge"></div></div></section>
+    <section class="card"><div class="section-kicker">Small steps. Real understanding.</div><h2 class="section-title">Your research badges</h2><div class="next-badge"><b id="nextBadgeTitle"></b><p id="nextBadgeText"></p><progress id="nextBadgeProgress" max="2" value="0" aria-label="Next badge progress"></progress><button type="button" class="btn primary" id="nextBadgeAction" aria-describedby="nextBadgeText">Show my next step</button></div><p class="review-note">Unlock each badge once through a distinct learning task. Progress stays on this device. No trading, profit targets, streaks or penalties.</p><div class="badge-grid" id="badgeGrid"></div><button type="button" id="completeResearchBtn" class="btn primary">Finish this research run</button><div class="reflection-milestone"><h3>Keep reflecting</h3><div id="reflectionBadge"></div></div></section>
     <section class="card quest-legacy"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">StrikeQuests v10.1.1 • learning before action • hypothetical scenarios</div>
+  <div class="foot">StrikeQuests v10.1.2 • learning before action • hypothetical scenarios</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -456,6 +466,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 </div>
 
 <div id="badgeToast" class="badge-toast" role="status" aria-live="polite"></div>
+<script src="./mascot.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const PERIODS={
@@ -465,7 +476,7 @@ const PERIODS={
   "2y":{label:"2-Year",months:24,divisor:1.5},
   "3y":{label:"3-Year",months:36,divisor:2}
 };
-let state={period:"1y",mode:"demo",correction:10,extra:{},sharedApiBase:"",sharedApiReady:false};
+let state={period:"2y",mode:"demo",correction:10,extra:{},sharedApiBase:"",sharedApiReady:false};
 let marketRequestSerial=0;
 function invalidateMarketRequest(){
   marketRequestSerial++;
@@ -634,7 +645,7 @@ function renderSeasonality(){
   let season=state.extra.seasonality;
   if(raw?.monthly?.length){season=computeSeasonality(raw.monthly,cfg);state.extra.seasonality=season}
   const grid=$("seasonalityGrid");if(!grid)return;
-  if(!season?.months){grid.innerHTML='<div class="compare-empty" style="grid-column:1/-1">No complete monthly sample is available. Explore the labeled Demo, or load supported history in Automatic mode.</div>';$("seasonalityHit").textContent='—';$("seasonalityAvg").textContent='—';$("seasonalityObs").textContent='—';return}
+  if(!season?.months){const unavailable='No complete monthly sample is available. Explore the labeled Demo, or load supported history in Automatic mode.';grid.innerHTML=`<div class="compare-empty" style="grid-column:1/-1">${unavailable}</div>`;$("seasonalityHit").textContent='—';$("seasonalityAvg").textContent='—';$("seasonalityObs").textContent='—';$("seasonalityCurrentText").textContent=unavailable;$("seasonalitySignal").textContent='Unavailable';$("seasonalitySignal").className='season-signal mid';$("seasonalityCurrent").querySelector('h3').textContent='Seasonality unavailable';for(const id of ['seasonalitySource','seasonalitySpecificSource'])$(id).textContent='No monthly history';return}
   const cur=season.currentMonth,sig=seasonSignal(cur),monthName=MONTH_NAMES[new Date().getMonth()];$("seasonalitySignal").className=`season-signal ${sig.cls}`;$("seasonalitySignal").textContent=sig.label;$("seasonalityCurrent").querySelector('h3').textContent=`${monthName} seasonal profile`;
   const rangeText=season.mode==='specific'?`Selected calendar years: ${season.usedYears.length?season.usedYears.join(', '):'none'}`:`Calendar range ${season.rangeStart}–${season.rangeEnd} (${season.lookback} ${season.lookback===1?'year':'years'})`;
   $("seasonalityCurrentText").textContent=`${rangeText}. ${cur.observations||0} ${monthName} observation${cur.observations===1?' was':'s were'} available. Strongest average month: ${season.strongest?.name||'—'} ${signedPct(season.strongest?.avgReturn)}. Weakest: ${season.weakest?.name||'—'} ${signedPct(season.weakest?.avgReturn)}.`;
@@ -936,7 +947,7 @@ async function fetchData(force=false){
   $("fetchBtn").disabled=true;
   try{
     await loadProvider(provider);
-    if(isCurrent())updateWatchlist();
+    if(isCurrent()){sqVisitHorizon();sqRenderBadges();updateWatchlist();}
   }catch(e){
     if(!isCurrent())return;
     let fallback=(provider==="shared"&&pref==="auto")?localFallbackProvider():null;
@@ -945,7 +956,7 @@ async function fetchData(force=false){
       try{
         status(`Primary data source unavailable. Falling back to your local ${fallback==="alpha"?"Alpha Vantage":"Barchart"} provider.`,"warn");
         await loadProvider(fallback);
-        if(isCurrent())updateWatchlist();
+        if(isCurrent()){sqVisitHorizon();sqRenderBadges();updateWatchlist();}
         return;
       }catch(e2){e=new Error(`${e?.message||"Primary source failed"} Fallback: ${e2?.message||"failed"}`)}
     }
@@ -958,7 +969,7 @@ async function fetchData(force=false){
   }
 }
 function loadPreset(which){
-  setMode("manual");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
+  setMode("manual");setPeriod("1y");state.extra={};$("correction").value=10;$("corrLabel").textContent="10";$("increment").value="1";
   if(which==="aapl"){
     // Oct 1, 2026 EOD $330.32; Oct 1, 2025 adjusted close $254.51 => 1Y performance $75.81.
     $("ticker").value="AAPL";$("selectedInstrument").textContent="Apple Inc. • AAPL";$("price").value="330.32";$("perf").value="75.81";setPeriod("1y");
@@ -1005,7 +1016,7 @@ function renderHistory(){
   const arr=JSON.parse(localStorage.getItem("splab_history")||"[]"),el=$("history");
   if(!arr.length){el.innerHTML='<div class="saved-empty">No saved analyses yet. Save a research run from the Research screen.</div>';return}
   let changed=false;arr.forEach((x,i)=>{if(!x.id){x.id=`legacy-${x.at||i}-${i}`;changed=true}});if(changed)localStorage.setItem("splab_history",JSON.stringify(arr));
-  el.innerHTML=arr.map(x=>`<div class="history-item"><div class="history-top"><div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div><div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div></div><div class="history-actions">${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}<button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button></div></div>`).join("")
+  el.innerHTML=arr.map(x=>`<div class="history-item"><div class="history-top"><div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div><div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div></div>${sqSnapshotSource(x)}<div class="history-actions">${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}<button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button></div></div>`).join("")
 }
 
 
@@ -1018,14 +1029,27 @@ function currentResearchScore(){
   const checkCorrection=r.c>0;
   return (checkPrice?20:0)+((checkTrend1&&checkTrend3)?20:0)+(checkRange?20:0)+(checkSeason?20:0)+(checkCorrection?20:0);
 }
+function sqFiniteSavedValue(value){return (typeof value==='number'||typeof value==='string')&&String(value).trim()!==''&&Number.isFinite(Number(value))}
+function sqUsableSnapshot(s){return !!s&&Number.isFinite(s.price)&&s.price>0&&Number.isFinite(s.perf)&&['low','mid','high'].every(k=>Number.isFinite(s[k])&&s[k]>0)}
+function sqWatchSnapshot(item){const s=item?.snapshot||latestSavedSnapshot(item?.symbol);return sqUsableSnapshot(s)?s:null}
+function sqProvenance(){return {inputMode:state.mode,savedOrigin:state.savedOrigin||null,sourceContext:state.dataMeta?JSON.parse(JSON.stringify(state.dataMeta)):null}}
+function sqSourceInfo(record){
+ const meta=record?.sourceContext,mode=record?.inputMode;
+ if(mode==='demo'||record?.savedOrigin==='demo'||meta?.synthetic)return {label:'Synthetic example',detail:'Generated learning values, not market quotes.',kind:'synthetic'};
+ if(mode==='manual')return {label:'Manual · unverified',detail:'User-supplied values; provider connections are off.',kind:'manual'};
+ if(mode!=='auto_eod'||!sqValidDate(meta?.session))return {label:'Source unknown',detail:'This snapshot has no verified source or session. Review its inputs before use.',kind:'unknown'};
+ const age=Math.floor((Date.now()-Date.parse(meta.session+'T00:00:00Z'))/86400000),stale=!!meta.stale||age>4||age<0;
+ return {label:stale?'Stale EOD snapshot':'EOD snapshot',detail:`${meta.source||'Provider'} · session ${meta.session}. ${stale?'Not a current quote.':'End-of-day data, not a live quote.'}`,kind:stale?'stale':'eod'};
+}
+function sqSnapshotSource(record){const info=sqSourceInfo(record);return `<div class="snapshot-source ${['manual','unknown','stale'].includes(info.kind)?'warn':''}"><b>${escapeHtml(info.label)}</b><span>${escapeHtml(info.detail)}</span></div>`}
 function makeSnapshot(symbol){
   const r=calc();if(!r)return null;
-  return {symbol,price:r.p,perf:r.perf,low:r.low,mid:r.mid,high:r.high,period:state.period,correction:Math.round(r.c*100),score:currentResearchScore(),updatedAt:new Date().toISOString(),returnPct:Number.isFinite(state.extra.returnPct)?state.extra.returnPct:null,high52:Number.isFinite(state.extra.high52)?state.extra.high52:null,low52:Number.isFinite(state.extra.low52)?state.extra.low52:null};
+  return {...sqProvenance(),symbol,price:r.p,perf:r.perf,low:r.low,mid:r.mid,high:r.high,period:state.period,correction:Math.round(r.c*100),score:currentResearchScore(),updatedAt:new Date().toISOString(),returnPct:Number.isFinite(state.extra.returnPct)?state.extra.returnPct:null,high52:Number.isFinite(state.extra.high52)?state.extra.high52:null,low52:Number.isFinite(state.extra.low52)?state.extra.low52:null};
 }
 function latestSavedSnapshot(symbol){
   const arr=JSON.parse(localStorage.getItem('splab_history')||'[]').filter(x=>x.ticker===symbol&&x.price!=null).sort((a,b)=>new Date(b.at)-new Date(a.at));
-  const x=arr[0]; if(!x)return null;
-  return {symbol,price:Number(x.price),perf:Number(x.perf),low:Number(x.low),mid:Number(x.mid),high:Number(x.high),period:x.p||'1y',correction:Number(x.correction??x.c??10),score:60,updatedAt:x.at};
+  const x=arr[0]; if(!x||!['price','perf','low','mid','high'].every(k=>sqFiniteSavedValue(x[k]))||!['price','low','mid','high'].every(k=>Number(x[k])>0))return null;
+  return {inputMode:x.inputMode,savedOrigin:x.savedOrigin,sourceContext:x.sourceContext,symbol,price:Number(x.price),perf:Number(x.perf),low:Number(x.low),mid:Number(x.mid),high:Number(x.high),period:x.p||'1y',correction:Number(x.correction??x.c??10),score:60,updatedAt:x.at};
 }
 function getCompareSelection(){return JSON.parse(localStorage.getItem('sq_compare')||'[]')}
 function setCompareSelection(v){localStorage.setItem('sq_compare',JSON.stringify(v.slice(0,3)))}
@@ -1049,7 +1073,7 @@ function renderComparePanel(){
   const selected=getCompareSelection(),list=getWatchlist();if(count)count.textContent=selected.length?`${selected.length} selected • choose up to 3`:'Select 2–3 watchlist items';
   const items=selected.map(s=>list.find(x=>x.symbol===s)).filter(Boolean);
   if(items.length<2){panel.innerHTML='<div class="compare-empty">Select at least two Watchlist items using the Compare button. Analysis snapshots are used for the side-by-side view.</div>';return}
-  panel.innerHTML=items.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div><div class="compare-score">Score ${s.score??'—'}</div></div><div class="compare-metrics"><div class="compare-metric"><span>Reference</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
+  panel.innerHTML=items.map(x=>{const s=sqWatchSnapshot(x);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div>${sqSnapshotSource(s)}<div class="compare-metrics"><div class="compare-metric"><span>Reference</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
   recordProgressEvent('compare');awardAchievement('compare');
 }
 function recordProgressEvent(type){
@@ -1101,7 +1125,7 @@ function setView(view){
   if(view==='watchlist'){renderWatchlist();renderComparePanel();}
   if(view==='saved')renderHistory();
   if(view==='quests')renderProgressScreens();
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'auto'});
 }
 function setAnalysisTab(tab){document.querySelectorAll('.analysis-tab').forEach(b=>b.classList.toggle('active',b.dataset.analysis===tab));document.querySelectorAll('.analysis-pane').forEach(p=>p.classList.remove('active'));const ids={overview:'analysisOverview',performance:'analysisPerformance',seasonality:'analysisSeasonality',targets:'analysisTargets'};$(ids[tab]||ids.overview)?.classList.add('active');if(tab==='seasonality')renderSeasonality()}
 function symbolMeta(symbol){return LOCAL_SYMBOLS.find(x=>x.symbol===symbol)||{symbol,name:symbol,exchange:'',type:''}}
@@ -1117,7 +1141,7 @@ function addToWatchlist(symbol){
 function removeWatch(symbol){setWatchlist(getWatchlist().filter(x=>x.symbol!==symbol));setCompareSelection(getCompareSelection().filter(x=>x!==symbol));renderWatchlist();renderComparePanel()}
 function renderWatchlist(){
   const el=$("watchlist");if(!el)return;const list=getWatchlist(),selected=getCompareSelection();if(!list.length){el.innerHTML='<div class="watch-empty">No Watchlist tickers yet. Add the current ticker or use Quick Picks, then return here to compare research snapshots.</div>';renderComparePanel();return}
-  el.innerHTML=list.map(x=>{const s=x.snapshot||latestSavedSnapshot(x.symbol);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Reference</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Score</span><b>${s.score??'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
+  el.innerHTML=list.map(x=>{const s=sqWatchSnapshot(x);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Reference</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Correction</span><b>${Number.isFinite(s.correction)?s.correction+'%':'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${s?sqSnapshotSource(s):''}${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
 }
 function loadSaved(id){
   const arr=JSON.parse(localStorage.getItem('splab_history')||'[]');
@@ -1131,10 +1155,10 @@ function loadSaved(id){
   if(x.instrument)$("selectedInstrument").textContent=x.instrument;
   // The period supplies a default divisor; restore the saved override afterward.
   setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');
-  if(Number.isFinite(Number(x.price)))$("price").value=Number(x.price).toFixed(2);
-  if(Number.isFinite(Number(x.perf)))$("perf").value=Number(x.perf).toFixed(2);
-  if(Number.isFinite(Number(x.divisor)))$("divisor").value=Number(x.divisor);
-  if(Number.isFinite(Number(x.increment)))$("increment").value=String(x.increment);
+  $("price").value=sqFiniteSavedValue(x.price)?Number(x.price).toFixed(2):'';
+  $("perf").value=sqFiniteSavedValue(x.perf)?Number(x.perf).toFixed(2):'';
+  if(x.divisor!=null)$("divisor").value=sqFiniteSavedValue(x.divisor)?String(x.divisor):'';
+  $("increment").value=x.increment==null?'1':sqFiniteSavedValue(x.increment)?String(x.increment):'';
   const correction=x.correction??x.c;
   if(Number.isFinite(Number(correction)))sqSetCorrection(correction,{persist:false});
   render();renderSeasonality();setView('research');
@@ -1162,8 +1186,18 @@ async function sqFetch(url,options={}){
  finally{clearTimeout(timer);sqControllers.delete(controller);options.signal?.removeEventListener('abort',cancel)}
 }
 function sqCancel(){for(const c of sqControllers)c.abort();sqControllers.clear();if(searchAbort)searchAbort.abort();clearTimeout(searchTimer)}
+function sqInputChanged(id){
+ state.loadedResearchId=null;
+ if(['price','perf'].includes(id)&&state.mode==='auto_eod'){
+  const values={price:$('price').value,perf:$('perf').value};
+  setMode('manual');for(const [key,value] of Object.entries(values))$(key).value=value;
+  status('Edited values are now private Manual inputs. Provider source and history no longer apply.','warn');
+ }
+ render();sqPersist();
+}
 function sqSetCorrection(value,{persist=true}={}){
- const n=Number(value);state.correction=Number.isFinite(n)?Math.max(0,Math.min(30,Math.round(n))):10;
+ const n=Number(value),next=Number.isFinite(n)?Math.max(0,Math.min(30,Math.round(n))):10;
+ if(next!==state.correction&&!sqRestoring)state.loadedResearchId=null;state.correction=next;
  for(const id of ['correction','targetCorrection']){const e=$(id);if(e){e.value=String(state.correction);e.setAttribute('aria-valuetext',`${state.correction} percent correction`);}}
  $('corrLabel').textContent=String(state.correction);$('targetCorrectionLabel').textContent=state.correction+'%';
  render();if(persist)sqPersist();
@@ -1228,7 +1262,7 @@ function sqApplyRaw(symbol,raw,label){
  state.dataMeta.baselineOffset=delta;
  state.dataMeta.issue=[!coverage.fullRange?'52-week range unavailable: insufficient weekly coverage.':'',coverage.monthlyGaps?`${coverage.monthlyGaps} monthly gap(s); returns across gaps are excluded.`:'',delta>10?`Baseline is ${delta} days before the requested horizon; comparison is approximate.`:''].filter(Boolean).join(' ');
  writeEodCache({price:out.spot,perf:out.perf,extra:state.extra,instrument:$('selectedInstrument').textContent,eodDate:out.quoteDate,savedAt:Date.now()});
- sqDataIssue='';render();return out;
+ sqDataIssue='';sqVisitHorizon();render();return out;
 }
 applyAlphaRaw=sqApplyRaw;
 const sqOldWriteCache=writeEodCache;
@@ -1254,30 +1288,31 @@ const sqOldMode=setMode;
 setMode=function(mode){
  const next=['demo','manual','auto_eod'].includes(mode)?mode:'demo';const changed=state.mode!==next;
  state.mode=next;sqCancel();invalidateMarketRequest();
- if(changed){state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;sqDataIssue='';if(next!=='demo'){$('price').value='';$('perf').value='';}}
+ if(changed){state.loadedResearchId=null;state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;sqDataIssue='';if(next!=='demo'){$('price').value='';$('perf').value='';}}
  sqOldMode(next);
  if(next==='demo'&&!sqRestoring)sqApplyDemo();
  if(next==='manual')status('Private Manual mode • your inputs stay in this browser. No provider requests.','warn');
  render();sqPersist();
 };
 const sqOldPeriod=setPeriod;
-setPeriod=function(period){if(!PERIODS[period])return;if(period!==state.period&&!sqRestoring&&state.mode!=='demo'){state.extra={};state.dataMeta=null;$('perf').value='';}sqOldPeriod(period);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqVisitHorizon();renderSeasonality();sqPersist();};
+setPeriod=function(period){if(!PERIODS[period])return;if(period!==state.period&&!sqRestoring)state.loadedResearchId=null;if(period!==state.period&&!sqRestoring&&state.mode!=='demo'){state.extra={};state.dataMeta=null;$('perf').value='';}sqOldPeriod(period);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqVisitHorizon();renderSeasonality();sqPersist();};
 const sqOldSymbol=applySymbol;
-applySymbol=function(symbol){const changed=$('ticker').value.trim().toUpperCase()!==symbol.toUpperCase();if(changed){state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$('price').value='';$('perf').value='';sqDataIssue='';}sqOldSymbol(symbol);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqPersist();};
+applySymbol=function(symbol){const changed=$('ticker').value.trim().toUpperCase()!==symbol.toUpperCase();if(changed){state.loadedResearchId=null;state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$('price').value='';$('perf').value='';sqDataIssue='';}sqOldSymbol(symbol);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqPersist();};
 const sqOldSuggestion=chooseSuggestion;
 chooseSuggestion=function(button){applySymbol(button.dataset.symbol||'');$('tickerSuggestions').classList.remove('show');$('tickerSuggestions').innerHTML='';};
 const sqOldTab=setAnalysisTab;
-setAnalysisTab=function(tab){if(tab==='targets'){$('scenarioSection').scrollIntoView({behavior:'auto',block:'start'});return}sqOldTab(tab)};
+setAnalysisTab=function(tab){if(tab==='targets'){$('scenarioSection').scrollIntoView({behavior:'auto',block:'start'});return}sqOldTab(tab);$('researchContext').style.display=calc()||tab==='seasonality'?'':'none';};
 const sqOldCacheLoad=loadCachedEod;
 loadCachedEod=function(silent=false){if(sqPrivate())return false;const item=readEodCache()[eodCacheKey()];if(!item||!(Number(item.price)>0)||!Number.isFinite(Number(item.perf)))return false;const ok=sqOldCacheLoad(true);state.dataMeta={...(item.origin||{}),symbol:$('ticker').value.trim().toUpperCase(),source:item.extra?.dataProvider||'Previously saved provider snapshot',session:item.eodDate,fetchedAt:item.origin?.fetchedAt||item.savedAt,stale:true};if(!silent)status('Showing a previously cached snapshot. Verify its session and age before using it.','warn');render();return ok;};
 const sqOldRender=render;
 render=function(){
- const r=calc();sqOldRender();
- const contextPanel=document.querySelector('.analysis-card');if(contextPanel)contextPanel.style.display=r?'':'none';
+ const r=calc();sqOldRender();renderSeasonality();
+ const contextPanel=$('researchContext');if(contextPanel)contextPanel.style.display=r||document.querySelector('#analysisSeasonality.active')?'':'none';
  if(!r){for(const id of ['low','mid','high','outPrice','outPerf','outAdjusted','outProjected','perfMirror','adjustedMirror','projectedMirror'])if($(id))$(id).textContent='—';$('details').textContent='Enter a finite positive price, a finite historical change, a positive divisor and a positive increment.';}
  $('targetInvalid').textContent=r?'':'Enter valid inputs to see hypothetical levels. Previous targets are hidden.';
- const mode=state.mode||'demo',privateMode=sqPrivate(),symbol=$('ticker').value.trim().toUpperCase();
+ const mode=state.mode||'demo',privateMode=sqPrivate(),symbol=$('ticker').value.trim().toUpperCase(),sourceInfo=sqSourceInfo(sqProvenance());
  $('orbTicker').textContent=symbol.slice(0,5)||'-';
+ $('outTicker').textContent=symbol||'Choose an instrument';$('outHorizon').textContent=`${PERIODS[state.period].label} · ${state.correction}% correction`;
  if(!r)for(const id of ['stageTrendMini','stageRangeMini','stagePowerMini','stageSeasonMini','stageStrikeMini'])$(id).textContent='Unavailable until valid inputs are loaded.';
  $('modeTitle').textContent=mode==='demo'?'DEMO • SYNTHETIC EXAMPLE':mode==='manual'?'PRIVATE MANUAL • UNVERIFIED INPUTS':'AUTOMATIC EOD • VERIFY SOURCE & SESSION';
  $('modeDescription').textContent=mode==='demo'?'Explore the research flow with generated values. Nothing here is a live quote.':mode==='manual'?'Your inputs and notes stay on this device. Provider connections are off.':'Uses the configured provider when you request data. Availability and permissions still need verification.';
@@ -1288,16 +1323,19 @@ render=function(){
  $('missionLine').textContent=`${symbol||'Choose an instrument'} • ${mode==='demo'?'Synthetic learning example':mode==='manual'?'Your unverified inputs':'Provider data, subject to availability'}`;
  $('moodPill').textContent='✧ Research, then reflect';$('moodPill').className='mood-pill mid';
  $('horizonPrompt').textContent=SQ_HINTS[state.period][1];
+ $('coreScenarioLabel').textContent=`${PERIODS[state.period].label} · ${state.correction}% correction`;
  $('horizonBasis').textContent=state.dataMeta?.session&&state.extra.baselineDate?`Basis: ${state.extra.baselineDate} → ${state.dataMeta.session}. Dollar change; ${state.dataMeta.baselineOffset>10?'approximate date match.':'weekly baseline on or before the requested date.'}`:mode==='manual'?'Manual basis: supply the historical dollar change for this selected horizon.':'Load supported history to inspect this horizon’s baseline.';
- $('targetContext').textContent=`${symbol||'Instrument'} • ${PERIODS[state.period].label} • ${mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC':mode==='manual'?'MANUAL / UNVERIFIED':state.dataMeta?.stale?'STALE SNAPSHOT':'EOD'} • Reference ${r?money(r.p):'unavailable'}`;
+ $('targetContext').textContent=`${symbol||'Instrument'} • ${PERIODS[state.period].label} • ${sourceInfo.kind==='synthetic'?'SYNTHETIC':mode==='manual'?'MANUAL / UNVERIFIED':sourceInfo.kind==='stale'?'STALE SNAPSHOT':sourceInfo.kind==='eod'?'EOD':'SOURCE UNVERIFIED'} • Reference ${r?money(r.p):'unavailable'}`;
  for(const key of ['low','mid','high'])$(key+'Delta').textContent=r?`${signedPct((r[key]/r.p-1)*100)} vs input price`:'Unavailable';
- $('sourceBadge').textContent=mode==='demo'?'Synthetic demo':mode==='manual'?'Manual · unverified':state.dataMeta?.stale?'Stale EOD':state.extra.dataProvider||'No verified quote';
- const meta=state.dataMeta,age=meta?.session?Math.max(0,Math.floor((Date.now()-Date.parse(meta.session))/86400000)):null;
- $('qualityBadge').textContent=mode==='demo'?'Synthetic':mode==='manual'?'User supplied':meta?(meta.stale||age>4?'Stale / verify':'Session recorded'):'Unavailable';
- $('qualityBadge').className='quality-badge'+(mode!=='demo'&&(!meta||meta.stale||age>4)?' warn':'');
- $('qualitySummary').textContent=mode==='demo'?'Generated learning data • example session 30 Sep 2026. No market provider is contacted.':mode==='manual'?'Manual values are not independently verified. No historical chart or seasonal claim is invented.':meta?`${meta.source||'Provider snapshot'} • session ${meta.session||'unknown'} • fetched ${meta.fetchedAt?new Date(meta.fetchedAt).toISOString().replace('T',' ').slice(0,16)+' UTC':'unknown'}. ${meta.stale||age>4?'This is not a current quote.':''}`:'No usable provider snapshot is loaded. Health alone does not verify market-data availability.';
+ $('sourceBadge').textContent=sourceInfo.kind==='synthetic'?(mode==='demo'?'Synthetic demo':'Saved synthetic'):mode==='manual'?'Manual · unverified':sourceInfo.kind==='stale'?'Stale EOD':sourceInfo.kind==='eod'?(state.extra.dataProvider||'EOD snapshot'):'No verified quote';
+ const meta=state.dataMeta,retrieved=meta?.fetchedAt?new Date(meta.fetchedAt):null,retrievedLabel=retrieved&&Number.isFinite(retrieved.getTime())?retrieved.toISOString().replace('T',' ').slice(0,16)+' UTC':'unknown';
+ $('qualityBadge').textContent=sourceInfo.kind==='synthetic'?'Synthetic':mode==='manual'?'User supplied':sourceInfo.kind==='stale'?'Stale / verify':sourceInfo.kind==='eod'?'Session recorded':'Unavailable';
+ $('qualityBadge').className='quality-badge'+(['manual','unknown','stale'].includes(sourceInfo.kind)?' warn':'');
+ $('qualitySummary').textContent=mode==='demo'?'Generated learning data • example session 30 Sep 2026. No market provider is contacted.':mode==='manual'?(state.savedOrigin==='demo'?'Saved synthetic example in private Manual mode. These generated values are not market quotes.':'Manual values are not independently verified. No historical chart or seasonal claim is invented.'):meta?`${sourceInfo.detail} Fetched ${retrievedLabel}.`:'No usable provider snapshot is loaded. Health alone does not verify market-data availability.';
  const season=state.extra.seasonality,observations=season?.currentMonth?.observations||0;
  $('coverageSummary').textContent=`Current-month seasonal sample: ${observations?observations+' observations':'unavailable'}. ${meta?.issue||''} ${observations&&observations<5?'Small sample: results are especially uncertain.':''} History adjustment conventions are inherited and not normalized by this update.`;
+ $('reviewTrendEvidence').textContent=sqHasTrend()?`Trend context: 1 month ${state.extra.trend1m}; 3 months ${state.extra.trend3m}. Historical direction is not a forecast.`:'Trend context is unavailable for these inputs.';
+ $('reviewRangeEvidence').textContent=sqHasRange()?`Supported 52-week range: ${money(state.extra.low52)} to ${money(state.extra.high52)}. Reference ${r?money(r.p):'unavailable'}. A position in this range is not a buy or sell signal.`:'A supported 52-week range is unavailable for these inputs.';
  $('refreshBtn').textContent=privateMode?'Private mode · no refresh':'Refresh EOD data';$('refreshBtn').disabled=privateMode;$('fetchBtn').disabled=privateMode;
  if($('modeLabel'))$('modeLabel').textContent=mode==='demo'?'Synthetic values':mode==='manual'?'Your inputs — not verified quotes':'Provider snapshot';
  $('price').readOnly=mode==='demo';$('perf').readOnly=mode==='demo';
@@ -1306,22 +1344,25 @@ render=function(){
 };
 // Milestone artwork, migration and learning actions live in badges.js.
 const sqOldSaved=loadSaved;
-loadSaved=function(id){const item=sqJSON('splab_history',[]).find(x=>String(x.id)===String(id));if(!item)return;sqRestoring=true;sqOldSaved(id);sqSetCorrection(item.correction??item.c??10,{persist:false});state.savedOrigin=item.inputMode||'manual';state.loadedResearchId=item.id;$('researchReason').value=String(item.reason||'');sqRestoring=false;state.dataMeta=null;state.extra={};render();renderSeasonality();sqPersist();status(`Loaded saved ${item.inputMode==='demo'?'synthetic demo':'manual / unverified'} analysis for ${item.ticker}. Provider connections stay off.`,'warn');};
+loadSaved=function(id){const item=sqJSON('splab_history',[]).find(x=>String(x.id)===String(id));if(!item)return;sqRestoring=true;sqOldSaved(id);sqSetCorrection(item.correction??item.c??10,{persist:false});state.savedOrigin=item.savedOrigin||item.inputMode||'manual';state.loadedResearchId=calc()?item.id:null;$('researchReason').value=String(item.reason||'');sqRestoring=false;state.dataMeta=null;state.extra={};render();renderSeasonality();sqPersist();status(calc()?`Loaded saved ${state.savedOrigin==='demo'?'synthetic demo':'manual / unverified'} analysis for ${item.ticker}. Provider connections stay off.`:'Saved inputs are incomplete or invalid. Previous values are hidden; enter valid private Manual values.','warn');};
 const sqOldPreset=loadPreset;
 loadPreset=function(which){state.correction=10;sqOldPreset(which);sqSetCorrection(10);state.savedOrigin='demo';render();status('Synthetic formula test fixture • not verified market prices.','warn');sqPersist()};
 const sqOldSummary=resultSummary;
-resultSummary=function(){const r=calc();if(!r)return 'StrikeQuests: valid inputs are required.';return `${state.mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC EXAMPLE — NOT MARKET DATA':state.mode==='manual'?'MANUAL / UNVERIFIED INPUTS':'EOD SNAPSHOT — VERIFY SESSION'}\n${sqOldSummary()}\nHypothetical price levels only; not listed option strikes, Greeks or profit forecasts. Notes and saved history are not included.`};
+resultSummary=function(){const r=calc();if(!r)return 'StrikeQuests: valid inputs are required.';return `${state.mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC EXAMPLE — NOT MARKET DATA':state.mode==='manual'?'MANUAL / UNVERIFIED INPUTS':'EOD SNAPSHOT — VERIFY SESSION'}\n${state.mode==='auto_eod'?sqSourceInfo(sqProvenance()).detail+'\n':''}${sqOldSummary()}\nHypothetical price levels only; not listed option strikes, Greeks or profit forecasts. Notes and saved history are not included.`};
 function sqInitNext(){
  const saved=sqJSON('sq_next_session',null);sqRestoring=true;state.mode=['demo','manual','auto_eod'].includes(saved?.mode)?saved.mode:'demo';state.correction=10;
- if(saved){if(PERIODS[saved.period])setPeriod(saved.period);if(/^[A-Z0-9.^-]{1,15}$/.test(saved.ticker||''))$('ticker').value=saved.ticker;for(const id of ['price','perf','divisor','increment'])if(saved[id]!=null)$(id).value=String(saved[id]);$('researchReason').value=String(saved.reason||'').slice(0,2000);state.savedOrigin=saved.savedOrigin||null;}
+ setPeriod(PERIODS[saved?.period]?saved.period:'2y');
+ if(saved){if(/^[A-Z0-9.^-]{1,15}$/.test(saved.ticker||''))$('ticker').value=saved.ticker;for(const id of ['price','perf','divisor','increment'])if(saved[id]!=null)$(id).value=String(saved[id]);$('researchReason').value=String(saved.reason||'').slice(0,2000);state.savedOrigin=saved.savedOrigin||null;}
  sqSetCorrection(saved?.correction??10,{persist:false});sqRestoring=false;
  $('targetCorrection').addEventListener('input',e=>sqSetCorrection(e.target.value));
+ for(const id of ['nextBadgeAction','missionNextAction'])$(id).addEventListener('click',sqGoToMission);
+ $('openTargetsBtn').addEventListener('click',()=>sqOpenResearchTool('targets'));$('openSeasonalityBtn').addEventListener('click',()=>sqOpenResearchTool('seasonality'));
  for(const b of document.querySelectorAll('[data-private-mode]'))b.addEventListener('click',async()=>{setMode(b.dataset.privateMode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}});
  $('resetScenario').addEventListener('click',()=>sqSetCorrection(10));
- $('researchReason').addEventListener('input',()=>{$('researchReason').setAttribute('aria-invalid','false');$('noteValidation').textContent='';sqPersist();sqRenderBadges()});
+ $('researchReason').addEventListener('input',()=>{state.loadedResearchId=null;$('researchReason').setAttribute('aria-invalid','false');$('noteValidation').textContent='';sqPersist();sqRenderBadges()});
  $('saveReasonBtn').addEventListener('click',sqSaveNote);
  $('reviewSampleBtn').addEventListener('click',()=>{if(!state.extra.seasonality?.totalMonths){status('No monthly sample is available to review. Explore the labeled demo or load valid history.','warn');return}sqEarn('season')});
- $('reviewHypothesisBtn').addEventListener('click',()=>{const x=sqJSON('splab_history',[]).find(x=>x.id===state.loadedResearchId);if(x?.reason?.trim().length>=12)sqEarn('review')});
+ $('reviewHypothesisBtn').addEventListener('click',()=>{const x=sqJSON('splab_history',[]).find(x=>x.id===state.loadedResearchId);if(typeof x?.reason==='string'&&x.reason.trim().length>=12)sqEarn('review')});
  $('reviewTrendsBtn').addEventListener('click',()=>{if(sqHasTrend())sqEarn('trend')});
  $('reviewRangeBtn').addEventListener('click',()=>{if(sqHasRange())sqEarn('range')});
  $('completeResearchBtn').addEventListener('click',()=>{if(sqBadgeProgress('complete',sqBadges())===8)sqEarn('complete')});
@@ -1343,6 +1384,25 @@ const SQ_BADGES=[
  {id:'review',name:'Thoughtful Return',detail:'Revisit a saved note and mark your hypothesis reviewed.',color:'#8bd5b5',steps:2}
 ];
 const SQ_CORE=SQ_BADGES.filter(b=>b.id!=='review'),SQ_BADGE_KEY='sq_badges_v1011';
+let sqCompanion=null;
+function sqResearchXp(){const b=sqBadges();return SQ_CORE.reduce((sum,step)=>sum+(sqEarnedRecord(b.earned[step.id])?ACHIEVEMENTS[step.id].xp:0),0)}
+function sqRenderCompanion(celebrate=false){
+ if(typeof StrikeMascot==='undefined')return;
+ const xp=sqResearchXp(),stage=StrikeMascot.stageForXp(xp),panel=$('companionPanel');
+ $('companionSummary').textContent=`Lumi · ${stage.name} · ${xp} XP`;
+ if(!sqCompanion){
+  panel.open=localStorage.getItem('sq_companion_collapsed')!=='true';
+  sqCompanion=StrikeMascot.mount($('companionHost'),xp,{idPrefix:'lumi-research',static:localStorage.getItem('sq_companion_paused')==='true'});
+  panel.addEventListener('toggle',()=>localStorage.setItem('sq_companion_collapsed',String(!panel.open)));
+  $('companionHost').addEventListener('click',event=>{const button=event.target.closest?.('[data-mascot-motion]');if(button)localStorage.setItem('sq_companion_paused',button.getAttribute('aria-pressed'));});
+ }else sqCompanion.update(xp,{celebrate:celebrate&&panel.open});
+}
+function sqOpenResearchTool(tool){
+ setView('research');
+ if(tool==='seasonality'){setAnalysisTab('seasonality');renderSeasonality();}
+ const target=$(tool==='seasonality'?'analysisSeasonality':'scenarioSection');
+ target.scrollIntoView({block:'start',behavior:'auto'});target.focus({preventScroll:true});
+}
 function sqEarnedRecord(value){return value&&typeof value==='object'&&!Array.isArray(value)&&typeof value.at==='string'&&Number.isFinite(Date.parse(value.at))}
 function sqBadges(){
  let b=sqJSON(SQ_BADGE_KEY,null);
@@ -1364,12 +1424,12 @@ function sqEarn(id){
  const b=sqBadges();if(b.earned[id])return;
  b.earned[id]={at:new Date().toISOString(),mode:state.mode,origin:'v10.1.1'};sqBadgeSave(b);
  $('badgeToast').textContent=`Milestone unlocked: ${badge.name}. ${badge.detail}`;$('badgeToast').classList.add('show');
- clearTimeout(sqToastTimer);sqToastTimer=setTimeout(()=>$('badgeToast').classList.remove('show'),3800);sqRenderBadges();
+ clearTimeout(sqToastTimer);sqToastTimer=setTimeout(()=>$('badgeToast').classList.remove('show'),3800);sqRenderCompanion(true);sqRenderBadges();
 }
 function sqVisitHorizon(){if(!calc()||!state.extra.baselineDate||state.dataMeta?.baselineOffset>10)return;const b=sqBadges();b.horizons=[...new Set([...b.horizons,state.period])];sqBadgeSave(b)}
 function sqHasTrend(){return ['Up','Down','Flat'].includes(state.extra.trend1m)&&['Up','Down','Flat'].includes(state.extra.trend3m)}
 function sqHasRange(){return Number.isFinite(state.extra.high52)&&Number.isFinite(state.extra.low52)&&state.extra.high52>=state.extra.low52&&state.extra.low52>0}
-function sqCompareSnapshots(){const selected=[...new Set(getCompareSelection())],list=getWatchlist();return selected.filter(symbol=>{const item=list.find(x=>x.symbol===symbol),s=item?.snapshot||latestSavedSnapshot(symbol);return s&&Number.isFinite(s.price)&&s.price>0&&['low','mid','high'].every(k=>Number.isFinite(s[k]))})}
+function sqCompareSnapshots(){const selected=[...new Set(getCompareSelection())],list=getWatchlist();return selected.filter(symbol=>{const item=list.find(x=>x.symbol===symbol),s=sqWatchSnapshot(item);return sqUsableSnapshot(s)})}
 const SQ_ART={
  first:`<path d="m48 9 11 24 27 4-19 19 5 27-24-13-24 13 5-27L10 37l27-4Z" fill="url(#ART)" stroke="#ffe7a7" stroke-width="2"/><path d="M48 9v44L10 37m38 16L29 56m19-3 24 30" fill="none" stroke="#a96225" stroke-opacity=".5"/><path d="m48 23 6 16 17 2-13 11 3 17-13-8-14 8 3-17-12-11 17-2Z" fill="#fff0b0" fill-opacity=".55"/><path d="M10 13v10m-5-5h10M85 69v12m-6-6h12M74 10v6m-3-3h6" stroke="#ffdf88" stroke-width="2"/>`,
  trend:`<circle cx="45" cy="49" r="32" fill="#113449" stroke="#68cfff" stroke-width="3"/><circle cx="45" cy="49" r="25" fill="none" stroke="#367ba1" stroke-dasharray="2 6"/><path d="M27 65V52m12 13V43m12 22V35" stroke="#5cb6df" stroke-width="7"/><path d="m25 54 18-17 12 7 24-28m-16 0h17v17" fill="none" stroke="url(#ART)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="m42 73 6 14 5-16" fill="#84dfff"/>`,
@@ -1385,24 +1445,55 @@ const SQ_ART={
 const SQ_PALETTES={first:['#fff3b7','#d98d34'],trend:['#b8f4ff','#39a4ea'],range:['#c0fbdc','#27b9a6'],season:['#edceff','#a775db'],multi:['#79e4f0','#458fbd'],saved:['#86caff','#376fc2'],watch:['#ffb5bb','#e75289'],compare:['#baf4ff','#ffd181'],complete:['#fff0ab','#dc9b32'],review:['#d7f1cf','#6fb598']};
 function sqBadgeArt(b){const [a,z]=SQ_PALETTES[b.id],id='sq-art-'+b.id;return `<svg viewBox="0 0 96 100" aria-hidden="true" data-art="${b.id}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${z}"/></linearGradient></defs>${SQ_ART[b.id].replaceAll('#ART','#'+id)}</svg>`}
 function sqBadgeProgress(id,b){if(id==='complete')return SQ_CORE.filter(x=>x.id!=='complete'&&b.earned[x.id]).length;if(id==='multi')return Math.min(2,b.horizons.length);if(id==='compare')return Math.min(2,sqCompareSnapshots().length);if(id==='trend')return sqHasTrend()?1:0;if(id==='range')return sqHasRange()?1:0;if(id==='season')return state.extra.seasonality?.totalMonths?1:0;if(id==='review')return state.loadedResearchId?1:0;return calc()?1:0}
+// Suggestions navigate to evidence or controls. Only explicit research actions earn badges.
+function sqNextMission(b=sqBadges()){
+ const valid=!!calc(),supported=valid&&!!state.extra.baselineDate&&!(state.dataMeta?.baselineOffset>10);
+ const plans={
+  first:{ready:true,target:valid?'analyzeBtn':state.mode==='manual'?'price':'dataModes',label:valid?'Review first scenario':'Check scenario inputs',text:valid?'Inspect your inputs, then choose Analyze to record your first research step.':'Choose Demo for a generated example, or enter valid private Manual values. Automatic requires available provider data.'},
+  trend:{ready:sqHasTrend(),target:'reviewTrendsBtn',text:'Read the one- and three-month directions, then mark the trend context reviewed.',label:'Review trend context',details:true},
+  range:{ready:sqHasRange(),target:'reviewRangeBtn',text:'Check the reference against the supported 52-week range, then mark it reviewed.',label:'Explore the 52-week range',details:true},
+  season:{ready:!!state.extra.seasonality?.totalMonths,target:'reviewSampleBtn',text:'Read the seasonal sample count and its limits, then acknowledge what the history can and cannot tell you.',label:'Inspect the sample',details:true},
+  multi:{ready:valid&&(supported||b.horizons.length>=2),target:b.horizons.length>=2?'researchReason':'periodTabs',text:b.horizons.length>=2?'You have explored two supported horizons. Save a short takeaway about what changed.':`Supported horizons explored: ${Math.min(2,b.horizons.length)} of 2. Choose another horizon with history, then save a takeaway.`,label:b.horizons.length>=2?'Write your takeaway':'Explore another horizon'},
+  saved:{ready:valid,target:'researchReason',text:'Capture one observation or assumption and save your research note on this device.',label:'Keep your reasoning'},
+  watch:{ready:valid,target:'watchCurrentBtn',text:'Keep this valid scenario as a watchlist snapshot so you can revisit its assumptions.',label:'Review and watch'},
+  compare:{ready:new Set(getWatchlist().filter(x=>sqWatchSnapshot(x)).map(x=>x.symbol)).size>=2,target:'watchlist',view:'watchlist',text:'Select Compare on two different instruments with valid snapshots. Check each source, session and horizon before comparing.',label:'Compare research snapshots'},
+  complete:{ready:sqBadgeProgress('complete',b)===8,target:'completeResearchBtn',view:'quests',text:'All eight research milestones are earned. Finish your run when you are ready.',label:'Finish the journey'}
+ };
+ const missing=SQ_CORE.filter(x=>!b.earned[x.id]),next=missing.find(x=>plans[x.id].ready);
+ if(next)return {...plans[next.id],badge:next,title:`Next milestone: ${next.name}`};
+ if(!missing.length)return {title:'Nine thoughtful milestones earned',text:'Your progress is saved on this device. Revisit an idea when new evidence changes your thinking.',target:'history',view:'saved',label:'Revisit saved research'};
+ const first=missing[0];
+ if(first.id==='compare')return {badge:first,title:'Next milestone: Side-by-Side',text:'Explore a second instrument and add its valid snapshot to the Watchlist, then select both Compare buttons.',target:'quickPicks',label:'Choose another instrument'};
+ return {badge:first,title:`Next milestone: ${first.name}`,text:'This step needs historical context that these inputs do not provide. You can choose Demo to practice with labeled synthetic data, or use available provider history. Your earned progress stays saved.',target:'dataModes',label:'Review data modes'};
+}
+function sqGoToMission(){
+ const mission=sqNextMission();setView(mission.view||'research');
+ if(mission.details)$('qualityDetails').open=true;
+ const target=$(mission.target);if(!target)return;
+ target.setAttribute('tabindex',target.tagName==='BUTTON'||target.tagName==='INPUT'||target.tagName==='TEXTAREA'?'0':'-1');
+ target.scrollIntoView({block:'center',behavior:'auto'});target.focus({preventScroll:true});
+}
 function sqRenderBadges(){
  const b=sqBadges(),count=SQ_CORE.filter(x=>b.earned[x.id]).length;
  const card=x=>{const earned=!!b.earned[x.id],n=earned?x.steps:sqBadgeProgress(x.id,b);return `<article class="new-badge ${earned?'earned':n?'in-progress':'locked'}" data-badge="${x.id}" style="--badge-accent:${x.color}">${sqBadgeArt(x)}<b>${x.name}</b><span class="badge-state">${earned?'Earned':n?'In progress':'Locked · ready to discover'}</span><p>${x.detail}</p><progress aria-label="${x.name} progress" max="${x.steps}" value="${n}"></progress><small>${earned?'Saved on this device':`${n} / ${x.steps} steps`}</small></article>`};
  $('researchScore').textContent=`${count}/9`;$('researchProgressText').textContent=`${count} / 9 milestones`;$('researchProgressFill').style.width=`${count/9*100}%`;
  $('badgeGrid').innerHTML=SQ_CORE.map(card).join('');$('reflectionBadge').innerHTML=card(SQ_BADGES.find(x=>x.id==='review'));
- const next=SQ_CORE.find(x=>!b.earned[x.id]);$('nextBadgeTitle').textContent=next?`Next milestone: ${next.name}`:'A full research journey';$('nextBadgeText').textContent=next?next.detail:'Nine thoughtful steps completed. Keep testing your assumptions as evidence changes.';
- $('nextBadgeProgress').max=next?next.steps:9;$('nextBadgeProgress').value=next?sqBadgeProgress(next.id,b):9;
- $('reviewHypothesisBtn').disabled=!state.loadedResearchId;$('reviewTrendsBtn').disabled=!sqHasTrend();$('reviewRangeBtn').disabled=!sqHasRange();
+ const mission=sqNextMission(b),next=mission.badge;
+ for(const prefix of ['nextBadge','missionNext']){$(prefix+'Title').textContent=mission.title;$(prefix+'Text').textContent=mission.text;$(prefix+'Action').textContent=mission.label;}
+ for(const id of ['nextBadgeProgress','missionNextProgress']){$(id).max=next?next.steps:9;$(id).value=next?sqBadgeProgress(next.id,b):9;}
+ $('missionNextStepLabel').textContent=next?`${sqBadgeProgress(next.id,b)} of ${next.steps} steps · milestone not yet earned`:'9 of 9 milestones completed';
+ sqRenderCompanion(false);
+ $('reviewHypothesisBtn').disabled=!sqJSON('splab_history',[]).some(x=>x.id===state.loadedResearchId&&typeof x.reason==='string'&&x.reason.trim().length>=12);$('reviewSampleBtn').disabled=!state.extra.seasonality?.totalMonths;$('reviewTrendsBtn').disabled=!sqHasTrend();$('reviewRangeBtn').disabled=!sqHasRange();
  $('completeResearchBtn').disabled=!!b.earned.complete||sqBadgeProgress('complete',b)<8;$('completeResearchBtn').textContent=b.earned.complete?'Research run complete':'Finish this research run';
 }
 // Rendering, repeated selections and legacy counters cannot farm rewards.
 awardAchievement=function(){};markPeriod=function(){};updateResearchProgress=function(){};recordProgressEvent=function(){};renderProgressScreens=function(){if($('nextBadgeTitle'))sqRenderBadges()};
 async function sqAnalyze(){const symbol=$('ticker').value,period=state.period,mode=state.mode;if(mode==='auto_eod')await fetchData();else render();if(symbol===$('ticker').value&&period===state.period&&mode===state.mode&&calc()&&(mode!=='auto_eod'||state.dataMeta?.symbol===symbol))sqEarn('first')}
 const sqOriginalSave=saveCurrent;
-saveCurrent=function(){if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqJSON('splab_history',[]);if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,inputMode:state.mode,sourceContext:state.dataMeta||null});localStorage.setItem('splab_history',JSON.stringify(list));sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
+saveCurrent=function(){if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqJSON('splab_history',[]);if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,...sqProvenance()});localStorage.setItem('splab_history',JSON.stringify(list));renderHistory();sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
 function sqSaveNote(){const valid=$('researchReason').value.trim().length>=12;$('researchReason').setAttribute('aria-invalid',String(!valid));$('noteValidation').textContent=valid?'':'Add a little more detail: use at least 12 characters to capture your reasoning.';if(valid&&saveCurrent())$('noteValidation').textContent='Research note saved on this device.'}
 const sqOriginalWatch=addToWatchlist;
-addToWatchlist=function(symbol){sqOriginalWatch(symbol);const current=(symbol||$('ticker').value).trim().toUpperCase(),item=getWatchlist().find(x=>x.symbol===current);if(item?.snapshot?.price>0&&['low','mid','high'].every(k=>Number.isFinite(item.snapshot[k])))sqEarn('watch')};
+addToWatchlist=function(symbol){sqOriginalWatch(symbol);const current=(symbol||$('ticker').value).trim().toUpperCase(),item=getWatchlist().find(x=>x.symbol===current);if(sqUsableSnapshot(item?.snapshot))sqEarn('watch')};
 const sqOriginalCompare=toggleCompare;
 toggleCompare=function(symbol){sqOriginalCompare(symbol);if(sqCompareSnapshots().length>=2)sqEarn('compare');sqRenderBadges()};
 
@@ -1432,8 +1523,8 @@ if($("compareClearBtn"))$("compareClearBtn").addEventListener("click",clearCompa
 
 $("periodTabs").addEventListener("click",e=>{const button=e.target.closest("[data-p]");if(button){setPeriod(button.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
 $("dataSeg").addEventListener("click",async e=>{if(e.target.dataset.mode){setMode(e.target.dataset.mode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}}});
-["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",()=>{render();sqPersist()}));
-$("ticker").addEventListener("input",()=>{invalidateMarketRequest();state.extra={};state.dataMeta=null;state.demoRaw=null;$("price").value="";$("perf").value="";render();schedulePredictiveSearch();sqPersist();});
+["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",()=>sqInputChanged(id)));
+$("ticker").addEventListener("input",()=>{state.loadedResearchId=null;invalidateMarketRequest();state.extra={};state.dataMeta=null;state.demoRaw=null;$("price").value="";$("perf").value="";render();schedulePredictiveSearch();sqPersist();});
 $("correction").addEventListener("input",e=>sqSetCorrection(e.target.value));
 $("analyzeBtn").addEventListener("click",sqAnalyze);
 $("fetchBtn").addEventListener("click",()=>fetchData(true));
@@ -1445,7 +1536,7 @@ if($("seasonalityYearChips"))$("seasonalityYearChips").addEventListener("click",
 if($("seasonPrevYearBtn"))$("seasonPrevYearBtn").addEventListener("click",()=>{const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){const latest=years[years.length-1],prev=years.includes(latest-1)?latest-1:years[Math.max(0,years.length-2)];saveSelectedSeasonYears([prev]);setSeasonalityMode('specific')}});
 if($("seasonCurrentYearBtn"))$("seasonCurrentYearBtn").addEventListener("click",()=>{const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){saveSelectedSeasonYears([years[years.length-1]]);setSeasonalityMode('specific')}});
 if($("seasonClearYearsBtn"))$("seasonClearYearsBtn").addEventListener("click",()=>{saveSelectedSeasonYears([]);renderSeasonality()});
-$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData(true):render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;render()});
+$("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData(true):render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;sqInputChanged("increment")});
 $("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
 function resultSummary(){
   const r=calc();if(!r)return "";

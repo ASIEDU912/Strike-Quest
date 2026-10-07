@@ -1,5 +1,5 @@
-const CACHE='strikequests-v10-1-1-published-footer';
-const CORE=['./','./index.html','./manifest.webmanifest','./config.json','./icon-180.png','./icon-192.png','./icon-512.png'];
+const CACHE='strikequests-v10-1-2-research-guidance';
+const CORE=['./','./index.html','./manifest.webmanifest','./config.json','./icon-180.png','./icon-192.png','./icon-512.png','./mascot.js','./mascot.css'];
 const CORE_URLS=new Set(CORE.map(path=>new URL(path,self.location.href).href));
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
