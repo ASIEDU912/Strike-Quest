@@ -86,10 +86,12 @@ async function artClip(page) {
   return {x:Math.floor(box.x)-12,y:Math.floor(box.y)-12,width:Math.ceil(box.width)+24,height:Math.ceil(box.height)+24};
 }
 async function trace(page,duration=4200) {
-  return page.evaluate(duration=>new Promise(resolve=>{
+  return page.evaluate(duration=>new Promise((resolve,reject)=>{
     const samples=[],start=performance.now(),svg=document.querySelector('#companionHost svg');
+    let frame;const watchdog=setTimeout(()=>{cancelAnimationFrame(frame);reject(new Error('Motion sampling stalled before '+duration+'ms'));},duration+7000);
     const parts={body:'.sq-mascot__body',head:'.sq-mascot__head',tail:'.sq-mascot__tail',eyes:'.sq-mascot__eyes',drone:'.sq-mascot__drone',archive:'.sq-mascot__archive',wings:'.sq-mascot__wings',aura:'.sq-mascot__aura'};
     const tick=now=>{
+      try {
       const art=document.querySelector('.sq-companion__art'),r=art.getBoundingClientRect();
       const sample={time:now-start,art:{x:r.x,y:r.y}};
       for(const [key,selector] of Object.entries(parts)) {
@@ -100,9 +102,10 @@ async function trace(page,duration=4200) {
         sample[key]={x:point.x,y:point.y,screenX:screen.x,screenY:screen.y,transform:getComputedStyle(el).transform,opacity:Number(getComputedStyle(el).opacity)};
       }
       samples.push(sample);
-      if(now-start<duration)requestAnimationFrame(tick);else resolve(samples);
+      if(now-start<duration)frame=requestAnimationFrame(tick);else{clearTimeout(watchdog);resolve(samples);}
+      }catch(error){clearTimeout(watchdog);reject(error);}
     };
-    requestAnimationFrame(tick);
+    frame=requestAnimationFrame(tick);
   }),duration);
 }
 async function motion(page,label,emit=false) {

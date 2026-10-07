@@ -44,6 +44,7 @@ jobs:
       - name: Run fixture-only browser suites
         run: npm run test:browser
       - name: Verify actual Chromium and WebKit motion over time
+        if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
         run: npm run test:motion
       - name: Emit bounded fixture screenshots to logs
         if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
