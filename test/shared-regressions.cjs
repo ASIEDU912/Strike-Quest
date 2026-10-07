@@ -8,7 +8,7 @@ let passed=0;
 async function test(name,fn){
   const page=createHarness(html);
   // Let the deliberately blocked startup config request finish before fixtures.
-  await page.evaluate(async()=>{await Promise.resolve();await Promise.resolve();state.mode='auto_eod';state.extra={};state.demoRaw=null;state.dataMeta=null;});
+  await page.evaluate(async()=>{await Promise.resolve();await Promise.resolve();state.mode='auto_eod';state.extra={};state.demoRaw=null;state.dataMeta=null;setPeriod('1y');});
   await fn(page);passed++;console.log('PASS',name);
 }
 async function fixture(page){await page.evaluate(()=>{

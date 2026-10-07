@@ -18,7 +18,7 @@ async function fresh() {
   });
   await page.goto('http://strikequests.test/');
   await page.waitForTimeout(300);
-  await page.evaluate(()=>{localStorage.setItem('sq_provider_pref','auto');state.mode='auto_eod';state.extra={};state.demoRaw=null;state.dataMeta=null;});
+  await page.evaluate(()=>{localStorage.setItem('sq_provider_pref','auto');state.mode='auto_eod';state.extra={};state.demoRaw=null;state.dataMeta=null;setPeriod('1y');});
   return { page, context };
 }
 async function test(name, fn) {

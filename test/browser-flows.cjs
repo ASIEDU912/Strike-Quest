@@ -6,7 +6,7 @@ const assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
 const evidence=path.resolve(process.env.EVIDENCE_DIR||path.join(root,'test-results'));
 fs.mkdirSync(evidence,{recursive:true});
-const types={'.html':'text/html','.js':'application/javascript','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png'};
+const types={'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png'};
 let server,browser,passed=0;
 const pass=name=>{passed++;console.log('PASS',name)};
 function data(symbol){
@@ -69,8 +69,8 @@ function data(symbol){
  await swPage.goto(base);await swPage.evaluate(()=>navigator.serviceWorker.ready);
  await swPage.reload();await swPage.waitForFunction(()=>!!navigator.serviceWorker.controller);
  const keys=await swPage.evaluate(async()=>{const all=[];for(const name of await caches.keys()){const c=await caches.open(name);all.push(...(await c.keys()).map(r=>r.url))}return all});
- assert.deepEqual(keys.map(u=>new URL(u).pathname).sort(),['/','/config.json','/icon-180.png','/icon-192.png','/icon-512.png','/index.html','/manifest.webmanifest']);
- assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')),false);pass('real service worker caches only seven app-shell URLs');
+ assert.deepEqual(keys.map(u=>new URL(u).pathname).sort(),['/','/config.json','/icon-180.png','/icon-192.png','/icon-512.png','/index.html','/manifest.webmanifest','/mascot.css','/mascot.js']);
+ assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')),false);pass('real service worker caches only nine app-shell URLs');
  await offlineCtx.setOffline(true);await swPage.reload();await swPage.locator('#ticker').waitFor();
  assert.match(await swPage.title(),/StrikeQuests/);pass('installed shell opens offline');
  await offlineCtx.close();

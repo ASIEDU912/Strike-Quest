@@ -1,6 +1,10 @@
 # StrikeQuests - Strike Price Calculator
 
-## v10.1.1 review update
+## v10.1.2 review iteration
+
+This branch adds a 2-Year/10% fresh starting view, direct target and seasonality navigation, an animated evolving Lumi companion, guided research steps, source-aware saved/watchlist comparisons and safer Manual editing of provider scenarios. See [v10.1.2 behavior, validation and release boundaries](README-V10.1.2.md).
+
+## v10.1.1 baseline
 
 The proposed v10.1.1 frontend starts in private Demo mode with clearly labeled synthetic examples. Private Manual mode also disables provider, health and remote symbol-search requests. Automatic mode is an explicit choice and uses the public shared-service configuration in `config.json`, with the existing optional owner fallbacks.
 
