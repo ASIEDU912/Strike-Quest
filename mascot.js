@@ -41,28 +41,28 @@
       {
         key:'round-cub',
         rear:`<g class="sq-mascot__tail" style="transform-origin:111px 136px">${path('M109 141c24 6 34-11 26-24-2-5-7-8-12-9 3 9 0 13-7 16-9 3-12 12-7 17Z')}${path('M123 108c3 9 0 13-7 16 6 4 13 1 19-6-2-5-7-8-12-10Z',cream,'none')}</g>`,
-        body:`${path('M71 107q17-9 32 0 14 14 10 30-3 17-26 17-25 0-27-17-2-17 11-30Z')}${oval(87,133,16,19,cream)}${path('M66 121q-9 8-5 16 5 6 9-1M107 122q9 8 4 14-4 6-9 1')}${oval(70,151,12,7,warm,ink,2.5)}${oval(104,151,12,7,warm,ink,2.5)}${toe(67,151)}${toe(101,151)}`,
+        body:`${path('M71 107q17-9 32 0 14 14 10 30-3 17-26 17-25 0-27-17-2-17 11-30Z')}${oval(87,133,16,19,cream)}${path('M66 121q-9 8-5 16 5 6 9-1')}<g class="sq-mascot__paw" style="transform-origin:105px 123px">${path('M107 122q9 8 4 14-4 6-9 1')}</g>${oval(70,151,12,7,warm,ink,2.5)}${oval(104,151,12,7,warm,ink,2.5)}${toe(67,151)}${toe(101,151)}`,
         head:`${path('M56 76 54 48q17 3 25 16m20 0q9-15 24-17l-4 32')}${path('m60 57 13 13-10 5m54-18-12 13 10 6','#db8190','none')}${path('M88 64c-25 0-38 10-37 29 1 19 16 29 37 29 22 0 36-12 36-29S112 64 88 64Z')}${path('M51 89q18 0 37 19 17-19 36-19-1 19-15 33H67Q53 109 51 89Z',cream,'none')}${eyes(71,104,89,5,7)}${oval(63,101,5,2.7,'#e79790')}${oval(112,101,5,2.7,'#e79790')}${smile(88,105)}`,
         gear:`${path('M69 120q18 8 37-1l-3 9q-16 7-32-1Z','#78cfcb',ink,1.8)}${path('m76 126-6 15 11-3 4-10','#5aadaa',ink,1.5)}${path('m101 128-23 17','none','#c6a66f',3)}${path('M69 139h17v13H69Z','#8f7354',ink,1.6)}${path('m73 143 4 1m-2-3-1 5','none','#edddbd',1.4)}`
       },
       {
         key:'long-eared-juvenile',
         rear:`<g class="sq-mascot__tail" style="transform-origin:109px 138px">${path('M104 141c34 9 53-14 41-42-4-9-8-17-7-29-20 14-25 25-15 39 4 7-6 9-15 13-11 5-14 14-4 19Z')}${path('M138 70c-15 11-21 19-19 27l14 4 12-2c-4-9-8-17-7-29Z',cream,'none')}</g>`,
-        body:`${path('M76 99q14-7 25 2l11 30-9 14H76l-8-14Z')}${path('M78 123 72 151h14l4-26m7 0 2 26h15l-8-26')}${path('M72 150q-8 0-9 7h23v-7m13 0v7h23q-2-7-9-7',cream,ink,2.3)}${path('m73 108-13 22q-2 7 5 7l10-7m27-22 14 17q5 6 0 11l-10-8')}${toe(70,154)}${toe(104,154)}`,
+        body:`${path('M76 99q14-7 25 2l11 30-9 14H76l-8-14Z')}${path('M78 123 72 151h14l4-26m7 0 2 26h15l-8-26')}${path('M72 150q-8 0-9 7h23v-7m13 0v7h23q-2-7-9-7',cream,ink,2.3)}${path('m73 108-13 22q-2 7 5 7l10-7')}<g class="sq-mascot__paw" style="transform-origin:104px 109px">${path('m102 108 14 17q5 6 0 11l-10-8')}</g>${toe(70,154)}${toe(104,154)}`,
         head:`${path('M65 70 54 25q23 10 28 37m16 0q9-31 25-40l-6 51')}${path('m61 37 15 28-9 3m50-32-13 31 8 2','#d88190','none')}${path('M90 60q-29-3-36 23l7 4-7 5 13 1q7 21 23 21 17-1 23-21l13-1-8-5 7-4q-8-23-35-23Z')}${path('M60 86q17 0 30 15 15-15 29-15-7 28-29 28-20-1-30-28Z',cream,'none')}${eyes(75,104,83,4.6,6.2)}${smile(90,99)}`,
         gear:`${path('M72 109q17 13 35-1l-3 18-13 6-17-7Z','#208f93',ink,2)}${path('m77 114 12 9 12-9','none','#9beddf',2)}${oval(91,124,3,3,'#f6d28c')}${path('M56 127h14v9H56Z','#1b4055','#a1efe1',1.6)}${oval(63,131.5,2.5,2.5,'#8effe3')}`
       },
       {
         key:'tufted-runner',
         rear:`<g class="sq-mascot__tail" style="transform-origin:105px 128px">${path('M106 133c38 10 57-22 44-55-3 15-15 23-25 26 4-16 0-29-12-36 3 18-12 28-5 44-16 3-18 17-2 21Z')}${path('M150 78c-3 15-15 23-25 26 14 5 26 1 29-11Z',cream,'none')}${path('M113 68c3 18-12 28-5 44 5-4 11-6 17-8 4-16 0-29-12-36Z','#e6f5ee','none')}${path('M117 119q21 4 28-14','none','#fbd79d',2)}</g>`,
-        body:`${path('M77 88q12-4 24 0l14 23-12 21H74l-11-21Z')}${path('M74 124 62 149l16 2 13-23m7-4 7 25 14-3-11-24')}${path('M62 146q-10 6-7 11h23l1-9m25-2 3 11h22q-2-9-12-12',cream,ink,2.3)}${path('m69 103-14 9-8 14 8 4 14-13m37-15 12 10 8-11 9 5-12 23-18-12')}${path('m45 124 2 10 9-3 1-6m67-24 5-9 9 7-4 9',cream,ink,2)}${toe(62,153)}${toe(110,153)}`,
+        body:`${path('M77 88q12-4 24 0l14 23-12 21H74l-11-21Z')}${path('M74 124 62 149l16 2 13-23m7-4 7 25 14-3-11-24')}${path('M62 146q-10 6-7 11h23l1-9m25-2 3 11h22q-2-9-12-12',cream,ink,2.3)}${path('m69 103-14 9-8 14 8 4 14-13')}${path('m45 124 2 10 9-3 1-6',cream,ink,2)}<g class="sq-mascot__paw" style="transform-origin:107px 103px">${path('m106 102 12 10 8-11 9 5-12 23-18-12')}${path('m124 101 5-9 9 7-4 9',cream,ink,2)}</g>${toe(62,153)}${toe(110,153)}`,
         head:`${path('M61 63 48 19l13 7 3-12 20 40m14-1 15-37 3 13 14-7-12 43')}${path('m57 32 18 28-10 3m61-30-18 28 9 4','#c3768f','none')}${path('M90 50q-22-1-32 17l-12 5 12 4-11 8 17 1q5 14 26 20 20-5 26-20l16-1-11-8 11-4-13-6q-11-17-29-16Z')}${path('M58 77q14-2 32 17 17-18 31-17l-5 8q-7 16-26 20-17-5-26-20Z',cream,'none')}${eyes(75,106,74,4,5.5)}${smile(91,91)}${path('m85 56 6 7 6-7-6-4Z','#b4e6ed','none')}`,
         gear:`${path('M69 103q22 14 42-1l-4 10q-16 10-34 1Z','#6960a9',ink,2)}${path('m74 112 9 16 13-1 10-16','none','#b6a7f0',3)}${oval(90,117,5,5,'#dbd4ff',ink,1.6)}${star(90,117,3,'#554d8f')}${path('M48 120h13v9H48Z','#253a59','#baaff8',1.5)}${oval(54,124,2,2,'#8ce7df')}`
       },
       {
         key:'three-tail-guardian',
         rear:`<g class="sq-mascot__tail" style="transform-origin:93px 121px">${path('M69 133c-29 10-47-10-38-39 2-12 1-20-4-26 23 7 30 20 25 36-3 10 10 13 17 29Z')}${path('M105 132c22 18 52-2 50-31 0-10 1-19 9-25-25 1-42 11-39 32 1 9-13 9-20 24Z')}${path('M103 124c35-5 45-32 29-60-2 19-17 24-25 33-8 9-9 18-4 27Z')}${path('M27 68c23 7 30 20 25 36-9-1-15-6-21-10 2-12 1-20-4-26Z',cream,'none')}${path('M164 76c-25 1-42 11-39 32 12 1 21-2 30-7 0-10 1-19 9-25Z','#d5e4f8','none')}${path('M132 64c-2 19-17 24-25 33 11 1 21-1 31-7 1-8-1-17-6-26Z',cream,'none')}</g>`,
-        body:`${path('M66 87q23-16 47 0l9 37-12 15H69l-15-15Z')}${path('M67 123 62 150h19l8-24m9 0 3 25h20l-9-30')}${path('M62 149q-11 3-9 10h28v-10m20 0v10h30q-2-9-11-10',cream,ink,2.4)}${path('M64 94q-16 5-18 27l-4 18 14 4 14-31m40-18q17 6 19 25l6 18-15 6-15-31')}${path('m44 134-5 13 17 4 3-12m68-4 11 12-17 5-4-12',cream,ink,2)}${toe(61,155)}${toe(107,155)}`,
+        body:`${path('M66 87q23-16 47 0l9 37-12 15H69l-15-15Z')}${path('M67 123 62 150h19l8-24m9 0 3 25h20l-9-30')}${path('M62 149q-11 3-9 10h28v-10m20 0v10h30q-2-9-11-10',cream,ink,2.4)}${path('M64 94q-16 5-18 27l-4 18 14 4 14-31')}${path('m44 134-5 13 17 4 3-12',cream,ink,2)}<g class="sq-mascot__paw" style="transform-origin:110px 94px">${path('m110 94q17 6 19 25l6 18-15 6-15-31')}${path('m127 135 11 12-17 5-4-12',cream,ink,2)}</g>${toe(61,155)}${toe(107,155)}`,
         mane:`${path('M69 67 53 72l2 12-14 4 12 13-8 12 17-1 3 19 14-9 10 18 13-18 14 9 4-20 16 2-8-13 12-13-15-4 2-12-16-6Z',cream,ink,2.5)}${path('m60 88 8 13-8 6m18-11 11 20 11-20m18-7-8 13 8 6','none','#e7bc82',2)}`,
         head:`${path('M66 57 59 18l17 11 10 22m13 0 8-24 16-12-6 44')}${path('m65 29 13 25-8 2m46-27-12 25 8 3','#ba7b99','none')}${path('M90 42q-21 0-28 18l-10 5 9 6-7 8 16-1q8 20 20 23 16-4 22-23l16 1-7-8 10-6-12-6q-9-17-29-17Z')}${path('M61 68q14 0 29 19 17-19 30-19l-8 13q-10 19-22 20-14-4-20-20Z',cream,'none')}${eyes(77,104,64,4,5)}${smile(91,83)}${path('m83 49 8-6 8 6-8 8Z','#a8d7e7','none')}`,
         gear:`${path('m53 91 17-10 6 14-12 7Z','#454581','#e6c573',1.6)}${path('m121 89-14-8-5 14 13 7Z','#454581','#e6c573',1.6)}${path('m72 102 18 25 19-25','none','#d9b968',3)}${path('m89 111 5 7-5 7-5-7Z','#beeafa',ink,1.4)}${path('m56 138-11-2m75 2 12-3','none','#d9b968',3)}`
@@ -70,7 +70,7 @@
       {
         key:'celestial-winged-fox',
         rear:`<g class="sq-mascot__tail" style="transform-origin:94px 119px">${path('M73 132C27 148 13 114 26 86c6 26 26 10 40 25-21-35-7-56 10-58-7 26 11 34 7 58 16-26 5-48 16-60 13 16 11 39 4 58 25-18 13-40 32-51 2 21 16 29 0 53 17-15 18-27 25-34 12 44-16 68-51 62Z','#d5bfe9',ink,2.5)}${path('M26 86c6 26 26 10 40 25-12 7-27 4-38-1Z','#fff1d0','none')}${path('M76 53c-7 26 11 34 7 58-13-12-23-29-7-58Z','#b2edf0','none')}${path('M99 51c13 16 11 39 4 58-8-19-13-38-4-58Z','#fff2cf','none')}${path('M135 58c2 21 16 29 0 53-4-12-10-20-7-34Z','#c4f2eb','none')}${path('M160 77c8 25 2 43-12 52-9-10-17-14-13-18 17-15 18-27 25-34Z','#fff1d0','none')}${path('M37 128q16 13 38 0m42 6q22 4 30-4','none','#fae1ab',2)}</g><g class="sq-mascot__wings" style="transform-origin:90px 102px">${path('M74 105C42 102 15 82 17 53l21 15-7-32 29 27-4-34 25 48Z','#dbe4fa','#79749c',2)}${path('M107 105c32-3 59-23 57-52l-21 15 7-32-29 27 4-34-25 48Z','#dbe4fa','#79749c',2)}${path('m26 64 38 31m-24-49 29 39m-7-43 12 36m82-14-38 31m24-49-29 39m7-43-12 36','none','#9edbdd',2.5)}${path('m40 80 7-1m13-24 7 7m72 18-7-1m-13-24-7 7','none','#ffe4a6',3)}</g>`,
-        body:`${path('M75 83q16-8 31 0l8 25-8 20-31 2-10-21Z',warm)}${path('M76 122 67 151h13l11-27m6 0 4 27h14l-9-31',warm)}${path('M68 146q-9 4-9 13h22l1-12m20 0v12h24q-1-9-12-12',cream,ink,2.3)}${path('m72 96-12 20-9 20 12 6 14-25m28-21 15 19 13 16-10 11-20-24',warm)}${path('m52 132-8 13 15 5 7-12m63-8 13 12-15 9-8-12',cream,ink,2)}${toe(65,155)}${toe(108,155)}`,
+        body:`${path('M75 83q16-8 31 0l8 25-8 20-31 2-10-21Z',warm)}${path('M76 122 67 151h13l11-27m6 0 4 27h14l-9-31',warm)}${path('M68 146q-9 4-9 13h22l1-12m20 0v12h24q-1-9-12-12',cream,ink,2.3)}${path('m72 96-12 20-9 20 12 6 14-25',warm)}${path('m52 132-8 13 15 5 7-12',cream,ink,2)}<g class="sq-mascot__paw" style="transform-origin:105px 96px">${path('m105 96 15 19 13 16-10 11-20-24',warm)}${path('m129 130 13 12-15 9-8-12',cream,ink,2)}</g>${toe(65,155)}${toe(108,155)}`,
         mane:`${path('m76 60-17 9 4 11-13 4 13 15-2 17 16-3 13 26 14-26 16 3-1-17 12-15-14-5 4-11-16-9Z','#fff3d9','#bb935e',2)}${path('m70 86 7 13 12-17 13 17 9-13m-33 18 12 18 11-18','none','#e3ca92',2)}`,
         head:`${path('M69 53 57 21l10 4-1-13 16 16 3 19m11 0 6-19 16-16-1 13 10-5-13 36',cream,ink,2.3)}${path('m63 27 14 24-7 2m49-26-15 24 8 2','#b79dd5','none')}${path('M91 38q-20 0-27 17l-10 9 12 2-7 9 14 1q7 16 18 19 13-3 19-19h15l-7-10 12-2-12-9q-7-17-27-17Z',warm)}${path('M65 65q15 2 26 16 12-15 27-16l-8 13q-7 15-19 17-13-3-18-17Z',cream,'none')}${eyes(78,104,60,3.8,5.3)}${smile(92,77)}${path('m91 29 6 10-6 11-6-11Z','#cefbfb','#cfa553',1.4)}${path('m87 51 4 4 4-4','none','#dcab56',1.5)}`,
         gear:`${path('m65 94 11-7 8 9-10 8Z','#e6dcf5','#c9a961',1.7)}${path('m117 94-11-7-8 9 10 8Z','#e6dcf5','#c9a961',1.7)}${path('m75 111 15 20 16-20','none','#e0b863',3)}${path('m90 103 6 10-6 9-6-9Z','#ace8ec','#9e855b',1.5)}${path('m55 134 8 4m61-3 7-4m-60 18h9m24 0h8','none','#ddb963',3)}`
@@ -105,17 +105,41 @@
     const context=['research','quests','seasonality','saved','watchlist'].includes(options.context)?options.context:'research';
     options={...options,idPrefix:token(options.idPrefix)||`card-${++serial}`};
     const prefix='sqm-'+options.idPrefix;
-    return `<section class="sq-companion sq-companion--${context}${options.compact?' sq-companion--compact':''}${options.static?' sq-mascot--paused':''}" aria-label="Lumi ${context} companion"><div class="sq-companion__art">${renderSvg(p.xp,options)}</div><div class="sq-companion__copy"><p class="sq-companion__eyebrow">Your research companion</p><h3>Lumi <span>· ${s.name}</span></h3><p class="sq-companion__ability">${s.ability}</p><div class="sq-companion__progress-copy"><span>${p.xp.toLocaleString('en-US')} XP</span><span>${progress}</span></div><progress class="sq-companion__progress" value="${p.fraction}" max="1" aria-label="Lumi evolution progress"></progress><p class="sq-companion__note">Grows with research milestones. Abilities are cosmetic.</p></div><div class="sq-companion__guide"${guide.title?'':' hidden'}><b class="sq-companion__guide-title">${escape(guide.title||'')}</b><p class="sq-companion__guide-text" id="${prefix}-guide">${escape(guide.text||'')}</p><button class="sq-companion__action" type="button" data-mascot-action aria-describedby="${prefix}-guide">${escape(guide.label||'Explore')}</button></div><button class="sq-companion__motion" type="button" data-mascot-motion aria-pressed="${!!options.static}" aria-label="${options.static?'Resume':'Pause'} companion animation">${options.static?'Resume motion':'Pause motion'}</button><span class="sq-companion__status" role="status" aria-live="polite" aria-atomic="true"></span></section>`;
+    return `<section class="sq-companion sq-companion--${context}${options.compact?' sq-companion--compact':''}${options.static?' sq-mascot--paused':''}" aria-label="Lumi ${context} companion"><button class="sq-companion__tap" type="button" data-mascot-tap aria-label="Say hello to Lumi" aria-describedby="${prefix}-tap-help"><span class="sq-companion__art">${renderSvg(p.xp,options)}</span><span class="sq-companion__feedback" aria-hidden="true" hidden></span></button><span class="sq-companion__tap-help" id="${prefix}-tap-help">A playful cosmetic response. Tap, click, or press Enter or Space.</span><span class="sq-companion__tap-status" role="status" aria-live="polite" aria-atomic="true"></span><div class="sq-companion__copy"><p class="sq-companion__eyebrow">Your research companion</p><h3>Lumi <span>· ${s.name}</span></h3><p class="sq-companion__ability">${s.ability}</p><div class="sq-companion__progress-copy"><span>${p.xp.toLocaleString('en-US')} XP</span><span>${progress}</span></div><progress class="sq-companion__progress" value="${p.fraction}" max="1" aria-label="Lumi evolution progress"></progress><p class="sq-companion__note">Grows with research milestones. Abilities are cosmetic.</p></div><div class="sq-companion__guide"${guide.title?'':' hidden'}><b class="sq-companion__guide-title">${escape(guide.title||'')}</b><p class="sq-companion__guide-text" id="${prefix}-guide">${escape(guide.text||'')}</p><button class="sq-companion__action" type="button" data-mascot-action aria-describedby="${prefix}-guide">${escape(guide.label||'Explore')}</button></div><button class="sq-companion__motion" type="button" data-mascot-motion aria-pressed="${!!options.static}" aria-label="${options.static?'Resume':'Pause'} companion animation">${options.static?'Resume motion':'Pause motion'}</button><span class="sq-companion__status" role="status" aria-live="polite" aria-atomic="true"></span></section>`;
   }
   /** Purely visual. The host owns research eligibility, persistence, and XP. */
   function mount(container, initialXp, options = {}) {
     if (!container || typeof container.querySelector !== 'function') throw new TypeError('A DOM container is required');
-    let xp = normalizeXp(initialXp), paused = !!options.static, active=true, timer = null, greetingTimer=null, destroyed = false;
+    let xp = normalizeXp(initialXp), paused = !!options.static, active=true, timer = null, greetingTimer=null, tapTimer=null, tapSequence=0, destroyed = false;
     const opts = { ...options, idPrefix: token(options.idPrefix) || `mounted-${++serial}` };
     container.innerHTML = renderCard(xp,{...opts,static:paused});
     function clearReaction(){
       clearTimeout(greetingTimer);
       container.querySelector('.sq-companion').classList.remove('sq-companion--greeting');
+    }
+    const tapClasses=['sq-companion--tap-wave','sq-companion--tap-tilt','sq-companion--tap-tail'];
+    const tapCues=['Hello!','Curious!','Tail swish!'];
+    const tapAnnouncements=['Lumi says hello.','Lumi gives you a curious look.','Lumi sends a playful tail greeting.'];
+    function clearTap(){
+      clearTimeout(tapTimer);tapTimer=null;
+      container.querySelector('.sq-companion').classList.remove(...tapClasses);
+      const cue=container.querySelector('.sq-companion__feedback');
+      cue.hidden=true;cue.textContent='';
+      container.querySelector('.sq-companion__tap-status').textContent='';
+    }
+    function react(){
+      if(destroyed||!active)return;
+      clearTap();clearReaction();
+      const index=tapSequence++%tapClasses.length,sequence=tapSequence;
+      const card=container.querySelector('.sq-companion');
+      // Flush the cleared class even when several activations arrive in one frame.
+      // The native button stays in place while only the illustration moves.
+      void card.offsetWidth;
+      card.classList.add(tapClasses[index]);
+      const cue=container.querySelector('.sq-companion__feedback');
+      cue.textContent=tapCues[index];cue.hidden=false;
+      container.querySelector('.sq-companion__tap-status').textContent=tapAnnouncements[index];
+      tapTimer=setTimeout(()=>{if(sequence===tapSequence)clearTap();},1000);
     }
     function settle(){
       clearTimeout(timer);
@@ -131,9 +155,11 @@
       button.setAttribute('aria-pressed',String(paused));
       button.setAttribute('aria-label',`${paused?'Resume':'Pause'} companion animation`);
       button.textContent=paused?'Resume motion':'Pause motion';
-      if(paused){clearReaction();settle();}
+      if(paused){clearReaction();clearTap();settle();}
     }
     function onClick(event) {
+      const tap=event.target.closest && event.target.closest('[data-mascot-tap]');
+      if(tap&&container.contains(tap)){react();return;}
       const button = event.target.closest && event.target.closest('[data-mascot-motion]');
       if (!button || !container.contains(button)) return;
       setPaused(!paused);
@@ -146,7 +172,7 @@
         if(destroyed)return;
         active=!!value;
         container.querySelector('.sq-companion').classList.toggle('sq-mascot--inactive',!active);
-        if(!active){clearReaction();settle();container.querySelector('.sq-companion__status').textContent='';}
+        if(!active){clearReaction();clearTap();settle();container.querySelector('.sq-companion__status').textContent='';}
       },
       setGuide(guide={}){
         if(destroyed)return;
@@ -166,7 +192,7 @@
         const value=normalizeXp(nextXp); if(value===xp) return;
         const before=stageForXp(xp), p=progressForXp(value), gained=value>xp;
         const state = gained && active && !paused && updateOptions.celebrate !== false ? (p.stage.index>before.index?'levelup':'earn'):'idle';
-        clearTimeout(timer);clearReaction();
+        clearTimeout(timer);clearReaction();clearTap();
         container.querySelector('.sq-companion__art').innerHTML=renderSvg(value,{...opts,state,static:paused});
         container.querySelector('h3').innerHTML=`Lumi <span>· ${p.stage.name}</span>`;
         container.querySelector('.sq-companion__ability').textContent=p.stage.ability;
@@ -177,7 +203,7 @@
         xp=value;
         if(state!=='idle')timer=setTimeout(settle,1500);
       },
-      destroy() { destroyed=true;clearTimeout(timer);clearTimeout(greetingTimer);container.removeEventListener('click',onClick); }
+      destroy() { destroyed=true;clearTimeout(timer);clearTimeout(greetingTimer);clearTap();container.removeEventListener('click',onClick); }
     });
   }
   return Object.freeze({ STAGES, normalizeXp, stageForXp, progressForXp, renderSvg, renderCard, mount });
