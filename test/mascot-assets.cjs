@@ -55,3 +55,15 @@ assert(css.includes('.sq-mascot--paused .sq-companion__art'));
 assert(css.includes('@media(prefers-reduced-motion:reduce){.sq-companion__art,.sq-mascot *'));
 assert(fs.readFileSync(`${__dirname}/../index.html`,'utf8').includes('.sq-companion-panel:not([open]) .sq-companion__art'));
 console.log('PASS: independent head motion and HTML sway preserve SVG origins, pause, collapse and reduced-motion guards.');
+
+for(const stage of M.STAGES){
+ const card=M.renderCard(stage.minXp,{context:'quests'});
+ assert.match(card,/<button class="sq-companion__tap" type="button" data-mascot-tap aria-label="Say hello to Lumi"/);
+ assert.equal((card.match(/class="sq-mascot__paw"/g)||[]).length,1);
+ assert.match(card,/class="sq-companion__feedback" aria-hidden="true" hidden/);
+ assert.match(card,/class="sq-companion__tap-status" role="status" aria-live="polite" aria-atomic="true"/);
+}
+assert.match(css,/min-width:44px;min-height:44px/);
+assert.match(css,/sq-companion__tap:focus-visible/);
+for(const name of ['wave','tilt','tail'])assert.match(css,new RegExp('sq-mascot-tap-'+name+' \\.9s ease-in-out 1'));
+console.log('PASS: all forms have a native labelled artwork button, independent paw, static feedback and finite reaction CSS.');

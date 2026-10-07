@@ -1,5 +1,9 @@
 # StrikeQuests - Strike Price Calculator
 
+## v10.1.4: Tap to greet Lumi
+
+Lumi responds to artwork taps, clicks, Enter and Space across all five placements and forms, with finite playful reactions and static feedback when motion is paused or reduced. See [v10.1.4 interaction and verification notes](README-V10.1.4.md) and [v10.1.3 contextual guides](README-V10.1.3.md).
+
 ## v10.1.2 review iteration
 
 This branch adds a 2-Year/10% fresh starting view, direct target and seasonality navigation, an animated evolving Lumi companion, guided research steps, source-aware saved/watchlist comparisons and safer Manual editing of provider scenarios. See [v10.1.2 behavior, validation and release boundaries](README-V10.1.2.md).
