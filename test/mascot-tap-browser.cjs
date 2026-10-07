@@ -108,7 +108,9 @@ async function seedStage(page,xp) {
   await page.evaluate(xp=>{
     const mask=Array.from({length:1<<SQ_CORE.length},(_,i)=>i).find(mask=>SQ_CORE.reduce((sum,b,i)=>sum+((mask&(1<<i))?ACHIEVEMENTS[b.id].xp:0),0)===xp);
     if(mask===undefined)throw Error('No synthetic badge fixture for '+xp);
-    sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T12:00:00Z',mode:'demo',origin:'tap-test'}])),horizons:[]});
+    // Change only earned milestones; keep the normal startup horizon record.
+    // Reload visits the active horizon independently of any artwork input.
+    sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T12:00:00Z',mode:'demo',origin:'tap-test'}])),horizons:sqBadges().horizons});
     sqRenderBadges();
   },xp);
   assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
@@ -252,7 +254,7 @@ async function matrix(page,engine) {
       await visit(page,h);assert.equal(await page.locator(select(h,'.sq-mascot--'+stage)).count(),1);
       await isolateParts(page,h);
       const results=[];
-      for(const input of ['pointer','touch','Enter'])results.push(await finitePaint(page,h,input,`${engine}-${h.context}-${stage}-${input.toLowerCase()}`,engine==='chromium'&&h.context==='quests'&&xp===500));
+      for(const input of ['pointer','touch','Enter'])results.push(await finitePaint(page,h,input,`${engine}-${h.context}-${stage}-${input.toLowerCase()}`,h.context==='quests'&&xp===500));
       assert.deepEqual(results.map(r=>r.kind).sort(),[...reactions].sort(),'Three successive taps include wave, head tilt and tail response');
       const before=await protectedState(page);await activate(page,h,'Space');
       assert.deepEqual(await reaction(page,h),[results[0].kind],'The three-response cycle repeats');await feedback(page,h);
@@ -308,7 +310,7 @@ async function interruptionAndPreferences(page,engine) {
   await page.locator('#'+h.summary).click();await clean(page,h);await page.locator('#'+h.summary).click();await visit(page,h);await clean(page,h);
   await activate(page,h,'pointer');await page.locator(select(h,'[data-mascot-motion]')).click();await clean(page,h);
   for(const item of hosts)assert.equal(await page.locator(select(item,'[data-mascot-motion]')).getAttribute('aria-pressed'),'true');
-  await staticResponse(page,h,'pointer',`${engine}-paused`,engine==='chromium');
+  await staticResponse(page,h,'pointer',`${engine}-paused`,true);
   await staticResponse(page,h,'touch',`${engine}-paused-repeat`);
   await page.locator(select(h,'[data-mascot-action]')).click();
   for(const item of hosts)await clean(page,item);
@@ -325,7 +327,7 @@ async function interruptionAndPreferences(page,engine) {
   await page.emulateMedia({reducedMotion:'reduce'});
   for(const item of hosts) {
     await visit(page,item);assert.equal(await page.locator(select(item,'[data-mascot-motion]')).isVisible(),false);
-    await staticResponse(page,item,'Space',`${engine}-${item.context}-reduced-motion`,engine==='chromium'&&item.context==='quests');
+    await staticResponse(page,item,'Space',`${engine}-${item.context}-reduced-motion`,item.context==='quests');
   }
   await page.emulateMedia({reducedMotion:'no-preference'});await visit(page,h);
   await activate(page,h,'pointer');assert.equal((await reaction(page,h)).length,1);await feedback(page,h);await page.waitForTimeout(1150);await clean(page,h);
