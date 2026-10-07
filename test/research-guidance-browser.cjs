@@ -156,7 +156,8 @@ async function sourceLabels(page, selector, expected) {
     assert.equal(await page.evaluate(()=>sqResearchXp()),50);
     assert.equal(await page.locator('#companionHost .sq-mascot--scout').count(),1);
     assert.equal(await page.locator('#companionHost [data-creature-form="long-eared-juvenile"]').count(),1);
-    assert.match(await page.locator('#companionHost .sq-companion__status').textContent(),/Lumi evolved into Signal Scout/);
+    assert.match(await page.locator('#badgeToast').textContent(),/Lumi evolved into Signal Scout/);
+    assert.equal(await page.locator('#companionHost .sq-companion__status').textContent(),'');
     const once=await page.evaluate(()=>JSON.stringify(sqBadges().earned.first));
     const repeat=await page.evaluate(async()=>{
       let changes=0;const observer=new MutationObserver(records=>changes+=records.length);

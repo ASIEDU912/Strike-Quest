@@ -245,6 +245,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2>div,input,select{min-width:0}.analysis-card .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.analysis-card .hero>div{min-width:0}.analysis-card .price strong{overflow-wrap:anywhere}.metrics,.compare-metrics,.compare-target-row{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{min-width:0}.metric b,.compare-target-row b{overflow-wrap:anywhere}
 .core-access{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}.core-access button{display:grid;grid-template-columns:30px minmax(0,1fr);gap:3px 8px;align-items:center;text-align:left;min-height:76px;padding:13px;border:1px solid #49769a;border-radius:16px;background:linear-gradient(120deg,#234568,#122b44);color:#edf7ff}.core-access button>span{grid-row:1/3;font-size:27px;color:#e6cd86}.core-access b{font-size:14px}.core-access small{font-size:10px;color:#afcde6;line-height:1.5}.sq-companion-panel{margin-top:16px;border-top:1px solid #365570;padding-top:12px}.sq-companion-panel>summary{color:#c7dcf4;font-size:12px;min-height:44px;padding:10px 0;cursor:pointer}.sq-companion-panel:not([open]) .sq-companion__art,.sq-companion-panel:not([open]) .sq-mascot *{animation:none!important}.sq-companion__motion{min-height:44px!important}.mission-step-label{display:block;color:#a9c6df;font-size:10px;line-height:1.5;margin-top:5px}.mission-next progress{display:block;width:100%;height:5px;margin:10px 0 0}.core-access button:focus-visible,.sq-companion-panel summary:focus-visible{outline:3px solid #8ed9ff;outline-offset:3px}
 @media(max-width:350px){.core-access{gap:7px}.core-access button{grid-template-columns:minmax(0,1fr);padding:11px}.core-access button>span{display:none}.core-access b{font-size:13px}.core-access small{font-size:10px}}
+.sq-companion-panel--inline{margin:0 0 16px;padding:0;border-top:0}.sq-companion-panel--inline>summary{padding:10px 4px}.sq-companion-panel--inline .sq-companion{box-shadow:0 6px 20px #0002}.app-view:not(.active) .sq-companion__art,.app-view:not(.active) .sq-mascot *,.analysis-pane:not(.active) .sq-companion__art,.analysis-pane:not(.active) .sq-mascot *{animation:none!important;transition:none!important}
 </style>
 </head>
 <body>
@@ -371,7 +372,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
         </div>
         <div class="season-current" id="seasonalityCurrent"><div class="season-current-top"><h3>Current month</h3><span class="season-signal mid" id="seasonalitySignal">Waiting</span></div><p id="seasonalityCurrentText">Load automatic market data to calculate monthly seasonality.</p></div>
         <div class="seasonality-summary"><div class="season-stat"><span>Positive years</span><b id="seasonalityHit">—</b></div><div class="season-stat"><span>Average return</span><b id="seasonalityAvg">—</b></div><div class="season-stat"><span>Observations</span><b id="seasonalityObs">—</b></div></div>
-        <div class="season-grid" id="seasonalityGrid"></div>
+        <details class="sq-companion-panel sq-companion-panel--inline" id="seasonalityCompanionPanel" open><summary id="seasonalityCompanionSummary">Lumi · Explore the sample</summary><div id="seasonalityCompanionHost"></div></details><div class="season-grid" id="seasonalityGrid"></div>
         <div class="season-foot" id="seasonalityFoot">Seasonality describes historical tendencies, not a forecast. It is one research input alongside trend, range, performance, and strike-zone calculations.</div>
       </div>
 
@@ -384,6 +385,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 
   <main id="viewWatchlist" class="app-view">
     <div class="screen-title"><div><div class="section-kicker">Watchlist</div><h2>Research Queue</h2><p>Track analysis snapshots and compare up to three tickers.</p></div><button class="btn primary" id="watchAddBtn">Add current</button></div>
+    <details class="sq-companion-panel sq-companion-panel--inline" id="watchlistCompanionPanel" open><summary id="watchlistCompanionSummary">Lumi · Compare with context</summary><div id="watchlistCompanionHost"></div></details>
     <section class="card"><div id="watchlist" class="watchlist-grid research-jump" tabindex="-1"></div></section>
     <section class="card compare-section">
       <div class="compare-toolbar"><div><h2 class="section-title" style="margin:0">Compare Mode</h2><div class="compare-count" id="compareCount">Select 2–3 watchlist items</div><p class="compare-context-note">Compare the assumptions too: sources, sessions, horizons and corrections may differ. These snapshots do not rank investments.</p></div><button class="btn ghost" id="compareClearBtn" style="padding:8px 10px">Clear</button></div>
@@ -393,18 +395,20 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 
   <main id="viewSaved" class="app-view">
     <div class="screen-title"><div><div class="section-kicker">Saved</div><h2>Analysis History</h2><p>Reload, compare, or delete past research runs.</p></div><button class="btn danger-lite" id="clearAllBtn">Clear all</button></div>
-    <section class="card"><div id="history"></div><button class="btn secondary" id="saveBtn" style="width:100%;margin-top:8px">Save current analysis</button></section>
+    <details class="sq-companion-panel sq-companion-panel--inline" id="savedCompanionPanel" open><summary id="savedCompanionSummary">Lumi · Revisit your reasoning</summary><div id="savedCompanionHost"></div></details>
+    <section class="card"><div id="history" class="research-jump" tabindex="-1"></div><button class="btn secondary" id="saveBtn" style="width:100%;margin-top:8px">Save current analysis</button></section>
   </main>
 
   <main id="viewQuests" class="app-view">
     <div class="screen-title"><div><div class="section-kicker">Quests</div><h2>Research Progress</h2><p>Progress rewards completed research steps — not trading frequency or profits.</p></div></div>
+    <details class="sq-companion-panel sq-companion-panel--inline" id="questsCompanionPanel" open><summary id="questsCompanionSummary">Lumi · Your research journey</summary><div id="questsCompanionHost"></div></details>
     <section class="level-card quest-legacy"><div class="level-emblem">🏆</div><div class="level-info"><h3 id="levelTitle">Level 1 Researcher</h3><p id="levelSubtitle" class="level-subtitle-strong">Build a complete research process.</p><div class="xp-row"><span id="xpText">0 / 200 XP</span><span id="nextLevelText">Next: Level 2</span></div><div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div></div></section>
     <section class="card quest-legacy"><h2 class="section-title">Research Stats</h2><div class="progress-stats"><div class="progress-stat"><b id="statAnalyses">0</b><span>Analyses</span></div><div class="progress-stat"><b id="statSaved">0</b><span>Saved</span></div><div class="progress-stat"><b id="statWatch">0</b><span>Watchlist</span></div><div class="progress-stat"><b id="statCompare">0</b><span>Compares</span></div></div></section>
     <section class="card"><div class="section-kicker">Small steps. Real understanding.</div><h2 class="section-title">Your research badges</h2><div class="next-badge"><b id="nextBadgeTitle"></b><p id="nextBadgeText"></p><progress id="nextBadgeProgress" max="2" value="0" aria-label="Next badge progress"></progress><button type="button" class="btn primary" id="nextBadgeAction" aria-describedby="nextBadgeText">Show my next step</button></div><p class="review-note">Unlock each badge once through a distinct learning task. Progress stays on this device. No trading, profit targets, streaks or penalties.</p><div class="badge-grid" id="badgeGrid"></div><button type="button" id="completeResearchBtn" class="btn primary">Finish this research run</button><div class="reflection-milestone"><h3>Keep reflecting</h3><div id="reflectionBadge"></div></div></section>
     <section class="card quest-legacy"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">StrikeQuests v10.1.2 • learning before action • hypothetical scenarios</div>
+  <div class="foot">StrikeQuests v10.1.3 • learning before action • hypothetical scenarios</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -1118,6 +1122,7 @@ function renderProgressScreens(){
   const s=p.stats||{};if($("statAnalyses"))$("statAnalyses").textContent=s.analyses||0;if($("statSaved"))$("statSaved").textContent=s.saved||0;if($("statWatch"))$("statWatch").textContent=s.watch||0;if($("statCompare"))$("statCompare").textContent=s.compare||0;
 }
 function setView(view){
+  if(view!=='settings')sqCompanionView=view;
   if(view==='settings'){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view==='settings'));openSettings();return}
   document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
   const el=$(`view${view.charAt(0).toUpperCase()+view.slice(1)}`);if(el)el.classList.add('active');
@@ -1125,7 +1130,7 @@ function setView(view){
   if(view==='watchlist'){renderWatchlist();renderComparePanel();}
   if(view==='saved')renderHistory();
   if(view==='quests')renderProgressScreens();
-  window.scrollTo({top:0,behavior:'auto'});
+  window.scrollTo({top:0,behavior:'auto'});sqRenderCompanion();
 }
 function setAnalysisTab(tab){document.querySelectorAll('.analysis-tab').forEach(b=>b.classList.toggle('active',b.dataset.analysis===tab));document.querySelectorAll('.analysis-pane').forEach(p=>p.classList.remove('active'));const ids={overview:'analysisOverview',performance:'analysisPerformance',seasonality:'analysisSeasonality',targets:'analysisTargets'};$(ids[tab]||ids.overview)?.classList.add('active');if(tab==='seasonality')renderSeasonality()}
 function symbolMeta(symbol){return LOCAL_SYMBOLS.find(x=>x.symbol===symbol)||{symbol,name:symbol,exchange:'',type:''}}
@@ -1301,7 +1306,7 @@ applySymbol=function(symbol){const changed=$('ticker').value.trim().toUpperCase(
 const sqOldSuggestion=chooseSuggestion;
 chooseSuggestion=function(button){applySymbol(button.dataset.symbol||'');$('tickerSuggestions').classList.remove('show');$('tickerSuggestions').innerHTML='';};
 const sqOldTab=setAnalysisTab;
-setAnalysisTab=function(tab){if(tab==='targets'){$('scenarioSection').scrollIntoView({behavior:'auto',block:'start'});return}sqOldTab(tab);$('researchContext').style.display=calc()||tab==='seasonality'?'':'none';};
+setAnalysisTab=function(tab){if(tab!=='targets')sqCompanionTab=tab;if(tab==='targets'){$('scenarioSection').scrollIntoView({behavior:'auto',block:'start'});return}sqOldTab(tab);$('researchContext').style.display=calc()||tab==='seasonality'?'':'none';sqRenderCompanion();};
 const sqOldCacheLoad=loadCachedEod;
 loadCachedEod=function(silent=false){if(sqPrivate())return false;const item=readEodCache()[eodCacheKey()];if(!item||!(Number(item.price)>0)||!Number.isFinite(Number(item.perf)))return false;const ok=sqOldCacheLoad(true);state.dataMeta={...(item.origin||{}),symbol:$('ticker').value.trim().toUpperCase(),source:item.extra?.dataProvider||'Previously saved provider snapshot',session:item.eodDate,fetchedAt:item.origin?.fetchedAt||item.savedAt,stale:true};if(!silent)status('Showing a previously cached snapshot. Verify its session and age before using it.','warn');render();return ok;};
 const sqOldRender=render;
@@ -1384,18 +1389,105 @@ const SQ_BADGES=[
  {id:'review',name:'Thoughtful Return',detail:'Revisit a saved note and mark your hypothesis reviewed.',color:'#8bd5b5',steps:2}
 ];
 const SQ_CORE=SQ_BADGES.filter(b=>b.id!=='review'),SQ_BADGE_KEY='sq_badges_v1011';
-let sqCompanion=null;
+// All placements share earned progress and user preferences; guides never perform research actions.
+const sqCompanions=new Map();
+let sqCompanionView='research',sqCompanionTab='overview',sqCompanionCollapsed=localStorage.getItem('sq_companion_collapsed')==='true';
+const SQ_COMPANION_HOSTS=[
+ ['research','companionPanel','companionSummary','companionHost'],
+ ['quests','questsCompanionPanel','questsCompanionSummary','questsCompanionHost'],
+ ['seasonality','seasonalityCompanionPanel','seasonalityCompanionSummary','seasonalityCompanionHost'],
+ ['saved','savedCompanionPanel','savedCompanionSummary','savedCompanionHost'],
+ ['watchlist','watchlistCompanionPanel','watchlistCompanionSummary','watchlistCompanionHost']
+];
 function sqResearchXp(){const b=sqBadges();return SQ_CORE.reduce((sum,step)=>sum+(sqEarnedRecord(b.earned[step.id])?ACHIEVEMENTS[step.id].xp:0),0)}
+function sqCompanionGuide(context){
+ const valid=!!calc(),history=sqJSON('splab_history',[]),saved=Array.isArray(history)?history:[];
+ const loaded=saved.find(x=>x.id===state.loadedResearchId),reviewable=valid&&typeof loaded?.reason==='string'&&loaded.reason.trim().length>=12;
+ if(context==='quests'){const mission=sqNextMission();return {title:mission.title,text:mission.text,label:mission.label,action:'mission'};}
+ if(context==='seasonality'){
+  const season=state.extra.seasonality,month=MONTH_NAMES[new Date().getMonth()],n=Number(season?.currentMonth?.observations)||0;
+  if(!season?.months)return {title:'A sample comes first',text:'No complete monthly history is available for these inputs. Manual values do not supply a seasonal sample. Choose your data mode before drawing a conclusion.',label:'Review data modes',action:'modes'};
+  const source=sqSourceInfo(sqProvenance()),range=season.mode==='specific'?`Selected years: ${(season.usedYears||[]).join(', ')||'none'}.`:`Selected range: ${season.rangeStart}–${season.rangeEnd}.`;
+  const origin=source.kind==='synthetic'?'Synthetic learning example.':source.kind==='stale'?'Stale historical snapshot. Verify the source and session.':source.kind==='eod'?'Historical end-of-day sample.':'Source is unverified.';
+  return {title:n?'Count the observations':'Check the selected years',text:`${origin} ${range} ${n} ${month} observation${n===1?'':'s'} in this selection. ${n>0&&n<5?'This small sample is especially uncertain. ':''}Historical averages and positive-year percentages are not forecasts.`,label:n?'Review sample limits':'Review year selection',action:n?'sample':'seasonControls'};
+ }
+ if(context==='saved'){
+  if(reviewable)return {title:'Return to your saved reasoning',text:'Your loaded note is ready to revisit. Read what you wrote and decide whether your assumptions still hold; marking it reviewed remains your choice.',label:'Read the loaded note',action:'review'};
+  return saved.length?{title:'Revisit an idea',text:`${saved.length} saved research ${saved.length===1?'snapshot':'snapshots'} on this device. Choose a record to load, then compare its original assumptions with what you know now. Loading does not refresh market data.`,label:'Browse saved research',action:'history'}:{title:'Keep a thought to revisit',text:'Write what you noticed and what would change your mind. Your note stays on this device and is excluded from shared summaries.',label:'Write a research note',action:'notes'};
+ }
+ if(context==='watchlist'){
+  const usable=getWatchlist().filter(x=>sqWatchSnapshot(x)).length,selected=sqCompareSnapshots().length;
+  if(selected>=2)return {title:'Compare the assumptions too',text:`${selected} usable snapshots selected. Check each source, session, horizon and correction before comparing the hypothetical levels. This is not an investment ranking.`,label:'Inspect the comparison',action:'compare'};
+  if(usable)return {title:'Build a fair comparison',text:`${usable} usable research ${usable===1?'snapshot is':'snapshots are'} available. Select Compare on two different instruments, then inspect their sources and assumptions.`,label:'Review watchlist snapshots',action:'watchlist'};
+  return {title:'Start with a research snapshot',text:'Keep a valid scenario to revisit its inputs and assumptions. Lumi never adds an instrument or refreshes a quote for you.',label:valid?'Review the current scenario':'Check scenario inputs',action:valid?'watch':'inputs'};
+ }
+ if(reviewable)return {title:'Reflect on your saved idea',text:'Read the loaded note, then decide whether to mark it reviewed. Changed inputs or reasoning need a new save.',label:'Revisit the saved note',action:'review'};
+ const source=sqSourceInfo(sqProvenance());
+ return {title:valid?'Explore your assumptions':'Check the inputs first',text:valid?`${PERIODS[state.period].label} · ${state.correction}% correction · ${source.label}. Low, Mid and High are hypothetical price levels. Inspect the assumptions before drawing conclusions.`:'Enter a positive reference price and valid historical change before exploring hypothetical levels. No new quote or forecast is created here.',label:valid?'Review Low · Mid · High':'Review scenario inputs',action:valid?'targets':'inputs'};
+}
+function sqCompanionFocus(view,id,details=false){
+ setView(view);if(details)$('qualityDetails').open=true;
+ const target=$(id);if(!target)return;
+ if(!['BUTTON','INPUT','TEXTAREA','SELECT'].includes(target.tagName))target.setAttribute('tabindex','-1');
+ target.scrollIntoView({block:'center',behavior:'auto'});target.focus({preventScroll:true});
+}
+function sqCompanionAction(context){
+ const action=sqCompanionGuide(context).action;
+ if(action==='mission'){sqGoToMission();return;}
+ if(action==='targets'){sqOpenResearchTool('targets');return;}
+ if(action==='seasonControls'){sqOpenResearchTool('seasonality');sqCompanionFocus('research','seasonModeSwitch');return;}
+ const targets={sample:['research','coverageSummary',true],modes:['research','dataModes'],review:['research','researchReason'],history:['saved','history'],notes:['research','researchReason'],compare:['watchlist','comparePanel'],watchlist:['watchlist','watchlist'],watch:['research','watchCurrentBtn'],inputs:['research','price']};
+ if(targets[action])sqCompanionFocus(...targets[action]);
+}
+function sqCompanionIsVisible(context,record){
+ const correctView=context==='seasonality'?sqCompanionView==='research'&&sqCompanionTab==='seasonality':sqCompanionView===context;
+ if(!correctView||!record.panel.open||$('settingsModal').classList.contains('show'))return false;
+ if(typeof record.host.getBoundingClientRect==='function'){
+  const r=record.host.getBoundingClientRect();return r.width>0&&r.height>0&&r.bottom>0&&r.top<(window.innerHeight||900);
+ }
+ return true;
+}
+function sqCompanionVisibility(){
+ for(const [context,record] of sqCompanions){
+  const visible=sqCompanionIsVisible(context,record);record.controller.setActive?.(visible);
+  if(visible&&!record.greeted){record.greeted=true;record.controller.greet?.();}
+ }
+}
+function sqCompanionPause(paused){
+ localStorage.setItem('sq_companion_paused',String(paused));
+ for(const record of sqCompanions.values())record.controller.setPaused?.(paused);
+}
+function sqCompanionCollapse(collapsed){
+ sqCompanionCollapsed=collapsed;localStorage.setItem('sq_companion_collapsed',String(collapsed));
+ for(const record of sqCompanions.values())if(record.panel.open===collapsed)record.panel.open=!collapsed;
+ sqCompanionVisibility();
+}
 function sqRenderCompanion(celebrate=false){
  if(typeof StrikeMascot==='undefined')return;
- const xp=sqResearchXp(),stage=StrikeMascot.stageForXp(xp),panel=$('companionPanel');
- $('companionSummary').textContent=`Lumi · ${stage.name} · ${xp} XP`;
- if(!sqCompanion){
-  panel.open=localStorage.getItem('sq_companion_collapsed')!=='true';
-  sqCompanion=StrikeMascot.mount($('companionHost'),xp,{idPrefix:'lumi-research',static:localStorage.getItem('sq_companion_paused')==='true'});
-  panel.addEventListener('toggle',()=>localStorage.setItem('sq_companion_collapsed',String(!panel.open)));
-  $('companionHost').addEventListener('click',event=>{const button=event.target.closest?.('[data-mascot-motion]');if(button)localStorage.setItem('sq_companion_paused',button.getAttribute('aria-pressed'));});
- }else sqCompanion.update(xp,{celebrate:celebrate&&panel.open});
+ const xp=sqResearchXp(),stage=StrikeMascot.stageForXp(xp);
+ let celebrated=false;
+ // Contextual hosts get first chance; the Research hero may also be in view on a large screen.
+ for(const [context,panelId,summaryId,hostId] of [...SQ_COMPANION_HOSTS].sort((a,b)=>(a[0]==='research')-(b[0]==='research'))){
+  const panel=$(panelId),host=$(hostId);if(!panel||!host)continue;
+  $(summaryId).textContent=`Lumi · ${stage.name} · ${xp} XP`;
+  let record=sqCompanions.get(context);
+  if(!record){
+   panel.open=!sqCompanionCollapsed;
+   const controller=StrikeMascot.mount(host,xp,{idPrefix:'lumi-'+context,context,compact:context!=='quests',guide:sqCompanionGuide(context),static:localStorage.getItem('sq_companion_paused')==='true',announce:false,onPause:sqCompanionPause});
+   record={panel,host,controller,greeted:false};sqCompanions.set(context,record);
+   // Save synchronously on the native summary activation, before a rapid reload can discard its queued toggle event.
+   $(summaryId).addEventListener('click',event=>{event.preventDefault();sqCompanionCollapse(panel.open);});
+   panel.addEventListener('toggle',()=>{if(panel.open===sqCompanionCollapsed)sqCompanionCollapse(!panel.open);});
+   host.addEventListener('click',event=>{if(event.target.closest?.('[data-mascot-action]'))sqCompanionAction(context);});
+   if(typeof IntersectionObserver!=='undefined'){record.observer=new IntersectionObserver(sqCompanionVisibility);record.observer.observe(host);}
+  }
+  const visible=sqCompanionIsVisible(context,record),shouldCelebrate=celebrate&&visible&&!celebrated;
+  record.controller.setActive?.(visible);
+  record.controller.update(xp,{celebrate:shouldCelebrate});
+  record.controller.setGuide?.(sqCompanionGuide(context));
+  if(shouldCelebrate)celebrated=true;
+ }
+ sqCompanionVisibility();
 }
 function sqOpenResearchTool(tool){
  setView('research');
@@ -1421,9 +1513,10 @@ function sqBadges(){
 function sqBadgeSave(b){localStorage.setItem(SQ_BADGE_KEY,JSON.stringify(b))}
 function sqEarn(id){
  const badge=SQ_BADGES.find(x=>x.id===id);if(!badge)return;
- const b=sqBadges();if(b.earned[id])return;
+ const b=sqBadges();if(b.earned[id])return;const previousXp=sqResearchXp();
  b.earned[id]={at:new Date().toISOString(),mode:state.mode,origin:'v10.1.1'};sqBadgeSave(b);
- $('badgeToast').textContent=`Milestone unlocked: ${badge.name}. ${badge.detail}`;$('badgeToast').classList.add('show');
+ const evolution=typeof StrikeMascot!=='undefined'&&StrikeMascot.stageForXp(sqResearchXp()).index>StrikeMascot.stageForXp(previousXp).index?` Lumi evolved into ${StrikeMascot.stageForXp(sqResearchXp()).name}.`:'';
+ $('badgeToast').textContent=`Milestone unlocked: ${badge.name}. ${badge.detail}${evolution}`;$('badgeToast').classList.add('show');
  clearTimeout(sqToastTimer);sqToastTimer=setTimeout(()=>$('badgeToast').classList.remove('show'),3800);sqRenderCompanion(true);sqRenderBadges();
 }
 function sqVisitHorizon(){if(!calc()||!state.extra.baselineDate||state.dataMeta?.baselineOffset>10)return;const b=sqBadges();b.horizons=[...new Set([...b.horizons,state.period])];sqBadgeSave(b)}
@@ -1545,10 +1638,19 @@ function resultSummary(){
 }
 async function shareResult(){const text=resultSummary();try{if(navigator.share){await navigator.share({title:"StrikeQuests — Strike Price Calculator",text})}else{await navigator.clipboard.writeText(text);status("Result copied to clipboard.","good")}}catch(e){}}
 async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
-function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference();if($("sharedApiState"))$("sharedApiState").textContent=state.sharedApiReady?"Online":"Setup needed"}
-function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view))}
+function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference();if($("sharedApiState"))$("sharedApiState").textContent=state.sharedApiReady?"Online":"Setup needed";sqCompanionVisibility()}
+function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view));sqCompanionVisibility()}
 const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=localStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback")){$("seasonalityLookback").value=localStorage.getItem("sq_seasonality_lookback")||"10";if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`}
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
+// Refresh companion copy after collection and selection changes, including empty states.
+const sqLumiHistory=renderHistory;renderHistory=function(){sqLumiHistory();if(state.loadedResearchId&&!sqJSON('splab_history',[]).some(x=>x.id===state.loadedResearchId)){state.loadedResearchId=null;$('reviewHypothesisBtn').disabled=true;}sqRenderCompanion();};
+const sqLumiWatch=renderWatchlist;renderWatchlist=function(){sqLumiWatch();sqRenderCompanion();};
+const sqLumiCompare=renderComparePanel;renderComparePanel=function(){sqLumiCompare();sqRenderCompanion();};
+const sqLumiSeason=renderSeasonality;renderSeasonality=function(){sqLumiSeason();const n=Number(state.extra.seasonality?.currentMonth?.observations)||0;$('coverageSummary').textContent=`Current-month seasonal sample: ${n?n+' observations':'unavailable'}. ${state.dataMeta?.issue||''} ${n&&n<5?'Small sample: results are especially uncertain.':''} History adjustment conventions are inherited and not normalized by this update.`;$('sampleCount').textContent=n?`${n} monthly observations in this selection`:'No monthly sample available';$('reviewSampleBtn').disabled=!state.extra.seasonality?.totalMonths;sqRenderCompanion();};
+if(typeof window.addEventListener==='function'){
+ window.addEventListener('scroll',sqCompanionVisibility,{passive:true});
+ window.addEventListener('resize',sqCompanionVisibility,{passive:true});
+}
 renderHistory();renderWatchlist();sqInitNext();renderSeasonality();
 const splash=$("appSplash");
 if(splash){

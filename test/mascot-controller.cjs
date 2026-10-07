@@ -2,12 +2,12 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 let scheduled=0,cleared=0,timerCallback=null;
-const context={module:{exports:{}},setTimeout:(fn,delay)=>{assert.equal(delay,1500);scheduled++;timerCallback=fn;return scheduled;},clearTimeout:()=>{cleared++;}};
+const context={module:{exports:{}},setTimeout:(fn,delay)=>{assert.ok([1000,1500].includes(delay));scheduled++;timerCallback=fn;return scheduled;},clearTimeout:()=>{cleared++;}};
 vm.runInNewContext(fs.readFileSync(`${__dirname}/../mascot.js`,'utf8'),context);
 const M=context.module.exports;
 function node(){const classes=new Set(),attrs=new Map();return {innerHTML:'',textContent:'',value:0,classList:{add:(...v)=>v.forEach(x=>classes.add(x)),remove:(...v)=>v.forEach(x=>classes.delete(x)),contains:x=>classes.has(x),toggle:(c,b)=>b?classes.add(c):classes.delete(c)},setAttribute:(k,v)=>attrs.set(k,v),getAttribute:k=>attrs.get(k)};}
 const selectors=['.sq-companion','.sq-mascot','.sq-companion__art','h3','.sq-companion__ability','.sq-companion__progress-copy','progress','.sq-companion__status'];
-const nodes=new Map(selectors.map(s=>[s,node()]));const button=node();button.closest=()=>button;
+const nodes=new Map(selectors.map(s=>[s,node()]));const button=node();button.closest=()=>button;nodes.set('[data-mascot-motion]',button);for(const s of ['.sq-companion__guide','.sq-companion__guide-title','.sq-companion__guide-text','[data-mascot-action]'])nodes.set(s,node());
 const listeners=new Map();
 let rootWrites=0;
 const container={set innerHTML(html){this.html=html;rootWrites++;},get innerHTML(){return this.html;},querySelector:s=>nodes.get(s),contains:n=>n===button,addEventListener:(k,v)=>listeners.set(k,v),removeEventListener:(k,v)=>{assert.equal(listeners.get(k),v);listeners.delete(k);}};
@@ -27,5 +27,7 @@ const before=scheduled;controller.update(300,{celebrate:false});assert.equal(sch
 controller.update(0);assert.equal(scheduled,before,'Lower XP should not celebrate');
 assert.equal(rootWrites,1,'Updates must preserve pause button/focus');
 controller.update(500);assert(nodes.get('.sq-companion__progress-copy').innerHTML.includes('All five looks discovered'));assert.equal(nodes.get('progress').value,1);
+controller.setGuide({title:'Inspect the sample',text:'Three historical observations, not a forecast.',label:'Review sample'});assert.equal(nodes.get('.sq-companion__guide-title').textContent,'Inspect the sample');assert.equal(nodes.get('[data-mascot-action]').textContent,'Review sample');controller.setPaused(true);assert.equal(button.getAttribute('aria-pressed'),'true');controller.setPaused(false);assert.equal(button.getAttribute('aria-pressed'),'false');controller.setActive(false);const frozen=scheduled;controller.update(0);controller.update(50);assert.equal(scheduled,frozen,'Inactive instances cannot celebrate');assert.equal(nodes.get('.sq-companion__status').textContent,'');controller.setActive(true);assert.equal(nodes.get('.sq-companion').classList.contains('sq-mascot--inactive'),false);
+const greetingBefore=scheduled;controller.setPaused(true);controller.greet();assert.equal(scheduled,greetingBefore);controller.setPaused(false);controller.setActive(false);controller.greet();assert.equal(scheduled,greetingBefore);controller.setActive(true);controller.greet();assert.equal(scheduled,greetingBefore+1);assert(nodes.get('.sq-companion').classList.contains('sq-companion--greeting'));timerCallback();assert.equal(nodes.get('.sq-companion').classList.contains('sq-companion--greeting'),false);assert.equal(nodes.get('.sq-companion__status').textContent,'');
 controller.destroy();assert.equal(listeners.size,0);const html=nodes.get('.sq-companion__art').innerHTML;controller.update(25);assert.equal(nodes.get('.sq-companion__art').innerHTML,html);assert(cleared>0);
 console.log('PASS: mount adapter flows (initial static, repeated updates, gain, stage-up, 1.5s cleanup, pause/resume after updates, silent hydration, rollback, stable controls, terminal stage, destroy).');

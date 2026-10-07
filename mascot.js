@@ -100,45 +100,84 @@
     return `<svg xmlns="http://www.w3.org/2000/svg" class="sq-mascot sq-mascot--${s.id} sq-mascot--${state}${options.static?' sq-mascot--static':''}" width="${size}" height="${size}" viewBox="0 0 180 180" role="img" aria-labelledby="${prefix}-title ${prefix}-desc" focusable="false"><title id="${prefix}-title">${escape(label)}</title><desc id="${prefix}-desc">Research progress changes Lumi's appearance. These cosmetic abilities do not improve forecasts or unlock research tools.</desc><defs><linearGradient id="${prefix}-fur" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#ffd195"/><stop offset="1" stop-color="#e99562"/></linearGradient>${auraDefs}</defs><circle cx="90" cy="87" r="68" fill="${s.color}" opacity=".035"/>${aura}<path d="M36 152h108" stroke="#6081a6" stroke-opacity=".16" stroke-linecap="round" stroke-width="2"/>${background}<ellipse class="sq-mascot__shadow" cx="89" cy="159" rx="39" ry="5" fill="#030d1f" opacity=".45"/>${creature}${drone}${shield}${flare}<g class="sq-mascot__celebration" fill="none" opacity="0"><circle cx="90" cy="89" r="59" stroke="${s.color}" stroke-width="2"/>${star(43,43,6,s.color)}${star(136,37,5,'#ffdf90')}${star(152,133,6,s.color)}${star(33,125,4,'#ffdf90')}</g></svg>`;
   }
   function renderCard(value, options = {}) {
-    const p = progressForXp(value), s = p.stage;
+    const p = progressForXp(value), s = p.stage, guide=options.guide||{};
     const progress = p.next ? `${p.remaining} XP to ${p.next.name}` : 'All five looks discovered';
-    return `<section class="sq-companion${options.static?' sq-mascot--paused':''}" aria-label="Lumi research companion"><div class="sq-companion__art">${renderSvg(p.xp,options)}</div><div class="sq-companion__copy"><p class="sq-companion__eyebrow">Your research companion</p><h3>Lumi <span>· ${s.name}</span></h3><p class="sq-companion__ability">${s.ability}</p><div class="sq-companion__progress-copy"><span>${p.xp.toLocaleString('en-US')} XP</span><span>${progress}</span></div><progress class="sq-companion__progress" value="${p.fraction}" max="1" aria-label="Lumi evolution progress"></progress><p class="sq-companion__note">Grows with research milestones. Abilities are cosmetic.</p></div><button class="sq-companion__motion" type="button" data-mascot-motion aria-pressed="${!!options.static}" aria-label="${options.static?'Resume':'Pause'} companion animation">${options.static?'Resume motion':'Pause motion'}</button><span class="sq-companion__status" role="status" aria-live="polite" aria-atomic="true"></span></section>`;
+    const context=['research','quests','seasonality','saved','watchlist'].includes(options.context)?options.context:'research';
+    options={...options,idPrefix:token(options.idPrefix)||`card-${++serial}`};
+    const prefix='sqm-'+options.idPrefix;
+    return `<section class="sq-companion sq-companion--${context}${options.compact?' sq-companion--compact':''}${options.static?' sq-mascot--paused':''}" aria-label="Lumi ${context} companion"><div class="sq-companion__art">${renderSvg(p.xp,options)}</div><div class="sq-companion__copy"><p class="sq-companion__eyebrow">Your research companion</p><h3>Lumi <span>· ${s.name}</span></h3><p class="sq-companion__ability">${s.ability}</p><div class="sq-companion__progress-copy"><span>${p.xp.toLocaleString('en-US')} XP</span><span>${progress}</span></div><progress class="sq-companion__progress" value="${p.fraction}" max="1" aria-label="Lumi evolution progress"></progress><p class="sq-companion__note">Grows with research milestones. Abilities are cosmetic.</p></div><div class="sq-companion__guide"${guide.title?'':' hidden'}><b class="sq-companion__guide-title">${escape(guide.title||'')}</b><p class="sq-companion__guide-text" id="${prefix}-guide">${escape(guide.text||'')}</p><button class="sq-companion__action" type="button" data-mascot-action aria-describedby="${prefix}-guide">${escape(guide.label||'Explore')}</button></div><button class="sq-companion__motion" type="button" data-mascot-motion aria-pressed="${!!options.static}" aria-label="${options.static?'Resume':'Pause'} companion animation">${options.static?'Resume motion':'Pause motion'}</button><span class="sq-companion__status" role="status" aria-live="polite" aria-atomic="true"></span></section>`;
   }
   /** Purely visual. The host owns research eligibility, persistence, and XP. */
   function mount(container, initialXp, options = {}) {
     if (!container || typeof container.querySelector !== 'function') throw new TypeError('A DOM container is required');
-    let xp = normalizeXp(initialXp), paused = !!options.static, timer = null, destroyed = false;
+    let xp = normalizeXp(initialXp), paused = !!options.static, active=true, timer = null, greetingTimer=null, destroyed = false;
     const opts = { ...options, idPrefix: token(options.idPrefix) || `mounted-${++serial}` };
     container.innerHTML = renderCard(xp,{...opts,static:paused});
-    function onClick(event) {
-      const button = event.target.closest && event.target.closest('[data-mascot-motion]');
-      if (!button || !container.contains(button)) return;
-      paused = !paused;
+    function clearReaction(){
+      clearTimeout(greetingTimer);
+      container.querySelector('.sq-companion').classList.remove('sq-companion--greeting');
+    }
+    function settle(){
+      clearTimeout(timer);
+      const svg=container.querySelector('.sq-mascot');
+      if(svg){svg.classList.remove('sq-mascot--earn','sq-mascot--levelup');svg.classList.add('sq-mascot--idle');}
+    }
+    function setPaused(value){
+      if(destroyed)return;
+      paused=!!value;
       container.querySelector('.sq-companion').classList.toggle('sq-mascot--paused',paused);
       container.querySelector('.sq-mascot').classList.toggle('sq-mascot--static',paused);
+      const button=container.querySelector('[data-mascot-motion]');
       button.setAttribute('aria-pressed',String(paused));
       button.setAttribute('aria-label',`${paused?'Resume':'Pause'} companion animation`);
       button.textContent=paused?'Resume motion':'Pause motion';
+      if(paused){clearReaction();settle();}
+    }
+    function onClick(event) {
+      const button = event.target.closest && event.target.closest('[data-mascot-motion]');
+      if (!button || !container.contains(button)) return;
+      setPaused(!paused);
+      if(typeof opts.onPause==='function')opts.onPause(paused);
     }
     container.addEventListener('click',onClick);
     return Object.freeze({
+      setPaused,
+      setActive(value){
+        if(destroyed)return;
+        active=!!value;
+        container.querySelector('.sq-companion').classList.toggle('sq-mascot--inactive',!active);
+        if(!active){clearReaction();settle();container.querySelector('.sq-companion__status').textContent='';}
+      },
+      setGuide(guide={}){
+        if(destroyed)return;
+        container.querySelector('.sq-companion__guide').hidden=!guide.title;
+        container.querySelector('.sq-companion__guide-title').textContent=guide.title||'';
+        container.querySelector('.sq-companion__guide-text').textContent=guide.text||'';
+        container.querySelector('[data-mascot-action]').textContent=guide.label||'Explore';
+      },
+      greet(){
+        if(destroyed||paused||!active)return;
+        clearReaction();
+        container.querySelector('.sq-companion').classList.add('sq-companion--greeting');
+        greetingTimer=setTimeout(clearReaction,1000);
+      },
       update(nextXp, updateOptions = {}) {
         if (destroyed) return;
         const value=normalizeXp(nextXp); if(value===xp) return;
         const before=stageForXp(xp), p=progressForXp(value), gained=value>xp;
-        const state = gained && updateOptions.celebrate !== false ? (p.stage.index>before.index?'levelup':'earn'):'idle';
-        clearTimeout(timer);
+        const state = gained && active && !paused && updateOptions.celebrate !== false ? (p.stage.index>before.index?'levelup':'earn'):'idle';
+        clearTimeout(timer);clearReaction();
         container.querySelector('.sq-companion__art').innerHTML=renderSvg(value,{...opts,state,static:paused});
         container.querySelector('h3').innerHTML=`Lumi <span>· ${p.stage.name}</span>`;
         container.querySelector('.sq-companion__ability').textContent=p.stage.ability;
         container.querySelector('.sq-companion__progress-copy').innerHTML=`<span>${p.xp.toLocaleString('en-US')} XP</span><span>${p.next?`${p.remaining} XP to ${p.next.name}`:'All five looks discovered'}</span>`;
         container.querySelector('progress').value=p.fraction;
         const status=container.querySelector('.sq-companion__status');
-        status.textContent=state==='levelup'?`Lumi evolved into ${p.stage.name}. ${p.stage.ability} discovered.`:state==='earn'?`${value-xp} research XP earned.`:'';
+        status.textContent=opts.announce===false?'':state==='levelup'?`Lumi evolved into ${p.stage.name}. ${p.stage.ability} discovered.`:state==='earn'?`${value-xp} research XP earned.`:'';
         xp=value;
-        if(state!=='idle')timer=setTimeout(()=>{const svg=container.querySelector('.sq-mascot');if(svg){svg.classList.remove('sq-mascot--earn','sq-mascot--levelup');svg.classList.add('sq-mascot--idle');}},1500);
+        if(state!=='idle')timer=setTimeout(settle,1500);
       },
-      destroy() { destroyed=true;clearTimeout(timer);container.removeEventListener('click',onClick); }
+      destroy() { destroyed=true;clearTimeout(timer);clearTimeout(greetingTimer);container.removeEventListener('click',onClick); }
     });
   }
   return Object.freeze({ STAGES, normalizeXp, stageForXp, progressForXp, renderSvg, renderCard, mount });

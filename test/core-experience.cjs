@@ -20,23 +20,54 @@ function harness(seed = {}) {
       constructor(...args) { super(...(args.length ? args : [${JSON.stringify(at)}])); }
       static now() { return OriginalDate.parse(${JSON.stringify(at)}); }
     };
-    window.mascotCalls = {mounts:[], updates:[], celebrations:[]};
+    window.storageValues = {};
+    window.storageWrites = [];
+    for (const method of ['setItem','removeItem','clear']) {
+      const original = localStorage[method].bind(localStorage);
+      localStorage[method] = (...args) => {
+        storageWrites.push({method, args});
+        if (method === 'setItem') storageValues[args[0]] = String(args[1]);
+        if (method === 'removeItem') delete storageValues[args[0]];
+        if (method === 'clear') storageValues = {};
+        return original(...args);
+      };
+    }
+    window.storageSnapshot = () => JSON.stringify(Object.entries(storageValues).sort(([a],[b]) => a.localeCompare(b)));
+    window.mascotCalls = {mounts:[], updates:[], celebrations:[], celebrationHosts:[], pauses:[], activations:[], guides:[], greetings:[], states:{}};
     const mascotStages = ${JSON.stringify(Mascot.STAGES)};
     window.StrikeMascot = {
       stageForXp: xp => mascotStages.slice().reverse().find(stage => xp >= stage.minXp),
       mount: (host, xp, options) => {
-        mascotCalls.mounts.push({host:host.id, xp, options});
-        let current = xp, paused = options.static;
+        const context = options.context;
+        mascotCalls.mounts.push({host:host.id, xp, options, hasPauseCallback:typeof options.onPause === 'function'});
+        const current = mascotCalls.states[context] = {host:host.id, xp, active:true, paused:!!options.static, guide:options.guide, greetings:0};
+        const controller = {
+          update:(next, updateOptions = {}) => {
+            mascotCalls.updates.push({context, xp:next, options:updateOptions});
+            if (next === current.xp) return;
+            if (next > current.xp && current.active && !current.paused && updateOptions.celebrate !== false) {
+              mascotCalls.celebrations.push({before:current.xp, xp:next});
+              mascotCalls.celebrationHosts.push(context);
+            }
+            current.xp = next;
+          },
+          setPaused:paused => { current.paused = !!paused; mascotCalls.pauses.push({context, paused:current.paused}); },
+          setActive:active => { current.active = !!active; mascotCalls.activations.push({context, active:current.active}); },
+          setGuide:guide => { current.guide = guide; mascotCalls.guides.push({context, guide}); },
+          greet:() => {
+            mascotCalls.greetings.push({context, active:current.active, paused:current.paused});
+            if (current.active && !current.paused) current.greetings++;
+          }
+        };
         host.addEventListener('click', event => {
           const button = event.target.closest?.('[data-mascot-motion]');
-          if (button) { paused = !paused; button.setAttribute('aria-pressed',String(paused)); }
+          if (button) {
+            controller.setPaused(!current.paused);
+            button.setAttribute('aria-pressed',String(current.paused));
+            options.onPause?.(current.paused);
+          }
         });
-        return {update:(next, updateOptions = {}) => {
-          mascotCalls.updates.push({xp:next, options:updateOptions});
-          if (next === current) return;
-          if (next > current && updateOptions.celebrate !== false) mascotCalls.celebrations.push({before:current, xp:next});
-          current = next;
-        }};
+        return controller;
       }
     };
   ` + Object.entries(seed).map(([key,value]) => `localStorage.setItem(${JSON.stringify(key)},${JSON.stringify(JSON.stringify(value))});`).join('');
@@ -46,7 +77,8 @@ async function test(name, fn) {
   try { await fn(harness()); passed++; console.log('PASS', name); }
   catch(error) { failed++; console.error('FAIL', name, '\n ', error.stack); }
 }
-(async () => {
+module.exports = {harness, plain, at, html};
+if (require.main === module) (async () => {
   await test('actual fresh startup selects 2Y, 10% correction and the 1.5 divisor without awards or requests', async p => {
     const x = plain(await p.evaluate(() => ({mode:state.mode,period:state.period,correction:state.correction,
       upper:Number($('correction').value),lower:Number($('targetCorrection').value),divisor:Number($('divisor').value),
@@ -56,7 +88,9 @@ async function test(name, fn) {
     assert.equal(x.upper,10); assert.equal(x.lower,10); assert.equal(x.divisor,1.5); assert.equal(x.calc.div,1.5);
     assert.match(x.label,/2-Year.*10%/); assert.equal(x.saved.period,'2y'); assert.equal(x.saved.correction,10);
     assert.equal(x.xp,0); assert.deepEqual(x.earned,{}); assert.equal(x.calls,0);
-    assert.equal(x.mascot.mounts.length,1); assert.equal(x.mascot.mounts[0].xp,0); assert.deepEqual(x.mascot.celebrations,[]);
+    assert.equal(x.mascot.mounts.length,5); assert.ok(x.mascot.mounts.every(m => m.xp === 0 && m.hasPauseCallback));
+    assert.deepEqual(x.mascot.mounts.map(m => m.options.context).sort(),['quests','research','saved','seasonality','watchlist']);
+    assert.equal(new Set(x.mascot.mounts.map(m => m.options.idPrefix)).size,5); assert.deepEqual(x.mascot.celebrations,[]);
     assert.ok(x.mascot.updates.every(call => call.options.celebrate === false));
   });
   await test('saved 3M Manual session restores 20% correction, custom divisor and exact private inputs', async () => {
@@ -135,7 +169,7 @@ async function test(name, fn) {
   });
   await test('repeated rendering, guidance, correction and horizon changes cannot grant XP or celebrate', async p => {
     const x=plain(await p.evaluate(()=>{const before=JSON.stringify(sqBadges().earned);for(let i=0;i<5;i++){render();sqRenderBadges();sqRenderCompanion();sqGoToMission();sqOpenResearchTool('targets');sqOpenResearchTool('seasonality');sqSetCorrection(i%2?30:0);setPeriod(i%2?'3m':'2y')}return {before,after:JSON.stringify(sqBadges().earned),xp:sqResearchXp(),events:mascotCalls.celebrations,mounts:mascotCalls.mounts.length,calls:networkCalls}}));
-    assert.equal(x.before,x.after);assert.equal(x.xp,0);assert.deepEqual(x.events,[]);assert.equal(x.mounts,1);assert.equal(x.calls,0);
+    assert.equal(x.before,x.after);assert.equal(x.xp,0);assert.deepEqual(x.events,[]);assert.equal(x.mounts,5);assert.equal(x.calls,0);
   });
   await test('a repeated explicit analysis earns 50 XP once and leaves its timestamp unchanged', async p => {
     const x=plain(await p.evaluate(async()=>{await sqAnalyze();const first=JSON.stringify(sqBadges().earned.first);for(let i=0;i<5;i++){await sqAnalyze();render();sqRenderCompanion()}return {first,last:JSON.stringify(sqBadges().earned.first),xp:sqResearchXp(),events:mascotCalls.celebrations,trueUpdates:mascotCalls.updates.filter(x=>x.options.celebrate),calls:networkCalls}}));
@@ -148,22 +182,22 @@ async function test(name, fn) {
       addToWatchlist('AAPL');applySymbol('MSFT');addToWatchlist('MSFT');toggleCompare('AAPL');toggleCompare('MSFT');await $('completeResearchBtn').dispatch('click');
       const before=sqResearchXp(),events=mascotCalls.celebrations.length;loadSaved(sqJSON('splab_history',[])[0].id);await $('reviewHypothesisBtn').dispatch('click');
       for(let i=0;i<4;i++){sqEarn('complete');sqEarn('review');sqRenderBadges()}
-      return {before,after:sqResearchXp(),events,afterEvents:mascotCalls.celebrations.length,ids:Object.keys(sqBadges().earned),summary:$('companionSummary').textContent,progress:[$('missionNextProgress').value,$('missionNextProgress').max],calls:networkCalls};
+      return {before,after:sqResearchXp(),events,afterEvents:mascotCalls.celebrations.length,ids:Object.keys(sqBadges().earned),summary:$('companionSummary').textContent,allXp:Object.values(mascotCalls.states).map(s=>s.xp),progress:[$('missionNextProgress').value,$('missionNextProgress').max],calls:networkCalls};
     }));
-    assert.equal(x.before,500);assert.equal(x.after,500);assert.equal(x.events,9);assert.equal(x.afterEvents,9);assert.equal(x.ids.length,10);assert.ok(x.ids.includes('review'));assert.match(x.summary,/Insight Voyager/);assert.deepEqual(x.progress,[9,9]);assert.equal(x.calls,0);
+    assert.equal(x.before,500);assert.equal(x.after,500);assert.deepEqual(x.allXp,Array(5).fill(500));assert.equal(x.events,9);assert.equal(x.afterEvents,9);assert.equal(x.ids.length,10);assert.ok(x.ids.includes('review'));assert.match(x.summary,/Insight Voyager/);assert.deepEqual(x.progress,[9,9]);assert.equal(x.calls,0);
   });
   await test('collapsed preference suppresses celebration, persists toggles and never awards research', async () => {
     const p=harness({sq_companion_collapsed:true});const x=plain(await p.evaluate(async()=>{const initial=$('companionPanel').open;await sqAnalyze();const whileClosed=mascotCalls.celebrations.length;$('companionPanel').open=true;await $('companionPanel').dispatch('toggle');await $('reviewTrendsBtn').dispatch('click');return {initial,whileClosed,pref:localStorage.getItem('sq_companion_collapsed'),xp:sqResearchXp(),events:mascotCalls.celebrations}}));
     assert.equal(x.initial,false);assert.equal(x.whileClosed,0);assert.equal(x.pref,'false');assert.equal(x.xp,100);assert.deepEqual(x.events,[{before:50,xp:100}]);
   });
   await test('pause state persists after synchronous module toggles and restores silently on reload', async p => {
-    const saved=plain(await p.evaluate(async()=>{const button={attrs:{'aria-pressed':'false'},getAttribute(k){return this.attrs[k]},setAttribute(k,v){this.attrs[k]=v},closest(){return this}};await $('companionHost').dispatch('click',{target:button});$('companionPanel').open=false;await $('companionPanel').dispatch('toggle');return {paused:JSON.parse(localStorage.getItem('sq_companion_paused')),collapsed:JSON.parse(localStorage.getItem('sq_companion_collapsed')),xp:sqResearchXp(),earned:sqBadges().earned}}));
+    const saved=plain(await p.evaluate(async()=>{const button={attrs:{'aria-pressed':'false'},getAttribute(k){return this.attrs[k]},setAttribute(k,v){this.attrs[k]=v},closest(selector){return selector==='[data-mascot-motion]'?this:null}};await $('companionHost').dispatch('click',{target:button});$('companionPanel').open=false;await $('companionPanel').dispatch('toggle');return {paused:JSON.parse(localStorage.getItem('sq_companion_paused')),collapsed:JSON.parse(localStorage.getItem('sq_companion_collapsed')),xp:sqResearchXp(),earned:sqBadges().earned}}));
     assert.equal(saved.paused,true);assert.equal(saved.collapsed,true);assert.equal(saved.xp,0);assert.deepEqual(saved.earned,{});
     const reload=harness({sq_companion_paused:saved.paused,sq_companion_collapsed:saved.collapsed}),x=plain(await reload.evaluate(()=>({open:$('companionPanel').open,mount:mascotCalls.mounts[0],events:mascotCalls.celebrations,xp:sqResearchXp()})));
     assert.equal(x.open,false);assert.equal(x.mount.options.static,true);assert.equal(x.xp,0);assert.deepEqual(x.events,[]);
   });
   await test('resuming animation clears only the pause preference and preserves earned XP', async () => {
-    const p=harness({sq_companion_paused:true,sq_badges_v1011:{version:1,earned:{first:award()},horizons:[]}}),x=plain(await p.evaluate(async()=>{const button={attrs:{'aria-pressed':'true'},getAttribute(k){return this.attrs[k]},setAttribute(k,v){this.attrs[k]=v},closest(){return this}};await $('companionHost').dispatch('click',{target:button});return {pref:localStorage.getItem('sq_companion_paused'),xp:sqResearchXp(),events:mascotCalls.celebrations,at:sqBadges().earned.first.at}}));
+    const p=harness({sq_companion_paused:true,sq_badges_v1011:{version:1,earned:{first:award()},horizons:[]}}),x=plain(await p.evaluate(async()=>{const button={attrs:{'aria-pressed':'true'},getAttribute(k){return this.attrs[k]},setAttribute(k,v){this.attrs[k]=v},closest(selector){return selector==='[data-mascot-motion]'?this:null}};await $('companionHost').dispatch('click',{target:button});return {pref:localStorage.getItem('sq_companion_paused'),xp:sqResearchXp(),events:mascotCalls.celebrations,at:sqBadges().earned.first.at}}));
     assert.equal(x.pref,'false');assert.equal(x.xp,50);assert.equal(x.at,at);assert.deepEqual(x.events,[]);
   });
   console.log(`${passed} core-experience integration checks passed; ${failed} failed. Mascot module is stubbed; rendered browser behavior is not exercised.`);
