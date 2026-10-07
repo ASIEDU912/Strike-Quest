@@ -47,7 +47,10 @@ async function emit(page,name,locator){
   await page.evaluate(()=>{sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.map(b=>[b.id,{at:'2026-10-07T00:00:00Z',mode:'demo',origin:'visual-test-fixture'}])),horizons:['1y','2y']});sqRenderBadges();});
   await page.setViewportSize({width:390,height:844});await page.locator('#companionHost').scrollIntoViewIfNeeded();
   await emit(page,'lumi-final-aura-mobile.jpg',page.locator('#companionHost'));
+  await page.setViewportSize({width:320,height:780});await page.locator('[data-private-mode="manual"]').click();await page.locator('#price').fill('999999.99');await page.locator('#perf').fill('1200');await page.locator('#openTargetsBtn').click();
+  console.log('SQ_LAYOUT_DIAGNOSTIC '+JSON.stringify(await page.evaluate(()=>({viewport:innerWidth,page:document.documentElement.scrollWidth,overflow:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).slice(0,15).map(e=>({tag:e.tagName,id:e.id,class:e.getAttribute('class'),right:e.getBoundingClientRect().right,width:e.getBoundingClientRect().width}))}))));
+  await emit(page,'large-manual-320.jpg');
   if(unexpected.length||errors.length)throw Error(JSON.stringify({unexpected,errors}));
-  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:7,bytes:total,liveProviderRequests:0,errors}));
+  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:8,bytes:total,liveProviderRequests:0,errors}));
   await context.close();
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close()});
