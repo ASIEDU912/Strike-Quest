@@ -159,7 +159,19 @@ async function still(page,label) {
     assert.ok(['chromium','webkit'].includes(engine));
     browser=await playwright[engine].launch({headless:true,...(engine==='chromium'&&process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
     const {page,context,check}=await app(engine);
-    await openHost(page,'quests');
+    // First entry gives one bounded greeting, independent of XP celebrations.
+    activeContext='quests';activeHost=hostIds.quests;
+    await page.evaluate(()=>setView('quests'));await page.locator('#'+activeHost).scrollIntoViewIfNeeded();
+    assert.equal(await page.locator(selector('.sq-mascot__head')).evaluate(el=>getComputedStyle(el).animationName),'sq-mascot-greet');
+    const greetingClip=await artClip(page),greetingA=await page.screenshot({clip:greetingClip,animations:'allow'});
+    await page.waitForTimeout(350);const greetingB=await page.screenshot({clip:greetingClip,animations:'allow'});
+    assert.ok(changedPixels(greetingA,greetingB)>20,'Greeting must visibly repaint');
+    await page.waitForTimeout(1100);
+    assert.equal(await page.locator(selector('.sq-companion--greeting')).count(),0);
+    assert.equal(await page.evaluate(()=>sqResearchXp()),0);assert.equal(await page.locator('#badgeToast').textContent(),'');
+    await openHost(page,'research');await openHost(page,'quests');
+    assert.equal(await page.locator(selector('.sq-companion--greeting')).count(),0,'Returning to a greeted context must not replay');
+    console.log('SQ_GREETING_PASS '+JSON.stringify({engine,visible:true,bounded:true,noXp:true}));
     for(const xp of [0,50,150,375,500]){await stage(page,xp);await motion(page,`${engine}-quests-390-${xp}xp`,xp===500);}
     await stage(page,375);
     for(const name of ['seasonality','saved','watchlist']){

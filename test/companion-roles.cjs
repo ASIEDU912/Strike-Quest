@@ -231,6 +231,10 @@ async function seasonalFixture(p, source='synthetic') {
     }));
     assert.deepEqual(x.earned,earned);assert.equal(x.xp,50);assert.deepEqual(x.events,[]);assert.equal(x.greetings,x.afterGreetings);assert.ok(Object.values(x.states).every(s=>!s.paused&&s.xp===50));assert.equal(x.paused,'false');assert.equal(x.collapsed,'false');
   });
+  await test('summary activation saves collapse synchronously before any queued toggle or reload',async p=>{
+    const x=plain(await p.evaluate(()=>{let prevented=0;const event={preventDefault:()=>{prevented++}};$('savedCompanionSummary').dispatch('click',event);const closed={stored:localStorage.getItem('sq_companion_collapsed'),open:[...sqCompanions.values()].map(r=>r.panel.open)};$('questsCompanionSummary').dispatch('click',event);return {closed,stored:localStorage.getItem('sq_companion_collapsed'),open:[...sqCompanions.values()].map(r=>r.panel.open),prevented,xp:sqResearchXp(),calls:networkCalls};}));
+    assert.equal(x.closed.stored,'true');assert.ok(x.closed.open.every(open=>!open));assert.equal(x.stored,'false');assert.ok(x.open.every(Boolean));assert.equal(x.prevented,2);assert.equal(x.xp,0);assert.equal(x.calls,0);
+  });
   console.log(`${passed} companion-role behavior checks passed; ${failed} failed. Controllers and geometry are recorded adapters; browser layout and actual animation are not exercised.`);
   if(failed)process.exitCode=1;
 })().catch(error=>{console.error(error);process.exitCode=1});

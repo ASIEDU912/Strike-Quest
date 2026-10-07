@@ -213,7 +213,7 @@ async function stagesAndCelebrations(page,engine){
         await layoutAndPreferences(x.page,width,engine);
         if(width===390){
           await contextualData(x.page,engine);await stagesAndCelebrations(x.page,engine);
-          if(engine==='chromium')for(const h of hosts){await visit(x.page,h.context);await emitImage(x.page,h,`lumi-${h.context}-390-final500.png`);}
+          if(engine==='chromium'){await x.page.waitForTimeout(4000);for(const h of hosts){await visit(x.page,h.context);await emitImage(x.page,h,`lumi-${h.context}-390-final500.png`);}}
         }
         x.check();
       }finally{await x.context.close();}

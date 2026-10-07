@@ -1475,6 +1475,8 @@ function sqRenderCompanion(celebrate=false){
    panel.open=!sqCompanionCollapsed;
    const controller=StrikeMascot.mount(host,xp,{idPrefix:'lumi-'+context,context,compact:context!=='quests',guide:sqCompanionGuide(context),static:localStorage.getItem('sq_companion_paused')==='true',announce:false,onPause:sqCompanionPause});
    record={panel,host,controller,greeted:false};sqCompanions.set(context,record);
+   // Save synchronously on the native summary activation, before a rapid reload can discard its queued toggle event.
+   $(summaryId).addEventListener('click',event=>{event.preventDefault();sqCompanionCollapse(panel.open);});
    panel.addEventListener('toggle',()=>{if(panel.open===sqCompanionCollapsed)sqCompanionCollapse(!panel.open);});
    host.addEventListener('click',event=>{if(event.target.closest?.('[data-mascot-action]'))sqCompanionAction(context);});
    if(typeof IntersectionObserver!=='undefined'){record.observer=new IntersectionObserver(sqCompanionVisibility);record.observer.observe(host);}
