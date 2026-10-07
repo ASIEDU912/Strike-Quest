@@ -43,7 +43,15 @@ for(const s of M.STAGES){
  const svg=M.renderSvg(s.minXp,{idPrefix:'form-test-'+s.id});
  assert(svg.includes(s.form));assertions++;
  eq(svg.includes('class="sq-mascot__wings"'),s.index===4);
+ assert(svg.includes('class="sq-mascot__head"'));assertions++;
 }
 assert(!M.renderSvg(500).includes('translate(-2.7'));
 assertions++;
 console.log(`PASS: ${assertions} assertions (XP boundaries, invalid values, ID isolation, accessible labels, bounded motion, reduced motion, dependency isolation).`);
+
+assert(css.includes('transform-box:view-box'));
+assert(css.includes('sq-companion-sway 4s ease-in-out infinite'));
+assert(css.includes('.sq-mascot--paused .sq-companion__art'));
+assert(css.includes('@media(prefers-reduced-motion:reduce){.sq-companion__art,.sq-mascot *'));
+assert(fs.readFileSync(`${__dirname}/../index.html`,'utf8').includes('.sq-companion-panel:not([open]) .sq-companion__art'));
+console.log('PASS: independent head motion and HTML sway preserve SVG origins, pause, collapse and reduced-motion guards.');

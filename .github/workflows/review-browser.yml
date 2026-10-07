@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   fixture-browser:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'review/research-guidance-provenance'
+    if: github.event.pull_request.head.repo.full_name == github.repository && (github.head_ref == 'review/research-guidance-provenance' || github.head_ref == 'fix/lumi-visible-motion')
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
@@ -36,13 +36,16 @@ jobs:
       - name: Install pinned test dependencies
         id: dependencies
         run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
-      - name: Install Chromium
+      - name: Install Chromium and WebKit
         id: chromium
-        run: npx --no-install playwright install --with-deps chromium
+        run: npx --no-install playwright install --with-deps chromium webkit
       - name: Run Node regression suites
         run: npm test
       - name: Run fixture-only browser suites
         run: npm run test:browser
+      - name: Verify actual Chromium and WebKit motion over time
+        if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
+        run: npm run test:motion
       - name: Emit bounded fixture screenshots to logs
         if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
         run: node test/review-evidence.cjs

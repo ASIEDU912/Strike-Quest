@@ -77,7 +77,7 @@
       }
     ];
     const form=forms[index];
-    return `<g class="sq-mascot__body" data-creature-form="${form.key}">${form.rear}${form.body}${form.mane||''}${form.head}${form.gear}</g>`;
+    return `<g class="sq-mascot__body" data-creature-form="${form.key}">${form.rear}${form.body}${form.mane||''}<g class="sq-mascot__head">${form.head}</g>${form.gear}</g>`;
   }
 
   function renderSvg(value, options = {}) {
@@ -102,7 +102,7 @@
   function renderCard(value, options = {}) {
     const p = progressForXp(value), s = p.stage;
     const progress = p.next ? `${p.remaining} XP to ${p.next.name}` : 'All five looks discovered';
-    return `<section class="sq-companion${options.static?' sq-mascot--paused':''}" aria-label="Lumi research companion"><div class="sq-companion__art">${renderSvg(p.xp,options)}</div><div class="sq-companion__copy"><p class="sq-companion__eyebrow">Your research companion</p><h3>Lumi <span>· ${s.name}</span></h3><p class="sq-companion__ability">${s.ability}</p><div class="sq-companion__progress-copy"><span>${p.xp.toLocaleString('en-US')} XP</span><span>${progress}</span></div><progress class="sq-companion__progress" value="${p.fraction}" max="1" aria-label="Lumi evolution progress"></progress><p class="sq-companion__note">Grows with research milestones. Abilities are cosmetic.</p></div><button class="sq-companion__motion" type="button" data-mascot-motion aria-pressed="${!!options.static}" aria-label="Pause companion animation">${options.static?'Resume motion':'Pause motion'}</button><span class="sq-companion__status" role="status" aria-live="polite" aria-atomic="true"></span></section>`;
+    return `<section class="sq-companion${options.static?' sq-mascot--paused':''}" aria-label="Lumi research companion"><div class="sq-companion__art">${renderSvg(p.xp,options)}</div><div class="sq-companion__copy"><p class="sq-companion__eyebrow">Your research companion</p><h3>Lumi <span>· ${s.name}</span></h3><p class="sq-companion__ability">${s.ability}</p><div class="sq-companion__progress-copy"><span>${p.xp.toLocaleString('en-US')} XP</span><span>${progress}</span></div><progress class="sq-companion__progress" value="${p.fraction}" max="1" aria-label="Lumi evolution progress"></progress><p class="sq-companion__note">Grows with research milestones. Abilities are cosmetic.</p></div><button class="sq-companion__motion" type="button" data-mascot-motion aria-pressed="${!!options.static}" aria-label="${options.static?'Resume':'Pause'} companion animation">${options.static?'Resume motion':'Pause motion'}</button><span class="sq-companion__status" role="status" aria-live="polite" aria-atomic="true"></span></section>`;
   }
   /** Purely visual. The host owns research eligibility, persistence, and XP. */
   function mount(container, initialXp, options = {}) {
@@ -117,6 +117,7 @@
       container.querySelector('.sq-companion').classList.toggle('sq-mascot--paused',paused);
       container.querySelector('.sq-mascot').classList.toggle('sq-mascot--static',paused);
       button.setAttribute('aria-pressed',String(paused));
+      button.setAttribute('aria-label',`${paused?'Resume':'Pause'} companion animation`);
       button.textContent=paused?'Resume motion':'Pause motion';
     }
     container.addEventListener('click',onClick);

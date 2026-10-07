@@ -1,19 +1,22 @@
 /* Namespace only. No fonts, images, remote URLs, timers, or audio. */
 .sq-mascot{display:block;max-width:100%;height:auto;overflow:visible;isolation:isolate}
-.sq-mascot__body{transform-origin:90px 152px;animation:sq-mascot-breathe 4.8s ease-in-out infinite}
-.sq-mascot__tail{transform-origin:110px 129px;animation:sq-mascot-tail 5.6s ease-in-out infinite}
-.sq-mascot__eyes{transform-origin:90px 70px;animation:sq-mascot-blink 6.8s linear infinite}
-.sq-mascot__drone{animation:sq-mascot-drift 4.5s ease-in-out infinite}
-.sq-mascot__archive,.sq-mascot__flare{animation:sq-mascot-drift 5.8s ease-in-out infinite}
-.sq-mascot__wings{animation:sq-mascot-wings 6.4s ease-in-out infinite}
+.sq-mascot g{transform-box:view-box}
+.sq-mascot__body{transform-origin:90px 152px;animation:sq-mascot-breathe 3.6s ease-in-out infinite}
+.sq-mascot__head{transform-origin:90px 103px;animation:sq-mascot-look 5.2s ease-in-out infinite}
+.sq-mascot__tail{transform-origin:110px 129px;animation:sq-mascot-tail 3.8s ease-in-out infinite}
+.sq-mascot__eyes{transform-origin:90px 70px;animation:sq-mascot-blink 5.2s linear infinite}
+.sq-mascot__drone{animation:sq-mascot-drift 3.4s ease-in-out infinite}
+.sq-mascot__archive,.sq-mascot__flare{animation:sq-mascot-drift 4.2s ease-in-out infinite}
+.sq-mascot__wings{animation:sq-mascot-wings 4.6s ease-in-out infinite}
 .sq-mascot__aura{transform-origin:90px 89px;animation:sq-mascot-aura 5.6s ease-in-out infinite;pointer-events:none}
 .sq-mascot__celebration{opacity:0;transform-origin:90px 90px;pointer-events:none}
 .sq-mascot--earn .sq-mascot__celebration{animation:sq-mascot-reward 1.2s ease-out 1}
 .sq-mascot--levelup .sq-mascot__celebration{animation:sq-mascot-reward 1.4s ease-out 1}
 .sq-mascot--levelup .sq-mascot__body{animation:sq-mascot-hop 1.2s ease-in-out 1}
-.sq-mascot--paused .sq-mascot *,.sq-mascot--static *{animation:none!important;transition:none!important}
+.sq-mascot--paused .sq-companion__art,.sq-mascot--paused .sq-mascot *,.sq-mascot--static *{animation:none!important;transition:none!important}
 .sq-companion{position:relative;display:grid;grid-template-columns:120px minmax(0,1fr);align-items:center;gap:10px 16px;padding:12px 18px 16px;background:radial-gradient(ellipse at 10% 50%,#36507838,transparent 64%),#101f35;border:1px solid #35516d;border-radius:20px;color:#e6eefb;font:inherit}
-.sq-companion__art{width:120px;align-self:center;pointer-events:none}
+/* Keep a gentle HTML-layer sway as well as independent SVG body-part motion. */
+.sq-companion__art{width:120px;align-self:center;pointer-events:none;transform-origin:50% 80%;animation:sq-companion-sway 4s ease-in-out infinite}
 .sq-companion__copy{min-width:0;padding-right:0}
 .sq-companion__eyebrow{margin:0 0 5px!important;color:#9fb9d6;font-size:10px!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .sq-companion h3{margin:0;color:#f4f3fd;font-size:18px;line-height:1.4}
@@ -28,13 +31,15 @@
 .sq-companion__motion{grid-column:1/-1;justify-self:end;min-height:32px;padding:5px 10px;border:1px solid #47617b;border-radius:9px;color:#c0d2e5;background:#11273e;font:inherit;font-size:10px;cursor:pointer}
 .sq-companion__motion:hover{background:#1a344f}.sq-companion__motion:focus-visible{outline:2px solid #d6c4ff;outline-offset:3px}
 .sq-companion__status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-@keyframes sq-mascot-wings{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.98)}}
+@keyframes sq-companion-sway{0%,100%{transform:translateY(0) rotate(-.7deg)}50%{transform:translateY(-3.5px) rotate(.7deg)}}
+@keyframes sq-mascot-look{0%,100%{transform:rotate(-2deg)}40%,60%{transform:rotate(3deg)}}
+@keyframes sq-mascot-wings{0%,100%{transform:scaleX(1) rotate(0)}50%{transform:scaleX(.92) rotate(1deg)}}
 @keyframes sq-mascot-aura{0%,100%{opacity:.72;transform:scale(.99)}50%{opacity:1;transform:scale(1.008)}}
-@keyframes sq-mascot-breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-2px) scaleY(1.012)}}
-@keyframes sq-mascot-tail{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
+@keyframes sq-mascot-breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-3px) scaleY(1.025)}}
+@keyframes sq-mascot-tail{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
 @keyframes sq-mascot-blink{0%,43%,46%,100%{transform:scaleY(1)}44%,45%{transform:scaleY(.12)}}
-@keyframes sq-mascot-drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes sq-mascot-drift{0%,100%{transform:translate(0,0)}50%{transform:translate(1px,-7px)}}
 @keyframes sq-mascot-reward{0%{opacity:0;transform:scale(.72)}20%{opacity:.75}100%{opacity:0;transform:scale(1.10)}}
 @keyframes sq-mascot-hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-7px) rotate(-2deg)}65%{transform:translateY(-2px) rotate(1deg)}}
 @media(max-width:420px){.sq-companion{grid-template-columns:94px minmax(0,1fr);padding:10px 12px;gap:8px}.sq-companion__art{width:94px}.sq-companion h3{font-size:17px}.sq-companion h3 span{display:block;font-size:12px}.sq-companion__motion{min-height:36px}}
-@media(prefers-reduced-motion:reduce){.sq-mascot *{animation:none!important;transition:none!important}.sq-companion__motion{display:none}}
+@media(prefers-reduced-motion:reduce){.sq-companion__art,.sq-mascot *{animation:none!important;transition:none!important}.sq-companion__motion{display:none}}
