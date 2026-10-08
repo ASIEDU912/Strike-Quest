@@ -31,6 +31,13 @@
 - Local system Chromium refuses loopback navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`. No bypass was attempted. Earlier in this session the isolated inline fixture harness passed 36 Studio browser checks at 320/390/1440px, and its 390px Home screenshot was inspected. That run used an available Playwright 1.57 beta adapter and in-memory storage, not Safari, a physical iPhone, or the real offline service worker.
 - No application source, private records, credentials, live-provider quota, account configuration, production, backend, DNS or other branches were changed by this supplemental test update. Authentication and cloud sync remain unimplemented/unverified.
 
+## Render-position integration fix
+- Preserved the concurrent supplemental offline-coverage commit `f9c29bb349dd710da91654630180830bd96585c3` and based this change on it without overwriting its tests or work log.
+- Hosted commit `4d0071b19b862746ae9191ba5aec51c3b87a04d7` passed all 72 Studio checks, 18 Research Check-in workflows and 14 journal-backup workflows in Chromium/WebKit. The real offline reload passed after fragment normalization. All 34 research-guidance and 18 companion-placement browser checks also passed.
+- Decoded eight bounded Studio screenshots and verified their byte counts, SHA256 hashes and exact commit metadata. Inspected the 390px Home, desktop Home and 320px WebKit Research Brief; navigation and readable evidence cards fit the intended design.
+- A 320px large-price scenario assertion exposed late Studio reflow after a scroll request. Navigation now finishes pending Studio cards before positioning or focusing a destination. The large-price fixture waits for rendered layout before measuring; its size, overflow and above-navigation assertions are unchanged.
+- Added a real scenario-shortcut assertion at every Studio engine/viewport combination, checking unchanged research values and slider visibility after rendering. The resulting 78 Studio browser cases require hosted validation on this commit. Cancelled older motion/tap jobs do not count as complete validation.
+
 ## Remaining review
 1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
 2. Keep authentication and cross-device sync separate until provider selection and owner authorization; no fake login.

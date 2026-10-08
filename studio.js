@@ -142,7 +142,7 @@
     $('studioPauseLumi').addEventListener('click',()=>{const paused=localStorage.getItem('sq_companion_paused')!=='true';sqCompanionPause(paused);$('studioLumiSettingStatus').textContent=paused?'Lumi animations paused.':'Lumi animations resumed, subject to your device motion preferences.';accessButtons();});
     $('studioCollapseLumi').addEventListener('click',()=>{sqCompanionCollapse(!sqCompanionCollapsed);accessButtons();});
     function accessButtons(){$('studioPauseLumi').textContent=localStorage.getItem('sq_companion_paused')==='true'?'Resume Lumi animations':'Pause Lumi animations';$('studioCollapseLumi').textContent=sqCompanionCollapsed?'Expand companion panels':'Collapse companion panels';}
-    function syncNavigation(view){document.body.dataset.studioView=view;document.querySelectorAll('.nav-btn').forEach(b=>{if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});schedule();}
+    function syncNavigation(view){document.body.dataset.studioView=view;document.querySelectorAll('.nav-btn').forEach(b=>{if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});flushRefresh();}
     const oldSetView=setView;setView=function(view){if(!['home','research','watchlist','saved','quests','settings'].includes(view))return;oldSetView(view);if(view!=='settings')syncNavigation(view);};
     const oldOpen=openSettings,oldClose=closeSettings;
     $('settingsBtn').removeEventListener('click',oldOpen);$('closeSettings').removeEventListener('click',oldClose);
@@ -151,6 +151,9 @@
     $('settingsBtn').addEventListener('click',()=>openSettings());$('closeSettings').addEventListener('click',()=>closeSettings());
     $('settingsModal').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closeSettings();return;}if(e.key==='Tab'){const list=[...sheet.querySelectorAll('button,a[href],input,select,textarea,summary,[tabindex="0"]')].filter(el=>!el.disabled&&el.getClientRects().length);const first=list[0],last=list.at(-1);if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('studioSettingsHeading'))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}});
     function schedule(){if(frame)return;frame=requestAnimationFrame(()=>{frame=0;refresh();});}
+    // Finish pending cards before callers position or focus a destination. A later
+    // reflow above that destination must not move it behind the fixed navigation.
+    function flushRefresh(){if(frame){cancelAnimationFrame(frame);frame=0;}refresh();}
     const oldRender=render;render=function(){const out=oldRender.apply(this,arguments);schedule();return out;};
     const oldSeason=renderSeasonality;renderSeasonality=function(){const out=oldSeason.apply(this,arguments);schedule();return out;};
     const oldBadges=sqRenderBadges;sqRenderBadges=function(){const out=oldBadges.apply(this,arguments);schedule();return out;};
