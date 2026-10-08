@@ -125,6 +125,8 @@ async function reaction(page,h) {
   return page.locator(select(h,'.sq-companion')).evaluate(el=>[...el.classList].filter(name=>/^sq-companion--tap-(wave|tilt|tail)$/.test(name)).map(name=>name.slice('sq-companion--tap-'.length)));
 }
 async function feedback(page,h) {
+  const geometry=await page.locator(select(h,'[data-mascot-tap]')).evaluate(el=>({artBottom:el.querySelector('.sq-companion__art').getBoundingClientRect().bottom,cueTop:el.querySelector('.sq-companion__feedback').getBoundingClientRect().top}));
+  assert.ok(geometry.cueTop>=geometry.artBottom,`${h.context}: feedback has a separate gutter outside the illustration ${JSON.stringify(geometry)}`);
   const cue=page.locator(select(h,'.sq-companion__feedback'));
   assert.equal(await cue.isVisible(),true,`${h.context}: visible acknowledgement`);
   const text=(await cue.textContent()).trim();assert.ok(text.length>0,`${h.context}: nonempty acknowledgement`);
@@ -146,11 +148,15 @@ async function clean(page,h) {
 }
 async function prepareInput(page,h,input) {
   if(input==='pointer'||input==='touch')return;
+  // Keep an old pointer position from acquiring delayed :hover after scrolling
+  // in WebKit. The keyboard focus ring stays visible; artwork is never frozen.
+  await page.mouse.move(1,1);
   // Establish keyboard modality before taking stationary geometry/paint samples.
   // Tab may scroll to the next existing control; restore artwork focus first.
   await page.keyboard.press('Tab');await page.locator(select(h,'[data-mascot-tap]')).focus();
   await page.locator(select(h,'[data-mascot-tap]')).scrollIntoViewIfNeeded();
-  await page.waitForFunction(host=>!document.querySelector('#'+host+' .sq-companion').classList.contains('sq-mascot--inactive'),h.host);
+  await page.mouse.move(1,1);
+  await page.waitForFunction(host=>!document.querySelector('#'+host+' .sq-companion').classList.contains('sq-mascot--inactive')&&!document.querySelector('#'+host+' [data-mascot-tap]').matches(':hover'),h.host);
 }
 async function activate(page,h,input,prepared=false) {
   if(!prepared)await prepareInput(page,h,input);
@@ -269,11 +275,19 @@ async function staticResponse(page,h,input,label,emit=false) {
   const before=await protectedState(page),crop=await clip(page,h);
   await startTrace(page,h);await activate(page,h,input,true);await feedback(page,h);
   const cue=(await page.locator(select(h,'.sq-companion__feedback')).textContent()).trim();
-  // Both images are after activation so normal hover/focus paint is identical.
-  const a=await page.screenshot({clip:crop,animations:'allow'});
-  await page.waitForTimeout(250);const b=await page.screenshot({clip:crop,animations:'allow'});
-  assert.equal(changedPixels(a,b),0,`${label}: paused/reduced art stays still`);
+  // Both images are after activation. Feedback has a separate gutter and may
+  // expire without touching this fixed artwork crop, even on a slow renderer.
+  const state=()=>page.locator(select(h,'[data-mascot-tap]')).evaluate(el=>{const cue=el.querySelector('.sq-companion__feedback'),rect=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}};return {time:performance.now(),scrollY,hover:el.matches(':hover'),boxShadow:getComputedStyle(el).boxShadow,backgroundColor:getComputedStyle(el).backgroundColor,button:rect(el),art:rect(el.querySelector('.sq-companion__art')),cue:{hidden:cue.hidden,text:cue.textContent,rect:rect(cue)}};});
+  const startA=await state(),a=await page.screenshot({clip:crop,animations:'allow'}),endA=await state();
+  await page.waitForTimeout(250);const startB=await state(),b=await page.screenshot({clip:crop,animations:'allow'}),endB=await state();
+  if(['Enter','Space'].includes(input))for(const snapshot of [startA,endA,startB,endB])assert.equal(snapshot.hover,false,`${label}: keyboard paint is isolated from pointer hover`);
+  const paintDelta=changedPixels(a,b);
   const samples=await page.evaluate(()=>window.__tapTrace);
+  if(paintDelta){
+    emitImage(a,`${label}-static-failure-a.png`,0);emitImage(b,`${label}-static-failure-b.png`,1);
+    console.log('SQ_STATIC_FAILURE '+JSON.stringify({label,paintDelta,crop,startA,endA,startB,endB,travel:Object.fromEntries(['art','wave','tilt','tail'].map(key=>[key,travel(samples,key)])),samples:samples.filter((_,i)=>i===0||i===samples.length-1||i%12===0)}));
+  }
+  assert.equal(paintDelta,0,`${label}: paused/reduced art stays still`);
   for(const key of ['art','wave','tilt','tail'])assert.ok(travel(samples,key)<.01,`${label}: ${key} does not animate`);
   assert.equal(await page.locator(select(h,'.sq-companion__art')+','+select(h,'.sq-mascot *')).evaluateAll(nodes=>nodes.every(el=>getComputedStyle(el).animationName==='none')),true,'Motion preference suppresses every art animation');
   await clean(page,h);assert.deepEqual(await protectedState(page),before,`${label}: static acknowledgement changes no state/storage`);

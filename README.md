@@ -1,5 +1,9 @@
 # StrikeQuests - Strike Price Calculator
 
+## v10.1.5: Research Check-in
+
+Revisit a saved idea beside a same-instrument current scenario, inspect its provenance and changed assumptions, and record your thinking in a private device-local journal. See [Research Check-in behavior and verification](README-V10.1.5.md).
+
 ## v10.1.4: Tap to greet Lumi
 
 Lumi responds to artwork taps, clicks, Enter and Space across all five placements and forms, with finite playful reactions and static feedback when motion is paused or reduced. See [v10.1.4 interaction and verification notes](README-V10.1.4.md) and [v10.1.3 contextual guides](README-V10.1.3.md).
