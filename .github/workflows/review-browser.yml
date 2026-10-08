@@ -44,6 +44,7 @@ jobs:
       - name: Run fixture-only browser suites
         run: npm run test:browser
       - name: Verify Research Check-ins in mobile Chromium and WebKit
+        if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
         run: npm run test:checkin
       - name: Verify accessible artwork taps and finite motion in Chromium and WebKit
         if: ${{ always() && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}

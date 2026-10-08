@@ -20,4 +20,6 @@ Lumi asks whether the difference comes from assumptions, source quality, or date
 
 Rendered evidence is emitted as bounded fixture screenshots in ordinary job logs. The release requires an exact-head green review run and visual inspection before merge, followed by successful Pages deployment and matching published asset hashes.
 
+Lumi’s feedback cue now has a separate gutter below its artwork, with a rendered non-overlap assertion, so its expiry cannot contaminate static-art pixel checks. Motion assertions remain unchanged.
+
 Cache revision: `strikequests-v10-1-5-research-checkin`.
