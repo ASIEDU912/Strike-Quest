@@ -49,6 +49,7 @@
 - Visual inspection of the commit-identified 320px scenario screenshot caught a trailing decimal digit wrapping below the high scenario. Preserved the 32px minimum while widening the price area and requiring complete amounts on one line.
 - Both the existing 320/360/390px value matrix and the Chromium/WebKit Studio precision case now check wrapping as well as overflow, readability and control visibility. No earlier behavior/privacy assertion was weakened.
 - Final checks and screenshot inspection must use the resulting exact commit. Prior passes are evidence for prior source; authentication, real-device testing and release authorization are separate.
+- Corrected the new single-line measurement to count rendered DOM Range line boxes. Font ink can extend beyond a tight line-height box, so comparing scroll height with line height produced false wrap failures even for short amounts. Width, 32px minimum and slider-position assertions remain intact; the rendering fix is unchanged.
 
 ## Review requirements
 1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
