@@ -32,7 +32,7 @@ async function fixture(width,seed={},raw={}){
     }
     sessionStorage.setItem('strikequests_v9_splash_seen','1');
   },{fixedNow,seed,raw,original});
-  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());allRequests.push({origin:url.origin,path:url.pathname});
     if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:JSON.stringify({marketDataApi:'https://blocked-provider.fixture.test'})});
@@ -45,7 +45,7 @@ async function fixture(width,seed={},raw={}){
   });
   await context.routeWebSocket('**/*',socket=>{unexpected.push(socket.url());socket.close();});
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(base+'/before');await page.goto(base);
+  await page.goto(base+'/before');await page.goto(base+'/#research');
   await page.waitForFunction(()=>typeof sqStartCheckin==='function'&&document.getElementById('appSplash').classList.contains('hide'));
   return {page,context,check(){assert.deepEqual(errors,[],'No uncaught browser errors');assert.deepEqual(unexpected,[],'No unexpected or provider requests');}};
 }

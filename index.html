@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0B0F14">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -254,6 +254,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 @media(max-width:360px){.checkin-column{padding:9px}.checkin-grid{gap:6px}.checkin-column dd{font-size:11px}.checkin-actions{flex-direction:column}.checkin-actions .btn{width:100%}}
 
 </style>
+<link rel="stylesheet" href="./studio.css">
 </head>
 <body>
 <div class="app-splash" id="appSplash" aria-hidden="true">
@@ -2001,5 +2002,6 @@ if(isiOS&&!standalone&&!localStorage.getItem("splab_install_hint"))setTimeout(()
 
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
 </script>
+<script src="./studio.js"></script>
 </body>
 </html>

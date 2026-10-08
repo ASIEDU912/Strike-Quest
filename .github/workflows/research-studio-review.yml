@@ -8,13 +8,18 @@ concurrency:
   group: research-studio-review
   cancel-in-progress: true
 jobs:
-  review:
+  source:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      REVIEW_HEAD_SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
+      - name: Verify the exact branch head
+        run: test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
       - name: Package exact public source for isolated review
         run: |
           git rev-parse HEAD > REVIEW-COMMIT.txt
@@ -25,4 +30,62 @@ jobs:
           path: |
             source.zip
             REVIEW-COMMIT.txt
+          retention-days: 7
+  checks:
+    name: ${{ matrix.suite }} checks
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [core, journal, studio, tap, motion]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      CI: 'true'
+      REVIEW_HEAD_SHA: ${{ github.sha }}
+      npm_config_update_notifier: 'false'
+    steps:
+      - name: Check out the exact review head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify the tested commit
+        run: test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
+      - name: Install pinned test dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - name: Install Chromium and WebKit
+        run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Run Node regressions
+        if: matrix.suite == 'core'
+        run: npm test
+      - name: Run existing browser regressions
+        if: matrix.suite == 'core'
+        run: npm run test:browser
+      - name: Verify private Research Check-in and backup workflows
+        if: matrix.suite == 'journal'
+        run: npm run test:checkin && npm run test:backup
+      - name: Verify Research Studio in Chromium and WebKit
+        if: matrix.suite == 'studio'
+        run: npm run test:studio
+      - name: Verify accessible Lumi interactions
+        if: matrix.suite == 'tap'
+        run: npm run test:tap
+      - name: Verify Lumi motion
+        if: matrix.suite == 'motion'
+        run: npm run test:motion
+      - name: Record the evidence commit
+        if: always()
+        run: |
+          mkdir -p test-results
+          git rev-parse HEAD > test-results/REVIEW-COMMIT.txt
+      - name: Preserve fixture screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-studio-${{ matrix.suite }}-${{ github.sha }}
+          path: test-results/
           retention-days: 7

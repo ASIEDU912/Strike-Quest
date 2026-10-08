@@ -14,7 +14,7 @@ async function fixture(width,seed={}){
   if(!sessionStorage.getItem('backup_seeded')){for(const [key,value] of Object.entries(seed))localStorage.setItem(key,value);sessionStorage.setItem('backup_seeded','1');}
   sessionStorage.setItem('strikequests_v9_splash_seen','1');
  },seed);
- const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+ const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
  await context.route('**/*',route=>{
   const url=new URL(route.request().url());
   if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:'{"marketDataApi":"https://forbidden-provider.fixture.test"}'});
@@ -24,7 +24,7 @@ async function fixture(width,seed={}){
   return route.fulfill({contentType:types[path.extname(file)]||'text/plain',body:fs.readFileSync(file)});
  });
  await context.routeWebSocket('**/*',socket=>{unexpected.push(socket.url());socket.close();});
- const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(base);
+ const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(base+'/#research');
  await page.waitForFunction(()=>typeof sqCreateCheckinBackup==='function'&&document.getElementById('appSplash').classList.contains('hide'));
  await page.locator('[data-view="saved"]').click();
  return {page,context,check(){assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[],'No provider, telemetry, upload or NAS requests');}};
@@ -92,7 +92,7 @@ async function interrupted(engine){
  const f=await fixture(390),{page}=f;await createRecords(page);const backup=await page.evaluate(()=>sqCreateCheckinBackup()),file=Buffer.from(JSON.stringify({...backup,entries:[{...backup.entries[0],id:'new-entry'}]})),before=await raw(page);
  await upload(page,file);await page.locator('#cancelCheckinImportBtn').click();assert.equal(await raw(page),before);assert.equal(await page.evaluate(()=>sqConfirmCheckinImport()),false);
  await upload(page,file);await page.locator('[data-view="research"]').click();assert.equal(await page.evaluate(()=>!!sqCheckinImport),false);assert.equal(await raw(page),before);await page.locator('[data-view="saved"]').click();
- await upload(page,file);const other=await f.context.newPage();await other.goto(base);await other.waitForFunction(()=>typeof sqConfirmCheckinImport==='function');await other.evaluate(()=>{const j=JSON.parse(localStorage.getItem('sq_research_checkins_v1'));j.entries.push({...j.entries[0],id:'second-tab'});localStorage.setItem('sq_research_checkins_v1',JSON.stringify(j));});
+ await upload(page,file);const other=await f.context.newPage();await other.goto(base+'/#research');await other.waitForFunction(()=>typeof sqConfirmCheckinImport==='function');await other.evaluate(()=>{const j=JSON.parse(localStorage.getItem('sq_research_checkins_v1'));j.entries.push({...j.entries[0],id:'second-tab'});localStorage.setItem('sq_research_checkins_v1',JSON.stringify(j));});
  await page.waitForFunction(()=>!sqCheckinImport);assert.match(await page.locator('#checkinBackupStatus').textContent(),/another tab/);assert.equal(JSON.parse(await raw(page)).entries.length,3);
  // Asynchronous file completion cannot resurrect a cancelled or superseded preview.
  await page.evaluate(()=>{window.finishRead=null;sqChooseCheckinImport({target:{files:[{size:100,name:'slow.json',text:()=>new Promise(resolve=>{finishRead=resolve;})}]}});sqCancelCheckinImport(false);});
@@ -101,7 +101,7 @@ async function interrupted(engine){
 }
 async function concurrent(engine){
  const f=await fixture(390),{page}=f;await createRecords(page);const backup=await page.evaluate(()=>sqCreateCheckinBackup()),before=JSON.parse(await raw(page)).entries;
- const other=await f.context.newPage();await other.goto(base);await other.waitForFunction(()=>typeof sqConfirmCheckinImport==='function');
+ const other=await f.context.newPage();await other.goto(base+'/#research');await other.waitForFunction(()=>typeof sqConfirmCheckinImport==='function');
  for(const [target,id] of [[page,'tab-one'],[other,'tab-two']])await target.evaluate(({backup,id})=>{sqStageCheckinImport(JSON.stringify({...backup,entries:[{...backup.entries[0],id}]}));},{backup,id});
  await Promise.all([page.evaluate(()=>sqWithCheckinJournalLock(sqConfirmCheckinImport)),other.evaluate(()=>sqWithCheckinJournalLock(sqConfirmCheckinImport))]);
  const after=JSON.parse(await raw(page)).entries;assert.deepEqual(after.slice(0,2),before);assert.equal(after.length,3);assert.ok(['tab-one','tab-two'].includes(after[2].id));

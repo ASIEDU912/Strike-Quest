@@ -69,7 +69,7 @@ async function createPage(viewport, seed={}) {
   });
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(base);
+  await page.goto(base+'/#research');
   await page.waitForFunction(() => document.getElementById('appSplash').classList.contains('hide'));
   return {page,context,network};
 }

@@ -8,7 +8,16 @@
 - Owner/provider configuration required to complete real optional account login and cross-device account sync. Device-local private Research Check-in journal remains excluded.
 - Do not merge main, publish Pages, change Worker/DNS, or modify production without explicit approval.
 
-## Next session
-1. Transfer the eight packaged source/test files to this branch through an authenticated repository editor with access to the ZIP, checking for concurrent edits.
-2. Verify exact branch HEAD and run Node and browser suites; inspect mobile screenshots and privacy flows.
-3. Keep authentication and cross-device sync separately blocked until provider selection and owner authorization; no fake login.
+## 2026-10-08 source integration
+- Resumed from exact branch head `816f5de546478bf34bd76137611f8c4f0bef1634` using the attached `StrikeQuests-Research-Studio-v10.2-REVIEW(1).zip`.
+- Repository transport is available in this session; the earlier transfer blocker is resolved. Integrated the eight UI/document/test files and eleven packaged browser-suite navigation adaptations. The underlying private journal and research implementation is unchanged from the verified private-journal-backup base.
+- Preserved guest-only account status, private notes/provenance, append-only backup imports and public-summary isolation. No authentication or cloud provider was configured.
+- `npm test` passed, including 30 Studio logic checks and 48 private journal backup checks. Updated the real offline browser regression to verify the Studio shell assets as well as the existing provider/query exclusions.
+- Extended the existing branch-only workflow to run core, journal, Studio, tap and motion checks on the exact pushed commit in Chromium and WebKit, with synthetic screenshot artifacts. There are no deploy jobs or write permissions in that workflow.
+- Local browser installation failed; exact-commit hosted browser validation and screenshot inspection are still required before claiming review readiness.
+- User instruction remains: continue on `feat/research-studio`, without merging or deploying. PR #8, main, production, Worker and DNS remain unchanged.
+
+## Remaining review
+1. Inspect hosted tests and mobile/desktop evidence for the integrated commit, repair any regressions, and record verified results.
+2. Keep authentication and cross-device sync separate until provider selection and owner authorization; no fake login.
+3. Real-device Safari/installed-PWA verification and any production release remain separate owner review steps.

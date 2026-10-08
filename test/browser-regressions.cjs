@@ -16,7 +16,7 @@ async function fresh() {
     }
     return route.fulfill({ status: 404, body: '' });
   });
-  await page.goto('http://strikequests.test/');
+  await page.goto('http://strikequests.test/#research');
   await page.waitForTimeout(300);
   await page.evaluate(()=>{localStorage.setItem('sq_provider_pref','auto');state.mode='auto_eod';state.extra={};state.demoRaw=null;state.dataMeta=null;setPeriod('1y');});
   return { page, context };

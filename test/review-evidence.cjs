@@ -30,7 +30,7 @@ async function settleJournal(page){await page.evaluate(async()=>{if(navigator.lo
     return route.fulfill({contentType:types[path.extname(file)]||'text/plain',body:fs.readFileSync(file)});
   });
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base);await page.waitForFunction(()=>state.period==='2y'&&state.correction===10&&!!window.StrikeMascot);
+  await page.goto(base+'/#research');await page.waitForFunction(()=>state.period==='2y'&&state.correction===10&&!!window.StrikeMascot);
   await page.emulateMedia({reducedMotion:'reduce'});
   await emit(page,'fresh-mobile-390.jpg');
   await page.locator('#companionHost').scrollIntoViewIfNeeded();

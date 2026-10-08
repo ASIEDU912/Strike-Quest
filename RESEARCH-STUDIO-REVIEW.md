@@ -1,0 +1,43 @@
+# StrikeQuests Research Studio — v10.2.0 review package
+
+**Status: guest-first prototype for review. NOT published or merged.** October 8, 2026.
+
+This review builds on the separate `feat/private-journal-backup` review (PR #8, commit `615485fa7c0e47fa6303230df025b882a5fe83fb`) and integrates the Research Studio UI on `feat/research-studio`. The private backup implementation is unchanged. Production remains at v10.1.5; this branch is not merged or deployed. The attached review bundle supplies the UI and navigation adaptations; the branch adds exact-commit CI and updates the offline-shell regression for the two new assets.
+
+## Working features in this prototype
+
+- Mobile-first Home with Lumi, research shortcuts and saved research resume.
+- Five-button navigation: Home, Research, Watchlist, Saved, Quests; Settings stays in the header.
+- Research screen with existing instrument search, seasonality, 52-week context and Low/Mid/High hypothetical scenarios. Existing inputs and saved records stay authoritative.
+- Source-identified historical chart when current displayed data exactly match stored dated history; no invented series in Manual mode. Demo charts are labeled synthetic.
+- Deterministic Research Brief with uncertainty and source caveats; no AI provider or automated trading advice.
+- What's New panel with review-vs-release labels; grouped Settings; optional local nickname and quiet appearance mode.
+- Transparent guest-only account status. No fake working sign-in, no cloud sync, and no automatic journal upload.
+- All pre-existing private Research Check-in and pending private backup/restore workflows remain in this build.
+
+## What remains unfinished
+
+- Exact-commit GitHub-hosted Chromium/WebKit verification is required. The branch-only `Research Studio review` workflow now runs core, private journal, Studio, tap and motion checks and saves synthetic screenshots together with their commit identifier. No job publishes the app.
+- Real login and cloud sync. Authentication and account storage providers need explicit owner approval and configuration, followed by access isolation, sign-in/out/recovery and consented guest data migration tests. Private Research Check-in must remain device-local.
+- Owner preview/approval followed by a separate, explicitly authorized production merge and deployment.
+
+## Local test evidence
+
+During branch integration, `npm test` passed with all existing Node regressions, 48 private journal backup checks and 30 Studio logic checks. Browser binaries could not be installed in the integration environment; the hosted workflow must verify the integrated commit in both engines. The earlier prototype evidence below is not a substitute for those integrated-commit checks.
+
+`npm test` passed, including 30 Studio logic checks, the private journal tests and original node regressions. `STUDIO_INLINE=1 STUDIO_BROWSERS=chromium CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:studio` passed **36** isolated Chromium browser checks at 320, 390 and 1440px, with synthetic fixture data and zero permitted provider/network calls. Managed Chromium in the verification environment blocks navigations even to locally intercepted synthetic domains, so `STUDIO_INLINE=1` loads the same app sources into a real Chromium page with isolated in-memory localStorage. This does **not** replace WebKit/Safari testing, physical-device testing or provider end-to-end checks.
+
+## Preview without the live backend
+
+Extract the archive into its own folder. Run `python -m http.server 8765` in that folder and open `http://localhost:8765/` on your machine. The default Demo mode is synthetic. Do not put private API keys into this public review archive. To run Node tests, use `npm install --ignore-scripts --no-audit --no-fund --package-lock=false`, then `npm test` and the above fixture browser command (requires a local Chromium executable and Playwright installation). The test scripts do not need an actual provider account.
+
+## Integration changes compared with PR #8 source
+
+- `index.html` (mobile zoom accessibility, stylesheet and script inclusion)
+- `studio.css`, `studio.js` (new view/navigation, cards, data-context guidance, settings)
+- `sw.js` (review-only cache revision and new assets)
+- `package.json`, `test/studio.cjs`, `test/studio-browser.cjs` (test integration)
+- Existing browser suites (start legacy research workflows at `#research`, open grouped Settings explicitly, and allow the two new local assets). Existing behavior/privacy assertions remain; service-worker checks now require all eleven shell assets and continue excluding query strings and provider URLs.
+- `.github/workflows/research-studio-review.yml` (branch-only exact-commit tests and evidence; no deployment), `RESEARCH-STUDIO-WORKLOG.md` (integration status)
+
+Do not treat the separate synthetic screenshots as market data, proof of correct prices or a real brokerage account.

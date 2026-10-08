@@ -37,7 +37,7 @@ function data(symbol){
   return route.fulfill({status:404,body:''});
  });
  const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));
- await page.goto(base);await page.locator('[data-private-mode="auto_eod"]').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('shared EOD loaded'));
+ await page.goto(base+'/#research');await page.locator('[data-private-mode="auto_eod"]').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('shared EOD loaded'));
  await page.locator('#appSplash').waitFor({state:'hidden'});
  assert.equal(await page.locator('#price').inputValue(),'200.00');pass('explicit Automatic selection uses shared API with no visitor key');
  await page.screenshot({path:path.join(evidence,'desktop-shared-fixture.png'),fullPage:true});
@@ -48,7 +48,7 @@ function data(symbol){
  assert.match(await page.locator('#seasonalitySelectionNote').textContent(),/2025/);pass('seasonality controls select a specific calendar year');
  await page.locator('#watchCurrentBtn').click();
  await page.locator('[data-view="watchlist"]').click();assert.match(await page.locator('#viewWatchlist').textContent(),/MSFT/);pass('watchlist captures selected research');
- await page.locator('[data-view="settings"]').click();await page.locator('[data-mode="manual"]').click();await page.locator('#closeSettings').click();
+ await page.locator('#settingsBtn').click();await page.locator('#studioDataSettings>summary').click();await page.locator('[data-mode="manual"]').click();await page.locator('#closeSettings').click();
  await page.locator('[data-view="research"]').click();
  await page.locator('#price').fill('125');await page.locator('#perf').fill('20');await page.locator('#divisor').fill('3.5');
  await page.locator('[data-view="saved"]').click();await page.locator('#saveBtn').click();
@@ -66,11 +66,11 @@ function data(symbol){
  const swPage=await offlineCtx.newPage();
  await offlineCtx.route('**/config.json?*',route=>route.fulfill({contentType:'application/json',body:'{"marketDataApi":""}'}));
  await offlineCtx.route('https://**/*',route=>route.fulfill({status:503,body:''}));
- await swPage.goto(base);await swPage.evaluate(()=>navigator.serviceWorker.ready);
+ await swPage.goto(base+'/#research');await swPage.evaluate(()=>navigator.serviceWorker.ready);
  await swPage.reload();await swPage.waitForFunction(()=>!!navigator.serviceWorker.controller);
  const keys=await swPage.evaluate(async()=>{const all=[];for(const name of await caches.keys()){const c=await caches.open(name);all.push(...(await c.keys()).map(r=>r.url))}return all});
- assert.deepEqual(keys.map(u=>new URL(u).pathname).sort(),['/','/config.json','/icon-180.png','/icon-192.png','/icon-512.png','/index.html','/manifest.webmanifest','/mascot.css','/mascot.js']);
- assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')),false);pass('real service worker caches only nine app-shell URLs');
+ assert.deepEqual(keys.map(u=>new URL(u).pathname).sort(),['/','/config.json','/icon-180.png','/icon-192.png','/icon-512.png','/index.html','/manifest.webmanifest','/mascot.css','/mascot.js','/studio.css','/studio.js']);
+ assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')),false);pass('real service worker caches only eleven app-shell URLs');
  await offlineCtx.setOffline(true);await swPage.reload();await swPage.locator('#ticker').waitFor();
  assert.match(await swPage.title(),/StrikeQuests/);pass('installed shell opens offline');
  await offlineCtx.close();

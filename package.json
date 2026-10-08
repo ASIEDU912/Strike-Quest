@@ -1,16 +1,17 @@
 {
   "name": "strikequests-regression-checks",
   "private": true,
-  "version": "10.1.6",
+  "version": "10.2.0-review.1",
   "devDependencies": {
     "playwright": "1.62.1"
   },
   "scripts": {
-    "test": "node test/regressions.cjs && node test/shared-regressions.cjs && node test/service-worker.cjs && node test/data-integrity.cjs && node test/badge-migration.cjs && node test/research-guidance.cjs && node test/core-experience.cjs && node test/mascot-assets.cjs && node test/mascot-controller.cjs && node test/companion-roles.cjs && node test/research-checkin.cjs && node test/journal-backup.cjs",
+    "test": "node test/regressions.cjs && node test/shared-regressions.cjs && node test/service-worker.cjs && node test/data-integrity.cjs && node test/badge-migration.cjs && node test/research-guidance.cjs && node test/core-experience.cjs && node test/mascot-assets.cjs && node test/mascot-controller.cjs && node test/companion-roles.cjs && node test/research-checkin.cjs && node test/journal-backup.cjs && node test/studio.cjs",
     "test:browser": "node test/browser-regressions.cjs && node test/browser-flows.cjs && node test/next-build.cjs && node test/research-guidance-browser.cjs && node test/companion-roles-browser.cjs",
     "test:motion": "node test/mascot-motion-browser.cjs && node test/companion-roles-motion.cjs",
     "test:tap": "node test/mascot-tap-browser.cjs",
     "test:checkin": "node test/research-checkin-browser.cjs",
-    "test:backup": "node test/journal-backup-browser.cjs"
+    "test:backup": "node test/journal-backup-browser.cjs",
+    "test:studio": "node test/studio-browser.cjs"
   }
 }
