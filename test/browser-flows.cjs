@@ -73,6 +73,15 @@ function data(symbol){
  assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')),false);pass('real service worker caches only eleven app-shell URLs');
  await offlineCtx.setOffline(true);await swPage.reload();await swPage.locator('#ticker').waitFor();
  assert.match(await swPage.title(),/StrikeQuests/);pass('installed shell opens offline');
+ // A fragment-bearing reload must use the same allowlisted offline shell.
+ for(const shell of ['/','/index.html'])for(const view of ['home','research','watchlist','saved','quests']){
+  await swPage.goto(base+shell+'#'+view);await swPage.reload();
+  await swPage.waitForFunction(v=>document.body.dataset.studioView===v,view);
+  assert.equal(await swPage.locator('.bottom-nav [data-view="'+view+'"]').getAttribute('aria-current'),'page');
+  assert.match(await swPage.title(),/StrikeQuests/);pass('offline reload preserves '+shell+'#'+view);
+ }
+ const offlineKeys=await swPage.evaluate(async()=>{const all=[];for(const name of await caches.keys()){const c=await caches.open(name);all.push(...(await c.keys()).map(r=>r.url))}return all});
+ assert.deepEqual(offlineKeys.sort(),keys.sort());pass('offline navigation adds no fragment, query or provider cache entries');
  await offlineCtx.close();
  console.log(`${passed} browser UI/PWA flow checks passed; all market data is synthetic`);
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close();if(server)await new Promise(resolve=>server.close(resolve))});

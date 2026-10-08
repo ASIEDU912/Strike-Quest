@@ -24,7 +24,14 @@
 - Run every legacy browser suite before reporting the combined core result, so an early failure cannot hide other integration problems.
 - Add bounded, synthetic-only screenshot evidence to hosted Studio logs with SHA256 and exact commit identifiers, in addition to the screenshot artifacts. Hosted checks must be rerun against these fixes.
 
+## 2026-10-08 supplemental offline regression coverage
+- Observed concurrent head `4d0071b19b862746ae9191ba5aec51c3b87a04d7` after a guarded update of an older candidate did not succeed. Preserved its service-worker fix, mobile typography, workflow and screenshot evidence changes; did not force-push or apply the superseded candidate.
+- Extended, rather than replaced, the existing 15 service-worker assertions. The full local `npm test` passed with 41 cache checks (26 additional), 30 Studio logic checks, 48 private journal backup checks and all existing Node suites. New cases check canonical online/offline keys for both shell paths and all five destinations and reject query-bearing, provider, non-shell and POST requests.
+- Added ten real-browser offline reload cases (five destinations at `/` and `/index.html`) plus a cache-unchanged assertion to `test/browser-flows.cjs`. These are new, unverified browser cases until the resulting exact-head CI completes; the original failing reload assertion is retained.
+- Local system Chromium refuses loopback navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`. No bypass was attempted. Earlier in this session the isolated inline fixture harness passed 36 Studio browser checks at 320/390/1440px, and its 390px Home screenshot was inspected. That run used an available Playwright 1.57 beta adapter and in-memory storage, not Safari, a physical iPhone, or the real offline service worker.
+- No application source, private records, credentials, live-provider quota, account configuration, production, backend, DNS or other branches were changed by this supplemental test update. Authentication and cloud sync remain unimplemented/unverified.
+
 ## Remaining review
-1. Inspect hosted tests and mobile/desktop evidence for the integrated commit, repair any regressions, and record verified results.
+1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
 2. Keep authentication and cross-device sync separate until provider selection and owner authorization; no fake login.
 3. Real-device Safari/installed-PWA verification and any production release remain separate owner review steps.
