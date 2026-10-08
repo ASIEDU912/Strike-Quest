@@ -26,7 +26,7 @@ async function screenshot(p,name,selector){
  const target=selector?p.locator(selector):p;if(selector)await target.scrollIntoViewIfNeeded();
  const opts={animations:'disabled',...(!selector?{fullPage:false}:{})};
  await target.screenshot({path:path.join(dir,name+'.png'),...opts});
- const evidence=new Set(['chromium-390-home','chromium-1440-home','chromium-390-research','chromium-390-brief','chromium-390-settings','chromium-390-news','webkit-390-home','webkit-320-brief']);
+ const evidence=new Set(['chromium-390-home','chromium-1440-home','chromium-390-research','chromium-390-brief','chromium-390-settings','chromium-390-news','webkit-390-home','webkit-320-brief','chromium-390-scenario','chromium-768-scenario','chromium-1440-scenario','webkit-320-scenario']);
  if(process.env.STUDIO_LOG_EVIDENCE==='1'&&evidence.has(name)){
   let buffer=await target.screenshot({type:'jpeg',quality:35,...opts});
   if(buffer.length>180000)buffer=await target.screenshot({type:'jpeg',quality:18,...opts});
@@ -38,7 +38,7 @@ async function screenshot(p,name,selector){
  }
 }
 (async()=>{for(const engine of (process.env.STUDIO_BROWSERS||'chromium,webkit').split(',')){browser=await pw[engine].launch({headless:true,...(engine==='chromium'&&process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
- for(const width of [390,320,1440]){const f=await fixture(width),p=f.page;await settle(p);
+ for(const width of [390,320,768,1440]){const f=await fixture(width),p=f.page;await settle(p);
  assert.equal(await p.locator('.bottom-nav [data-view]').count(),5);assert.equal(await p.locator('[data-view="home"]').getAttribute('aria-current'),'page');assert.deepEqual(f.unexpected,[]);pass(engine+'/'+width+' Home starts privately; five functional destinations');
  await screenshot(p,engine+'-'+width+'-home');
  const before=await values(p);
@@ -57,7 +57,9 @@ async function screenshot(p,name,selector){
  await p.locator('[data-view="research"]').click();const result=await p.evaluate(()=>resultSummary());assert.ok(!result.includes('Private fixture'));assert.ok(!result.includes('<img'));pass(engine+'/'+width+' public summaries exclude nickname and private reasoning');
  await p.setViewportSize({width,height:width<600?700:1050});await p.locator('#price').fill('999999.99');await p.locator('#perf').fill('1200');await p.locator('#increment').selectOption('0.5');const prior=await values(p);await p.locator('.studio-instrument [data-studio-action="targets"]').click();await settle(p);
  const bounds=await p.evaluate(()=>({top:$('targetsRow').getBoundingClientRect().top,slider:$('targetCorrection').getBoundingClientRect().bottom,nav:document.querySelector('.bottom-nav').getBoundingClientRect().top}));assert.ok(bounds.top>=0&&bounds.slider<bounds.nav,JSON.stringify({engine,width,...bounds}));assert.equal(await values(p),prior);pass(engine+'/'+width+' scenario shortcut settles large values before positioning controls above navigation');
- assert.equal(await p.locator('#targetsRow .n').evaluateAll(nodes=>nodes.every(n=>{const range=document.createRange();range.selectNodeContents(n);return n.scrollWidth<=n.clientWidth+1&&range.getClientRects().length===1})),true,engine+'/'+width+' complete decimal amounts must fit on one line');
+ const amounts=await p.locator('#targetsRow .n').evaluateAll(nodes=>nodes.map(n=>{const range=document.createRange();range.selectNodeContents(n);return {value:n.textContent,width:n.clientWidth,scrollWidth:n.scrollWidth,lines:range.getClientRects().length,font:parseFloat(getComputedStyle(n).fontSize)}}));
+ assert.ok(amounts.every(n=>n.scrollWidth<=n.width+1&&n.lines===1&&n.font>=32),engine+'/'+width+' complete decimal amounts must fit on one line at 32px or larger: '+JSON.stringify(amounts));
+ await screenshot(p,engine+'-'+width+'-scenario');
  for(const view of ['home','research','watchlist','saved','quests']){await p.locator('[data-view="'+view+'"]').click();await settle(p);assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),engine+'/'+width+' no horizontal overflow '+view);}
  assert.deepEqual(f.errors,[]);assert.deepEqual(f.unexpected,[]);pass(engine+'/'+width+' every destination fits; no page errors or network');
  await f.ctx.close();

@@ -51,6 +51,8 @@
 - Final checks and screenshot inspection must use the resulting exact commit. Prior passes are evidence for prior source; authentication, real-device testing and release authorization are separate.
 - Corrected the new single-line measurement to count rendered DOM Range line boxes. Font ink can extend beyond a tight line-height box, so comparing scroll height with line height produced false wrap failures even for short amounts. Width, 32px minimum and slider-position assertions remain intact; the rendering fix is unchanged.
 
+- Exact commit `09169bbf946d70fefc1c319c0e64a595e73aa726` passed core and journal checks, including the full one-line mobile decimal-price matrix. Its Studio stress case exposed desktop price-area overflow. Removed the desktop price indent and let scenario cards wrap at a readable minimum width, while preserving the complete-number, 32px minimum, privacy and navigation assertions. Added 768px coverage in both engines and bounded scenario screenshots for final visual inspection; this refinement still requires exact-commit hosted verification.
+
 ## Review requirements
 1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
 2. Configure the approved Supabase Free development-only project after the owner completes the connection gate below. No fake login; authentication and sync remain separate verification gates.
