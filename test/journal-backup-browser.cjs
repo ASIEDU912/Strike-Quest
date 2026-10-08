@@ -75,7 +75,7 @@ async function roundTrip(width,engine){
 }
 async function failures(engine){
  const f=await fixture(320),{page}=f;await createRecords(page);const before=await raw(page),backup=await page.evaluate(()=>sqCreateCheckinBackup());
- for(const bad of ['{broken',JSON.stringify({...backup,version:2}),JSON.stringify({...backup,entries:[{...backup.entries[0],id:'different',reason:'short'}]}),'x'.repeat(2*1024*1024+1)]){
+ for(const bad of ['{broken',JSON.stringify({...backup,version:2}),JSON.stringify({...backup,entries:[{...backup.entries[0],id:'different',reason:'short'}]}),'x'.repeat(8*1024*1024+1)]){
   await upload(page,Buffer.from(bad));assert.equal(await page.locator('#checkinImportPreview').isVisible(),false);assert.equal(await raw(page),before);
  }
  const conflict={...backup,entries:[{...backup.entries[0],reason:'A conflicting reflection using an existing ID.'}]};await upload(page,Buffer.from(JSON.stringify(conflict)));assert.equal(await page.locator('#confirmCheckinImportBtn').isDisabled(),true);assert.match(await page.locator('#checkinBackupStatus').textContent(),/conflict|different|overwritten/i);assert.equal(await raw(page),before);

@@ -22,7 +22,7 @@ Export uses a local Blob download. Import reads the user-selected file locally. 
 
 ## Preservation and validation
 
-- A separate version-1 backup envelope names its format, journal version, app version and export time. Only supported fields and versions are accepted. Import validates the entire file before offering a merge; it never partly accepts a malformed file. Limits are 2 MB per file and 100 entries.
+- A separate version-1 backup envelope names its format, journal version, app version and export time. Only supported fields and versions are accepted. Import validates the entire file before offering a merge; it never partly accepts a malformed file. Limits are 8 MB per file and 100 entries. This accommodates a full journal with maximum-length Unicode notes.
 - Entries retain their original IDs, original-record IDs, creation times, copied notes, snapshots and provenance. Missing legacy snapshot values remain null/unknown. Snapshot timestamps are retained as recorded, including an unrecognized legacy date that the journal displays as unknown. The original saved idea does not need to exist on the receiving device.
 - Same-ID, identical-content entries are skipped, even if JSON properties are reordered. Exact repeated entries within one file are also skipped. A same-ID record with different content blocks the entire import. Both backup files can be retained for review; no conflict silently wins.
 - A merge appends only new entries. Existing journal records are kept as stored; saved analyses, API settings, market caches, watchlists, badges and XP are untouched. Capacity overflow blocks rather than deleting older entries.

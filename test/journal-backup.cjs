@@ -64,6 +64,15 @@ async function reject(b){
   await p.evaluate(text=>sqStageCheckinImport(text),JSON.stringify(full));assert.equal(await p.evaluate(()=>sqConfirmCheckinImport()),true);assert.equal((await backup(p)).entries.length,100);const before=await raw(p);
   assert.equal(await p.evaluate(text=>sqStageCheckinImport(text),JSON.stringify(b)),false);assert.equal(await p.evaluate(()=>sqConfirmCheckinImport()),false);assert.equal(await raw(p),before);
  });
+ await test('a full journal with maximum-length Unicode notes can be backed up and restored whole',async()=>{
+  const full=plain(b),entry=full.entries[0],text='中';entry.reason=text.repeat(2000);entry.observation=text.repeat(1000);
+  for(const snapshot of [entry.original,entry.current]){snapshot.reason=text.repeat(2000);snapshot.sourceContext={source:text.repeat(160),session:null,fetchedAt:null,stale:false,synthetic:false,symbol:'AAPL',baselineOffset:null,issue:text.repeat(1000),coverage:null};}
+  full.entries=Array.from({length:100},(_,i)=>({...plain(entry),id:'unicode-'+i}));
+  const bytes=Buffer.byteLength(JSON.stringify(full,null,2));assert.ok(bytes>2*1024*1024,'Valid existing journals can exceed a 2 MB cap');
+  const p=create(html);assert.ok(bytes<=await p.evaluate(()=>SQ_CHECKIN_BACKUP_LIMIT),'The portable file must fit both export and import byte caps');
+  await p.evaluate(async({full,bytes})=>sqChooseCheckinImport({target:{files:[{size:bytes,name:'Unicode-journal.json',text:async()=>JSON.stringify(full)}]}}),{full,bytes});
+  assert.equal(await p.evaluate(()=>!!sqCheckinImport),true);assert.equal(await p.evaluate(()=>sqConfirmCheckinImport()),true);assert.deepEqual((await backup(p)).entries,full.entries);
+ });
  await test('stale preview detects intervening save, clear or corrupt storage before any write',async()=>{
   for(const replacement of [null,'{broken',JSON.stringify({version:1,entries:[{...b.entries[0],id:'another-tab'}]})]){
    const p=await fixture();await p.evaluate(text=>sqStageCheckinImport(text),JSON.stringify(b));
@@ -124,6 +133,6 @@ async function reject(b){
   ['invalid history date',x=>x.entries[0].original.researchContext.baselineDate='2026-02-30']
  ];
  for(const [name,change] of changes)await test('reject '+name+' atomically',async()=>{const bad=plain(b);change(bad);await reject(bad);});
- for(const text of ['{broken','null','[]','{}','x'.repeat(2*1024*1024+1),JSON.stringify(b).replace('"price":100','"price":1e999')])await test('reject malformed, oversized or nonfinite JSON',()=>reject(text));
+ for(const text of ['{broken','null','[]','{}','x'.repeat(8*1024*1024+1),JSON.stringify(b).replace('"price":100','"price":1e999')])await test('reject malformed, oversized or nonfinite JSON',()=>reject(text));
  console.log(count+' private journal backup checks passed');
 })().catch(error=>{console.error(error);process.exitCode=1;});

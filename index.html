@@ -1762,7 +1762,7 @@ function sqSaveCheckin(){
  $('checkinJournalCard').setAttribute('tabindex','-1');$('checkinJournalCard').scrollIntoView({block:'start',behavior:'auto'});$('checkinJournalCard').focus({preventScroll:true});return true;
 }
 // v10.1.6: user-controlled private files. Never use fetch, app sharing or a NAS endpoint here.
-const SQ_CHECKIN_BACKUP_FORMAT='strikequests-research-checkin-backup',SQ_CHECKIN_BACKUP_LIMIT=2*1024*1024;
+const SQ_CHECKIN_BACKUP_FORMAT='strikequests-research-checkin-backup',SQ_CHECKIN_BACKUP_LIMIT=8*1024*1024;
 let sqCheckinImport=null,sqCheckinImportGeneration=0;
 function sqBackupError(message){throw new Error(message)}
 function sqBackupObject(value,keys,strict=true){
@@ -1814,7 +1814,7 @@ function sqCreateCheckinBackup(){
  sqBackupSecretGuard(backup);return backup;
 }
 function sqParseCheckinBackup(text){
- if(typeof text!=='string'||!text.length||text.length>SQ_CHECKIN_BACKUP_LIMIT)sqBackupError('Choose a journal JSON file no larger than 2 MB.');
+ if(typeof text!=='string'||!text.length||text.length>SQ_CHECKIN_BACKUP_LIMIT)sqBackupError('Choose a journal JSON file no larger than 8 MB.');
  let value;try{value=JSON.parse(text)}catch{sqBackupError('The file is not valid JSON. No entries were changed.')}
  const b=sqBackupObject(value,['format','version','journalVersion','appVersion','exportedAt','entries']);
  if(b.format!==SQ_CHECKIN_BACKUP_FORMAT||b.version!==1||b.journalVersion!==1||!sqBackupText(b.appVersion,40)||!sqBackupTimestamp(b.exportedAt)||!Array.isArray(b.entries)||b.entries.length>100)sqBackupError('This is not a supported StrikeQuests journal backup.');
@@ -1856,7 +1856,7 @@ function sqExportCheckins(){
  let url,link;
  try{
   const backup=sqCreateCheckinBackup(),blob=new Blob([JSON.stringify(backup,null,2)+'\n'],{type:'application/json'});
-  if(blob.size>SQ_CHECKIN_BACKUP_LIMIT)sqBackupError('This backup exceeds 2 MB. Existing data is unchanged.');
+  if(blob.size>SQ_CHECKIN_BACKUP_LIMIT)sqBackupError('This backup exceeds 8 MB. Existing data is unchanged.');
   url=URL.createObjectURL(blob);link=document.createElement('a');link.href=url;
   link.download='StrikeQuests-Journal-'+backup.exportedAt.replace(/[:.]/g,'-')+'.json';
   document.body.appendChild(link);link.click();
@@ -1886,7 +1886,7 @@ function sqStageCheckinImport(text,name='Journal backup'){
 async function sqChooseCheckinImport(event){
  const file=event.target.files?.[0];sqCancelCheckinImport(false);const generation=sqCheckinImportGeneration;
  if(!file)return;
- if(file.size>SQ_CHECKIN_BACKUP_LIMIT){sqBackupStatus('Choose a journal JSON file no larger than 2 MB.');return;}
+ if(file.size>SQ_CHECKIN_BACKUP_LIMIT){sqBackupStatus('Choose a journal JSON file no larger than 8 MB.');return;}
  sqBackupStatus('Reading the file on this device…');
  try{const text=await file.text();if(generation!==sqCheckinImportGeneration)return;sqStageCheckinImport(text,file.name);}
  catch{if(generation===sqCheckinImportGeneration)sqBackupStatus('The file could not be read. Your journal is unchanged. Choose it again to retry.');}
