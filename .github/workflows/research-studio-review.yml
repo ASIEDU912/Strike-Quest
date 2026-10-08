@@ -64,12 +64,19 @@ jobs:
         run: npm test
       - name: Run existing browser regressions
         if: matrix.suite == 'core'
-        run: npm run test:browser
+        run: |
+          result=0
+          for suite in browser-regressions browser-flows next-build research-guidance-browser companion-roles-browser; do
+            node "test/$suite.cjs" || result=1
+          done
+          exit "$result"
       - name: Verify private Research Check-in and backup workflows
         if: matrix.suite == 'journal'
         run: npm run test:checkin && npm run test:backup
       - name: Verify Research Studio in Chromium and WebKit
         if: matrix.suite == 'studio'
+        env:
+          STUDIO_LOG_EVIDENCE: '1'
         run: npm run test:studio
       - name: Verify accessible Lumi interactions
         if: matrix.suite == 'tap'

@@ -25,6 +25,11 @@ function worker({ok=true,offline=false}={}){
   let w=worker();assert.equal((await w.request('https://strikequests.com/index.html')).intercepted,true);assert.equal(w.writes.length,1);count++;
   w=worker({ok:false});await w.request('https://strikequests.com/index.html');assert.equal(w.writes.length,0);count++;
   w=worker({offline:true});assert.equal((await w.request('https://strikequests.com/index.html')).result.cached,true);count++;
+  for(const url of ['https://strikequests.com/#research','https://strikequests.com/index.html#saved','https://strikequests.com/studio.js','https://strikequests.com/studio.css']){
+    w=worker({offline:true});const r=await w.request(url);assert.equal(r.intercepted,true);assert.equal(r.result.cached,true);count++;
+  }
+  w=worker();await w.request('https://strikequests.com/index.html#research');assert.equal(w.writes[0][0],'https://strikequests.com/index.html');count++;
+  w=worker();assert.equal((await w.request('https://strikequests.com/index.html?apikey=TEST_ONLY#research')).intercepted,false);assert.equal(w.writes.length,0);count++;
   w=worker();assert.equal((await w.request('https://strikequests.com/index.html','POST')).intercepted,false);count++;
   console.log(`${count} service-worker cache checks passed`);
 })().catch(e=>{console.error(e);process.exitCode=1});

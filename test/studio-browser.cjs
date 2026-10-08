@@ -1,5 +1,5 @@
 'use strict';
-const pw=require('playwright'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const pw=require('playwright'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..'),base='https://strikequests.studio.fixture.test',dir=path.resolve(process.env.EVIDENCE_DIR||path.join(root,'test-results/studio'));fs.mkdirSync(dir,{recursive:true});
 let browser,count=0;const pass=s=>{count++;console.log('PASS Studio browser:',s)};
 const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
@@ -22,7 +22,21 @@ async function fixture(width){const ctx=await browser.newContext({viewport:{widt
  await page.waitForFunction(()=>!!window.StrikeStudio&&document.getElementById('viewHome').classList.contains('active'));return {page,ctx,unexpected,errors};}
 async function settle(p){await p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
 async function values(p){return p.evaluate(()=>JSON.stringify({mode:state.mode,ticker:$('ticker').value,period:state.period,correction:state.correction,price:$('price').value,perf:$('perf').value,divisor:$('divisor').value,reason:$('researchReason').value,badges:sqBadges(),history:sqHistoryRecords(),journal:localStorage.getItem('sq_research_checkins_v1')}));}
-async function screenshot(p,name,selector){const target=selector?p.locator(selector):p;if(selector)await target.scrollIntoViewIfNeeded();await target.screenshot({path:path.join(dir,name+'.png'),animations:'disabled',...(!selector?{fullPage:false}:{})});}
+async function screenshot(p,name,selector){
+ const target=selector?p.locator(selector):p;if(selector)await target.scrollIntoViewIfNeeded();
+ const opts={animations:'disabled',...(!selector?{fullPage:false}:{})};
+ await target.screenshot({path:path.join(dir,name+'.png'),...opts});
+ const evidence=new Set(['chromium-390-home','chromium-1440-home','chromium-390-research','chromium-390-brief','chromium-390-settings','chromium-390-news','webkit-390-home','webkit-320-brief']);
+ if(process.env.STUDIO_LOG_EVIDENCE==='1'&&evidence.has(name)){
+  let buffer=await target.screenshot({type:'jpeg',quality:35,...opts});
+  if(buffer.length>180000)buffer=await target.screenshot({type:'jpeg',quality:18,...opts});
+  assert.ok(buffer.length<=180000,'Bounded synthetic screenshot evidence');
+  const info={name:name+'.jpg',bytes:buffer.length,sha256:crypto.createHash('sha256').update(buffer).digest('hex'),commit:process.env.REVIEW_HEAD_SHA||'local-review'};
+  console.log('SQ_IMAGE_BEGIN '+JSON.stringify(info));
+  const data=buffer.toString('base64');for(let i=0;i<data.length;i+=160)console.log('SQ_IMAGE_DATA '+data.slice(i,i+160));
+  console.log('SQ_IMAGE_END '+info.name);
+ }
+}
 (async()=>{for(const engine of (process.env.STUDIO_BROWSERS||'chromium,webkit').split(',')){browser=await pw[engine].launch({headless:true,...(engine==='chromium'&&process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
  for(const width of [390,320,1440]){const f=await fixture(width),p=f.page;await settle(p);
  assert.equal(await p.locator('.bottom-nav [data-view]').count(),5);assert.equal(await p.locator('[data-view="home"]').getAttribute('aria-current'),'page');assert.deepEqual(f.unexpected,[]);pass(engine+'/'+width+' Home starts privately; five functional destinations');

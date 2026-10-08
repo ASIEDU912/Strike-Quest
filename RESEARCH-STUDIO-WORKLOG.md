@@ -17,6 +17,13 @@
 - Local browser installation failed; exact-commit hosted browser validation and screenshot inspection are still required before claiming review readiness.
 - User instruction remains: continue on `feat/research-studio`, without merging or deploying. PR #8, main, production, Worker and DNS remain unchanged.
 
+## Hosted integration fixes
+- Initial integrated commit `1ab9972f33b5851cf704eb4b625b6a7b74d82969` passed hosted Node checks and all 18 Research Check-in plus 14 journal-backup browser workflows in Chromium/WebKit. The real offline reload check caught anchor-bearing navigation missing the app-shell cache allowlist.
+- Normalize only URL fragments when matching and writing shell cache entries. Query strings, credential-bearing requests and provider URLs remain excluded. All 15 service-worker checks pass, including anchor navigation and both Studio assets.
+- Preserve full-width mobile scenario prices so large values retain the existing 32px minimum and do not compete with labels for horizontal space.
+- Run every legacy browser suite before reporting the combined core result, so an early failure cannot hide other integration problems.
+- Add bounded, synthetic-only screenshot evidence to hosted Studio logs with SHA256 and exact commit identifiers, in addition to the screenshot artifacts. Hosted checks must be rerun against these fixes.
+
 ## Remaining review
 1. Inspect hosted tests and mobile/desktop evidence for the integrated commit, repair any regressions, and record verified results.
 2. Keep authentication and cross-device sync separate until provider selection and owner authorization; no fake login.
