@@ -35,8 +35,14 @@
 - Preserved the concurrent supplemental offline-coverage commit `f9c29bb349dd710da91654630180830bd96585c3` and based this change on it without overwriting its tests or work log.
 - Hosted commit `4d0071b19b862746ae9191ba5aec51c3b87a04d7` passed all 72 Studio checks, 18 Research Check-in workflows and 14 journal-backup workflows in Chromium/WebKit. The real offline reload passed after fragment normalization. All 34 research-guidance and 18 companion-placement browser checks also passed.
 - Decoded eight bounded Studio screenshots and verified their byte counts, SHA256 hashes and exact commit metadata. Inspected the 390px Home, desktop Home and 320px WebKit Research Brief; navigation and readable evidence cards fit the intended design.
-- A 320px large-price scenario assertion exposed late Studio reflow after a scroll request. Navigation now finishes pending Studio cards before positioning or focusing a destination. The large-price fixture waits for rendered layout before measuring; its size, overflow and above-navigation assertions are unchanged.
+- A 320px large-price scenario assertion highlighted remaining rendering and width requirements. Navigation now finishes pending Studio cards before positioning or focusing a destination. The large-price fixture waits for rendered layout before measuring; its size, overflow and above-navigation assertions are unchanged.
 - Added a real scenario-shortcut assertion at every Studio engine/viewport combination, checking unchanged research values and slider visibility after rendering. The resulting 78 Studio browser cases require hosted validation on this commit. Cancelled older motion/tap jobs do not count as complete validation.
+
+## Decimal-price mobile refinement
+- Commit `c16b41b25c70756a0d7605d85a17a252c62fd8e6` passed all 78 Studio cases and the 41 cache, 21 UI/PWA, 34 guidance, 18 companion, 18 check-in and 14 backup browser workflows. Its motion job completed successfully. The stricter existing decimal-price layout check still failed at 320px after rendering settled; that failure remains a release gate.
+- Refined mobile scenario padding, heading margin, number line height and responsive font sizing while retaining the 32px minimum, full-width values and existing assertions. Expanded the Studio shortcut case to use a large reference, a 1200 change and a 0.5 increment so decimal precision is exercised in both engines.
+- Added a bounded, commit-identified scenario screenshot and geometry diagnostics to the existing core workflow. These use only synthetic Manual-mode test inputs; no real journal, provider or account data is captured.
+- Hosted checks must verify this refinement before review readiness is claimed. No merge, deployment or account/backend configuration is authorized by this work.
 
 ## Remaining review
 1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
