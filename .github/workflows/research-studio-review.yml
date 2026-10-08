@@ -1,0 +1,28 @@
+name: Research Studio review
+on:
+  push:
+    branches: [feat/research-studio]
+permissions:
+  contents: read
+concurrency:
+  group: research-studio-review
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Package exact public source for isolated review
+        run: |
+          git rev-parse HEAD > REVIEW-COMMIT.txt
+          git archive --format=zip HEAD -o source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: research-studio-source
+          path: |
+            source.zip
+            REVIEW-COMMIT.txt
+          retention-days: 7
