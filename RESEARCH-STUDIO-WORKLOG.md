@@ -46,5 +46,15 @@
 
 ## Remaining review
 1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
-2. Keep authentication and cross-device sync separate until provider selection and owner authorization; no fake login.
+2. Configure the approved Supabase Free development-only project after the owner completes the connection gate below. No fake login; authentication and sync remain separate verification gates.
 3. Real-device Safari/installed-PWA verification and any production release remain separate owner review steps.
+
+## 2026-10-08 owner approval: Supabase development only
+- The owner explicitly approved Supabase Free for a separate development-only login and sync project. This resolves provider selection and development-project authorization in the earlier entries; do not ask for that approval again.
+- No paid services, billing upgrades, production changes or uploads/merges of existing guest records are authorized. The existing public market-data backend, Worker, DNS, CNAME and main branch remain out of scope.
+- Discovery returned Supabase available but not installed/connected. Presented its connection prompt for the owner to complete secure sign-in. No Supabase organization/project was inspected or created, no authentication settings or database policies were applied, and no user records were uploaded. Connection is the current owner-action blocker; approval is not connection or completed setup.
+- Once connected, inspect current organizations, subscription plans and projects before creating anything. Use a verified Free organization with available free-project capacity. Supabase billing is organization-based, so do not create a supposedly free project in a paid organization. Do not pause/delete unrelated projects or upgrade billing to make room. Proposed project name: `strikequests-auth-dev` (not created).
+- Account scope remains watchlists, saved analyses, appearance preferences and research milestones. Keep Continue as guest prominent, keep guest/account data isolated, and require previewed consent before guest migration. Do not silently overwrite or upload guest records.
+- Private Research Check-in reflections must remain device-local, excluded from account sync and public sharing, with private export/import preserved. Never request passwords, API keys, service-role credentials or recovery tokens in chat or put them in source, logs, screenshots, exports or shares.
+- Required verification after implementation: actual provider sign-in, sign-out, recovery, denied cross-user reads/writes, guest isolation and migration cancellation/duplicates/conflicts. Sync requires separate persistence and two-device tests. Use labeled synthetic records only; guest/design readiness is not an authentication-enabled release.
+- A stale work-log update was rejected; re-read and preserved the concurrent decimal-price refinement before appending this approval. This is a documentation-only update: application code and tests are unchanged, no new tests were executed in this approval session, and no completion claim is made. The commit requests skipped CI rather than replacing the substantive validation run.
