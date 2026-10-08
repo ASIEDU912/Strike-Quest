@@ -15,10 +15,10 @@ This review builds on the separate `feat/private-journal-backup` review (PR #8, 
 - Transparent guest-only account status. No fake working sign-in, no cloud sync, and no automatic journal upload.
 - All pre-existing private Research Check-in and pending private backup/restore workflows remain in this build.
 
-## What remains unfinished
+## Verification and release requirements
 
-- Exact-commit GitHub-hosted Chromium/WebKit verification is required. The branch-only `Research Studio review` workflow now runs core, private journal, Studio, tap and motion checks and saves synthetic screenshots together with their commit identifier. No job publishes the app.
-- Real login and cloud sync. Authentication and account storage providers need explicit owner approval and configuration, followed by access isolation, sign-in/out/recovery and consented guest data migration tests. Private Research Check-in must remain device-local.
+- Exact-commit GitHub-hosted Chromium/WebKit verification is required for UI changes. The branch-only `Research Studio review` workflow runs core, private journal, Studio, tap and motion checks and saves synthetic screenshots together with their commit identifier. Results belong to their tested commit; consult its Actions run and the work log. No job publishes the app.
+- Real login and cloud sync remain unconfigured. The owner approved Supabase Free for a separate development-only project; its secure connection and verified Free organization/capacity are still pending. No paid services, production changes or uploads of existing guest records are authorized. Account work requires access isolation, sign-in/out/recovery and previewed, consented migration tests. Private Research Check-in remains device-local and excluded from account sync.
 - Owner preview/approval followed by a separate, explicitly authorized production merge and deployment.
 
 ## Local test evidence

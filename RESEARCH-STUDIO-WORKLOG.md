@@ -39,12 +39,18 @@
 - Added a real scenario-shortcut assertion at every Studio engine/viewport combination, checking unchanged research values and slider visibility after rendering. The resulting 78 Studio browser cases require hosted validation on this commit. Cancelled older motion/tap jobs do not count as complete validation.
 
 ## Decimal-price mobile refinement
-- Commit `c16b41b25c70756a0d7605d85a17a252c62fd8e6` passed all 78 Studio cases and the 41 cache, 21 UI/PWA, 34 guidance, 18 companion, 18 check-in and 14 backup browser workflows. Its motion job completed successfully. The stricter existing decimal-price layout check still failed at 320px after rendering settled; that failure remains a release gate.
+- Commit `c16b41b25c70756a0d7605d85a17a252c62fd8e6` passed all 78 Studio browser cases, 41 Node cache checks, and the 21 UI/PWA, 34 guidance, 18 companion, 18 check-in and 14 backup browser workflows. Its motion and tap jobs completed successfully. The stricter existing decimal-price layout check still failed at 320px after rendering settled.
 - Refined mobile scenario padding, heading margin, number line height and responsive font sizing while retaining the 32px minimum, full-width values and existing assertions. Expanded the Studio shortcut case to use a large reference, a 1200 change and a 0.5 increment so decimal precision is exercised in both engines.
 - Added a bounded, commit-identified scenario screenshot and geometry diagnostics to the existing core workflow. These use only synthetic Manual-mode test inputs; no real journal, provider or account data is captured.
 - Hosted checks must verify this refinement before review readiness is claimed. No merge, deployment or account/backend configuration is authorized by this work.
 
-## Remaining review
+## Complete-amount visual refinement
+- All core regressions passed at `f1bec56b3e7bf7629e01d19a9977e608a3b90d2c`, including all 33 next-build cases, the decimal-price visibility assertion, offline restoration and retained source/privacy behavior. The 78 Studio cases and all journal workflows passed again.
+- Visual inspection of the commit-identified 320px scenario screenshot caught a trailing decimal digit wrapping below the high scenario. Preserved the 32px minimum while widening the price area and requiring complete amounts on one line.
+- Both the existing 320/360/390px value matrix and the Chromium/WebKit Studio precision case now check wrapping as well as overflow, readability and control visibility. No earlier behavior/privacy assertion was weakened.
+- Final checks and screenshot inspection must use the resulting exact commit. Prior passes are evidence for prior source; authentication, real-device testing and release authorization are separate.
+
+## Review requirements
 1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
 2. Configure the approved Supabase Free development-only project after the owner completes the connection gate below. No fake login; authentication and sync remain separate verification gates.
 3. Real-device Safari/installed-PWA verification and any production release remain separate owner review steps.
