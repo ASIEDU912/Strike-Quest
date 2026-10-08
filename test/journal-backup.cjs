@@ -92,7 +92,7 @@ async function reject(b){
  });
  await test('configured credentials or credential-shaped strings pasted into reflections block export and import',async()=>{
   const p=await fixture();await p.evaluate(()=>{localStorage.setItem('sq_alpha_key','FIXTURE_ALPHA_SECRET_927');const j=JSON.parse(localStorage.getItem('sq_research_checkins_v1'));j.entries[0].reason='Private note includes FIXTURE_ALPHA_SECRET_927';localStorage.setItem('sq_research_checkins_v1',JSON.stringify(j));});await assert.rejects(p.evaluate(()=>sqCreateCheckinBackup()));
-  const bad=plain(b);bad.entries[0].reason='Private note with api_key=FIXTURE_SECRET_927';await reject(bad);
+  for(const reason of ['Private note with api_key=FIXTURE_SECRET_927','Private note with '+JSON.stringify({api_key:'FIXTURE_SECRET_927'})]){const bad=plain(b);bad.entries[0].reason=reason;await reject(bad);}
  });
  await test('Cancel and navigation discard import state without changing check-in drafts or journal',async()=>{
   const p=await fixture(),before=await raw(p);await p.evaluate(text=>sqStageCheckinImport(text),JSON.stringify(b));await p.evaluate(()=>sqCancelCheckinImport());assert.equal(await p.evaluate(()=>sqConfirmCheckinImport()),false);assert.equal(await raw(p),before);

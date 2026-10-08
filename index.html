@@ -1805,7 +1805,7 @@ function sqBackupEntry(value,strict=true){
 function sqBackupSecretGuard(value){
  const text=JSON.stringify(value);
  const secrets=[localStorage.getItem('sq_alpha_key'),localStorage.getItem('splab_barchart_key'),$('alphaKey')?.value,$('apiKey')?.value].filter(x=>typeof x==='string'&&x.trim());
- if(secrets.some(key=>[key,encodeURIComponent(key),JSON.stringify(key).slice(1,-1)].some(token=>text.includes(token)))||/(?:api[_-]?key|authorization|access[_-]?token|client[_-]?secret)\s*[=:]\s*["']?[a-z0-9%+./_-]{6,}/i.test(text))sqBackupError('Possible API credentials were found in journal text. Remove them from the affected notes before using backup. Existing data is unchanged.');
+ if(secrets.some(key=>[key,encodeURIComponent(key),JSON.stringify(key).slice(1,-1)].some(token=>text.includes(token)))||/(?:api[_-]?key|authorization|access[_-]?token|client[_-]?secret)[\s"'\\]*[=:][\s"'\\]*[a-z0-9%+./_-]{6,}/i.test(text))sqBackupError('Possible API credentials were found in journal text. Remove them from the affected notes before using backup. Existing data is unchanged.');
 }
 function sqCreateCheckinBackup(){
  const journal=sqReadCheckins();
