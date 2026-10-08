@@ -33,6 +33,13 @@ async function reject(b){
   const x=await p.evaluate(text=>{sqStageCheckinImport(text);return {plan:sqCheckinImport.plan,applied:sqConfirmCheckinImport()};},JSON.stringify(own));
   assert.equal(x.plan.duplicates,1);assert.equal(x.plan.additions.length,0);assert.equal(x.applied,false);assert.equal(await raw(p),before);
  });
+ await test('complete EOD provenance and missing legacy values survive restoration without normalization',async()=>{
+  const file=plain(b),entry=file.entries[0];
+  entry.original.period=null;entry.original.divisor=null;entry.original.at='Legacy date not recorded';entry.original.inputMode='auto_eod';
+  entry.original.sourceContext={source:'Synthetic EOD fixture provider',session:'2026-10-06',fetchedAt:1791288000000,stale:true,synthetic:false,symbol:'AAPL',baselineOffset:12,issue:'Fixture coverage is incomplete.',coverage:{fullRange:false,monthlyGaps:2,weeklyGaps:3,weeklyPoints:42,monthlyRows:22}};
+  entry.original.researchContext={baselineDate:'2025-10-01',baselineClose:80,trend1m:'Up',trend3m:'Flat',low52:75,high52:125,sampleMonths:22};
+  const p=create(html);await p.evaluate(text=>sqStageCheckinImport(text),JSON.stringify(file));assert.equal(await p.evaluate(()=>sqConfirmCheckinImport()),true);assert.deepEqual((await backup(p)).entries,file.entries);
+ });
  await test('merge appends new entries while preserving exact existing records and unrelated storage',async()=>{
   const p=await fixture(),before=JSON.parse(await raw(p)).entries,state=await protectedState(p);
   await p.evaluate(text=>sqStageCheckinImport(text),JSON.stringify(b));assert.equal(await p.evaluate(()=>sqConfirmCheckinImport()),true);
@@ -97,11 +104,21 @@ async function reject(b){
   const x=await p.evaluate(async()=>{window.copies=[];navigator.clipboard={writeText:async text=>copies.push(text)};navigator.share=async data=>copies.push(data.text);await copyResult();await shareResult();return {texts:[resultSummary(),...copies],calls:networkCalls};});
   assert.equal(x.calls,0);for(const text of x.texts)for(const marker of ['ORIGINAL_PRIVATE','JOURNAL_PRIVATE','OBSERVATION_PRIVATE'])assert.ok(!text.includes(marker));
  });
+ await test('queued UI writes cannot save a replacement draft or import a superseding preview',async()=>{
+  const p=await fixture(),before=await raw(p);
+  await p.evaluate(()=>{
+   window.waiters=[];navigator.locks={request:(name,operation)=>new Promise(resolve=>waiters.push(()=>resolve(operation())))};
+   sqStartCheckin(sqHistoryRecords()[0].id);$('checkinReason').value='The first queued private reflection.';$('checkinThinking').value='held';$('checkinEvidence').value='source';sqQueueCheckinSave();
+   sqStartCheckin(sqHistoryRecords()[0].id);$('checkinReason').value='A replacement draft must wait for its own Save.';$('checkinThinking').value='held';$('checkinEvidence').value='source';waiters.shift()();
+  });assert.equal(await raw(p),before);
+  await p.evaluate(()=>{sqQueueCheckinSave();$('checkinReason').value='A changed reflection also needs another explicit save.';waiters.shift()();});assert.equal(await raw(p),before);
+  await p.evaluate(text=>{sqStageCheckinImport(text);sqQueueCheckinImport();sqStageCheckinImport(text);waiters.shift()();},JSON.stringify(b));assert.equal(await raw(p),before);assert.equal(await p.evaluate(()=>!!sqCheckinImport),true);
+ });
  const changes=[
   ['wrong format',x=>x.format='another-app'],['future version',x=>x.version=2],['wrong journal version',x=>x.journalVersion=2],['invalid export date',x=>x.exportedAt='2026-02-30T00:00:00Z'],
   ['unknown envelope field',x=>x.apiKey='fixture'],['entries object',x=>x.entries={}],['more than 100',x=>x.entries=Array(101).fill(x.entries[0])],['null entry',x=>x.entries=[null]],
   ['empty ID',x=>x.entries[0].id=''],['invalid identity type',x=>x.entries[0].originalId={}],['impossible date',x=>x.entries[0].createdAt='2026-02-30T00:00:00Z'],['invalid enum',x=>x.entries[0].thinking='profit'],
-  ['short note',x=>x.entries[0].reason='short'],['oversized note',x=>x.entries[0].reason='x'.repeat(2001)],['invalid observation',x=>x.entries[0].observation='short'],['unknown entry field',x=>x.entries[0].apiKey='fixture'],
+  ['short note',x=>x.entries[0].reason='short'],['oversized note',x=>x.entries[0].reason='x'.repeat(2001)],['invalid observation',x=>x.entries[0].observation='short'],['unknown entry field',x=>x.entries[0].apiKey='fixture'],['invalid clock time',x=>x.entries[0].createdAt='2026-10-08T24:00:00Z'],
   ['unknown nested field',x=>x.entries[0].current.apiKey='fixture'],['mismatched ticker',x=>x.entries[0].current.ticker='MSFT'],['missing provenance field',x=>delete x.entries[0].original.at],['numeric string',x=>x.entries[0].current.price='150'],
   ['invalid horizon',x=>x.entries[0].original.period='__proto__'],['source metadata array',x=>x.entries[0].original.sourceContext=[]],['bad source instrument',x=>x.entries[0].original.sourceContext={source:'Fixture',session:null,fetchedAt:null,stale:false,synthetic:false,symbol:'MSFT',baselineOffset:null,issue:null,coverage:null}],
   ['invalid history date',x=>x.entries[0].original.researchContext.baselineDate='2026-02-30']

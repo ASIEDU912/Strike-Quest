@@ -7,6 +7,7 @@ const evidence=path.resolve(process.env.EVIDENCE_DIR||path.join(root,'test-resul
 let browser,count=0;
 const reports=[];
 function pass(name){count++;reports.push(name);console.log('SQ_BACKUP_PASS '+name);}
+async function settleJournal(page){await page.evaluate(async()=>{if(navigator.locks?.request)await navigator.locks.request('strikequests-checkin-journal',()=>{});});}
 async function fixture(width,seed={}){
  const context=await browser.newContext({viewport:{width,height:900},hasTouch:width<500,isMobile:width<500,serviceWorkers:'block',acceptDownloads:true}),errors=[],unexpected=[];
  await context.addInitScript(seed=>{
@@ -62,7 +63,7 @@ async function roundTrip(width,engine){
  assert.equal(await raw(dest),initial);assert.match(await dest.locator('#checkinImportSummary').textContent(),/2 new.*0 duplicate.*3\/100/);
  assert.equal(await dest.locator('label[for="importCheckinsFile"]').count(),1);assert.equal(await dest.locator('#checkinBackupStatus').getAttribute('aria-live'),'polite');
  await layout(dest);await dest.locator('#checkinImportPreview').screenshot({path:path.join(evidence,`journal-backup-preview-${engine}-${width}.png`),animations:'disabled'});
- await dest.locator('#confirmCheckinImportBtn').focus();await dest.keyboard.press('Enter');
+ await dest.locator('#confirmCheckinImportBtn').focus();await dest.keyboard.press('Enter');await settleJournal(dest);
  const restored=JSON.parse(await raw(dest)).entries;assert.deepEqual(restored[0],own);assert.deepEqual(restored.slice(1),backup.entries);assert.equal(await protectedState(dest),state);
  assert.equal(await dest.locator('#checkinJournal img').count(),0);assert.equal(await dest.evaluate(()=>window.__injection),undefined);
  const shared=await dest.evaluate(async()=>{window.copies=[];Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>copies.push(text)}});Object.defineProperty(navigator,'share',{configurable:true,value:async data=>copies.push(data.text)});await copyResult();await shareResult();return [resultSummary(),...copies];});
@@ -80,10 +81,10 @@ async function failures(engine){
  const conflict={...backup,entries:[{...backup.entries[0],reason:'A conflicting reflection using an existing ID.'}]};await upload(page,Buffer.from(JSON.stringify(conflict)));assert.equal(await page.locator('#confirmCheckinImportBtn').isDisabled(),true);assert.match(await page.locator('#checkinBackupStatus').textContent(),/conflict|different|overwritten/i);assert.equal(await raw(page),before);
  const newFile=Buffer.from(JSON.stringify({...backup,entries:[{...backup.entries[0],id:'new-entry'}]}));await upload(page,newFile);
  await page.evaluate(()=>{const j=JSON.parse(localStorage.getItem('sq_research_checkins_v1'));j.entries.push({...j.entries[0],id:'intervening-entry'});localStorage.setItem('sq_research_checkins_v1',JSON.stringify(j));});const changed=await raw(page);
- await page.locator('#confirmCheckinImportBtn').click();assert.equal(await raw(page),changed);assert.match(await page.locator('#checkinBackupStatus').textContent(),/changed since.*preview/i);
+ await page.locator('#confirmCheckinImportBtn').click();await settleJournal(page);assert.equal(await raw(page),changed);assert.match(await page.locator('#checkinBackupStatus').textContent(),/changed since.*preview/i);
  await upload(page,newFile);await page.evaluate(()=>{window.fixtureWrite=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='sq_research_checkins_v1')throw new DOMException('Fixture full','QuotaExceededError');return fixtureWrite.call(this,key,value);};});
- await page.locator('#confirmCheckinImportBtn').click();assert.equal(await raw(page),changed);assert.equal(await page.locator('#checkinImportPreview').isVisible(),true);assert.match(await page.locator('#checkinBackupStatus').textContent(),/insufficient storage/);
- await page.evaluate(()=>{Storage.prototype.setItem=fixtureWrite;});await page.locator('#confirmCheckinImportBtn').click();assert.equal(JSON.parse(await raw(page)).entries.length,4);
+ await page.locator('#confirmCheckinImportBtn').click();await settleJournal(page);assert.equal(await raw(page),changed);assert.equal(await page.locator('#checkinImportPreview').isVisible(),true);assert.match(await page.locator('#checkinBackupStatus').textContent(),/insufficient storage/);
+ await page.evaluate(()=>{Storage.prototype.setItem=fixtureWrite;});await page.locator('#confirmCheckinImportBtn').click();await settleJournal(page);assert.equal(JSON.parse(await raw(page)).entries.length,4);
  const full={...backup,entries:Array.from({length:100},(_,i)=>({...backup.entries[0],id:'full-'+i}))};await upload(page,Buffer.from(JSON.stringify(full)));assert.equal(await page.locator('#confirmCheckinImportBtn').isDisabled(),true);assert.match(await page.locator('#checkinBackupStatus').textContent(),/100|exceeds/i);
  f.check();await f.context.close();pass(`${engine}: invalid, oversized, future, conflicting, stale, quota and capacity imports preserve existing bytes`);
 }
@@ -104,15 +105,27 @@ async function concurrent(engine){
  for(const [target,id] of [[page,'tab-one'],[other,'tab-two']])await target.evaluate(({backup,id})=>{sqStageCheckinImport(JSON.stringify({...backup,entries:[{...backup.entries[0],id}]}));},{backup,id});
  await Promise.all([page.evaluate(()=>sqWithCheckinJournalLock(sqConfirmCheckinImport)),other.evaluate(()=>sqWithCheckinJournalLock(sqConfirmCheckinImport))]);
  const after=JSON.parse(await raw(page)).entries;assert.deepEqual(after.slice(0,2),before);assert.equal(after.length,3);assert.ok(['tab-one','tab-two'].includes(after[2].id));
- const missing=after[2].id==='tab-one'?'tab-two':'tab-one';await upload(page,Buffer.from(JSON.stringify({...backup,entries:[{...backup.entries[0],id:missing}]})));await page.locator('#confirmCheckinImportBtn').click();
+ const missing=after[2].id==='tab-one'?'tab-two':'tab-one';await upload(page,Buffer.from(JSON.stringify({...backup,entries:[{...backup.entries[0],id:missing}]})));await page.locator('#confirmCheckinImportBtn').click();await settleJournal(page);
  assert.equal(JSON.parse(await raw(page)).entries.length,4);f.check();await f.context.close();pass(`${engine}: simultaneous tabs retain all prior entries and require a fresh preview before the second merge`);
+}
+async function queuedWrites(engine){
+ const f=await fixture(390),{page}=f;await createRecords(page);const before=await raw(page),backup=await page.evaluate(()=>sqCreateCheckinBackup());
+ async function hold(){await page.evaluate(()=>{window.releaseHeldLock=null;navigator.locks.request('strikequests-checkin-journal',()=>new Promise(resolve=>{releaseHeldLock=resolve;}));});await page.waitForFunction(()=>typeof releaseHeldLock==='function');}
+ await page.evaluate(()=>{sqStartCheckin(sqHistoryRecords()[0].id);$('checkinReason').value='First queued private reflection.';$('checkinThinking').value='held';$('checkinEvidence').value='source';});
+ await hold();await page.locator('#saveCheckinBtn').click();
+ await page.evaluate(()=>{sqStartCheckin(sqHistoryRecords()[0].id);$('checkinReason').value='Replacement reflection must need its own save.';$('checkinThinking').value='held';$('checkinEvidence').value='source';releaseHeldLock();});await settleJournal(page);assert.equal(await raw(page),before);assert.equal(await page.evaluate(()=>!!sqCheckinDraft),true);
+ await hold();await page.locator('#saveCheckinBtn').click();await page.locator('#checkinReason').fill('Edited while storage was busy; this needs another Save.');await page.evaluate(()=>releaseHeldLock());await settleJournal(page);assert.equal(await raw(page),before);assert.match(await page.locator('#checkinStatus').textContent(),/changed while storage was busy/);
+ await page.evaluate(()=>sqCancelCheckin(false));
+ const file=Buffer.from(JSON.stringify({...backup,entries:[{...backup.entries[0],id:'queued-import'}]}));await upload(page,file);await hold();await page.locator('#confirmCheckinImportBtn').click();
+ await page.locator('#cancelCheckinImportBtn').click();await upload(page,file);await page.evaluate(()=>releaseHeldLock());await settleJournal(page);assert.equal(await raw(page),before);assert.equal(await page.locator('#checkinImportPreview').isVisible(),true);
+ f.check();await f.context.close();pass(`${engine}: actual held locks cannot save newer drafts, changed text or replacement import previews`);
 }
 (async()=>{
  fs.mkdirSync(evidence,{recursive:true});
  for(const engine of (process.env.BACKUP_BROWSERS||'chromium,webkit').split(',')){
   if(!playwright[engine])throw Error('Unknown browser');browser=await playwright[engine].launch({headless:true});
   for(const width of [1440,390,320])await roundTrip(width,engine);
-  await failures(engine);await interrupted(engine);await concurrent(engine);await browser.close();browser=null;
+  await failures(engine);await interrupted(engine);await concurrent(engine);await queuedWrites(engine);await browser.close();browser=null;
  }
  fs.writeFileSync(path.join(evidence,'journal-backup-browser.json'),JSON.stringify({commit:process.env.REVIEW_HEAD_SHA||'local',checks:reports,liveProviderRequests:0},null,2));console.log(count+' journal backup browser workflows passed');
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();});

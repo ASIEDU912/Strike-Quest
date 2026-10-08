@@ -1840,6 +1840,18 @@ function sqWithCheckinJournalLock(operation){
  if(navigator.locks?.request)return navigator.locks.request('strikequests-checkin-journal',operation).catch(()=>{sqBackupStatus('Journal storage is unavailable. Nothing was changed; try again.');return false;});
  return operation();
 }
+function sqQueueCheckinSave(){
+ const draft=sqCheckinDraft,fields=['checkinReason','checkinThinking','checkinEvidence','checkinObservation'],reflection=JSON.stringify(fields.map(id=>$(id).value));
+ return sqWithCheckinJournalLock(()=>{
+  if(!draft||sqCheckinDraft!==draft)return false;
+  if(reflection!==JSON.stringify(fields.map(id=>$(id).value))){draft.message='Your reflection changed while storage was busy. Review it and choose Save check-in again.';sqRenderCheckin();return false;}
+  return sqSaveCheckin();
+ });
+}
+function sqQueueCheckinImport(){
+ const preview=sqCheckinImport;
+ return sqWithCheckinJournalLock(()=>preview&&sqCheckinImport===preview?sqConfirmCheckinImport():false);
+}
 function sqExportCheckins(){
  let url,link;
  try{
@@ -1855,6 +1867,7 @@ function sqExportCheckins(){
 function sqCancelCheckinImport(focus=true){
  sqCheckinImportGeneration++;sqCheckinImport=null;
  $('importCheckinsFile').value='';$('checkinImportPreview').hidden=true;$('checkinImportSummary').textContent='';$('checkinImportEntries').innerHTML='';$('confirmCheckinImportBtn').disabled=true;
+ sqBackupStatus('');
  if(focus){sqBackupStatus('Import cancelled. Your journal is unchanged.');$('importCheckinsFile').focus({preventScroll:true});}
 }
 function sqStageCheckinImport(text,name='Journal backup'){
@@ -1898,14 +1911,14 @@ function sqConfirmCheckinImport(){
 }
 $('exportCheckinsBtn').addEventListener('click',sqExportCheckins);
 $('importCheckinsFile').addEventListener('change',sqChooseCheckinImport);
-$('confirmCheckinImportBtn').addEventListener('click',()=>sqWithCheckinJournalLock(sqConfirmCheckinImport));
+$('confirmCheckinImportBtn').addEventListener('click',sqQueueCheckinImport);
 $('cancelCheckinImportBtn').addEventListener('click',()=>sqCancelCheckinImport());
 $('history').addEventListener('click',event=>{
  const check=event.target.closest?.('[data-checkin-id]'),load=event.target.closest?.('[data-saved-load]'),remove=event.target.closest?.('[data-saved-delete]');
  if(check)sqStartCheckin(check.dataset.checkinId);else if(load)loadSaved(load.dataset.savedLoad);else if(remove)deleteSaved(remove.dataset.savedDelete);
 });
 $('clearCheckinsBtn').addEventListener('click',()=>sqWithCheckinJournalLock(sqClearCheckins));
-$('captureCheckinBtn').addEventListener('click',sqCaptureCheckin);$('saveCheckinBtn').addEventListener('click',()=>sqWithCheckinJournalLock(sqSaveCheckin));$('cancelCheckinBtn').addEventListener('click',()=>sqCancelCheckin());
+$('captureCheckinBtn').addEventListener('click',sqCaptureCheckin);$('saveCheckinBtn').addEventListener('click',sqQueueCheckinSave);$('cancelCheckinBtn').addEventListener('click',()=>sqCancelCheckin());
 $('checkinEvidence').addEventListener('change',()=>{$('checkinObservationField').hidden=$('checkinEvidence').value!=='observation';});
 if(typeof window.addEventListener==='function'){
  window.addEventListener('popstate',()=>{sqCancelCheckin();sqCancelCheckinImport(false);});

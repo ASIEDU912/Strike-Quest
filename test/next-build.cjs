@@ -98,7 +98,7 @@ function fixture(symbol){
  const offline=await browser.newContext({viewport:{width:390,height:844}}),external=[];
  await offline.route('https://**/*',r=>{external.push(new URL(r.request().url()).hostname);return r.abort()});
  const op=await offline.newPage();op.on('pageerror',e=>errors.push(e.message));await op.goto(base);await op.evaluate(()=>navigator.serviceWorker.ready);await op.reload();await op.waitForFunction(()=>!!navigator.serviceWorker.controller);
- const keys=await op.evaluate(async()=>{const c=await caches.open('strikequests-v10-1-5-research-checkin');return (await c.keys()).map(r=>r.url)});assert.equal(keys.length,9);assert.equal(keys.some(x=>x.includes('?')||x.includes('workers.dev')),false);
+ const keys=await op.evaluate(async()=>{const c=await caches.open('strikequests-v10-1-6-private-journal-backup');return (await c.keys()).map(r=>r.url)});assert.equal(keys.length,9);assert.equal(keys.some(x=>x.includes('?')||x.includes('workers.dev')),false);
  await offline.setOffline(true);await op.reload();assert.match(await op.locator('#modeTitle').textContent(),/DEMO/);await op.locator('#targetCorrection').evaluate(el=>{el.value='30';el.dispatchEvent(new Event('input',{bubbles:true}))});assert.equal(await op.locator('#correction').inputValue(),'30');assert.deepEqual(external,[]);pass('offline shell restores functional private demo with zero provider/health/search requests');
  await offline.close();assert.deepEqual(errors,[]);pass('no uncaught browser errors across rendered flows');
  fs.writeFileSync(path.join(evidence,'next-build-results.json'),JSON.stringify({passed,checks:report,externalRequestsInPrivateModes:0,liveProviderRequests:0,automaticRequestsMocked:autoCalls,errors},null,2));

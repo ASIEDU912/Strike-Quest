@@ -15,6 +15,7 @@ async function emit(page,name,locator){
   for(let i=0;i<b64.length;i+=160)console.log('SQ_IMAGE_DATA '+b64.slice(i,i+160));
   console.log('SQ_IMAGE_END '+name);
 }
+async function settleJournal(page){await page.evaluate(async()=>{if(navigator.locks?.request)await navigator.locks.request('strikequests-checkin-journal',()=>{});});}
 (async()=>{
   browser=await chromium.launch({headless:true});
   const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
@@ -57,7 +58,7 @@ async function emit(page,name,locator){
   await page.locator('#checkinReason').fill('I changed only the correction assumption. These new hypothetical levels do not show a market move. I still need dated evidence.');
   await page.locator('#checkinThinking').scrollIntoViewIfNeeded();
   await emit(page,'research-checkin-reflection-mobile.jpg');
-  await page.locator('#saveCheckinBtn').click();
+  await page.locator('#saveCheckinBtn').click();await settleJournal(page);
   await emit(page,'research-checkin-journal-mobile.jpg');
   await page.locator('.checkin-backup').scrollIntoViewIfNeeded();
   await emit(page,'private-journal-backup-mobile.jpg',page.locator('.checkin-backup'));
