@@ -148,11 +148,15 @@ async function clean(page,h) {
 }
 async function prepareInput(page,h,input) {
   if(input==='pointer'||input==='touch')return;
+  // Keep an old pointer position from acquiring delayed :hover after scrolling
+  // in WebKit. The keyboard focus ring stays visible; artwork is never frozen.
+  await page.mouse.move(1,1);
   // Establish keyboard modality before taking stationary geometry/paint samples.
   // Tab may scroll to the next existing control; restore artwork focus first.
   await page.keyboard.press('Tab');await page.locator(select(h,'[data-mascot-tap]')).focus();
   await page.locator(select(h,'[data-mascot-tap]')).scrollIntoViewIfNeeded();
-  await page.waitForFunction(host=>!document.querySelector('#'+host+' .sq-companion').classList.contains('sq-mascot--inactive'),h.host);
+  await page.mouse.move(1,1);
+  await page.waitForFunction(host=>!document.querySelector('#'+host+' .sq-companion').classList.contains('sq-mascot--inactive')&&!document.querySelector('#'+host+' [data-mascot-tap]').matches(':hover'),h.host);
 }
 async function activate(page,h,input,prepared=false) {
   if(!prepared)await prepareInput(page,h,input);
@@ -273,9 +277,10 @@ async function staticResponse(page,h,input,label,emit=false) {
   const cue=(await page.locator(select(h,'.sq-companion__feedback')).textContent()).trim();
   // Both images are after activation. Feedback has a separate gutter and may
   // expire without touching this fixed artwork crop, even on a slow renderer.
-  const state=()=>page.locator(select(h,'[data-mascot-tap]')).evaluate(el=>{const cue=el.querySelector('.sq-companion__feedback'),rect=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}};return {time:performance.now(),scrollY,button:rect(el),art:rect(el.querySelector('.sq-companion__art')),cue:{hidden:cue.hidden,text:cue.textContent,rect:rect(cue)}};});
+  const state=()=>page.locator(select(h,'[data-mascot-tap]')).evaluate(el=>{const cue=el.querySelector('.sq-companion__feedback'),rect=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}};return {time:performance.now(),scrollY,hover:el.matches(':hover'),boxShadow:getComputedStyle(el).boxShadow,backgroundColor:getComputedStyle(el).backgroundColor,button:rect(el),art:rect(el.querySelector('.sq-companion__art')),cue:{hidden:cue.hidden,text:cue.textContent,rect:rect(cue)}};});
   const startA=await state(),a=await page.screenshot({clip:crop,animations:'allow'}),endA=await state();
   await page.waitForTimeout(250);const startB=await state(),b=await page.screenshot({clip:crop,animations:'allow'}),endB=await state();
+  if(['Enter','Space'].includes(input))for(const snapshot of [startA,endA,startB,endB])assert.equal(snapshot.hover,false,`${label}: keyboard paint is isolated from pointer hover`);
   const paintDelta=changedPixels(a,b);
   const samples=await page.evaluate(()=>window.__tapTrace);
   if(paintDelta){
