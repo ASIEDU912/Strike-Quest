@@ -59,7 +59,11 @@ async function emit(page,name,locator){
   await emit(page,'research-checkin-reflection-mobile.jpg');
   await page.locator('#saveCheckinBtn').click();
   await emit(page,'research-checkin-journal-mobile.jpg');
+  await page.locator('.checkin-backup').scrollIntoViewIfNeeded();
+  await emit(page,'private-journal-backup-mobile.jpg',page.locator('.checkin-backup'));
+  await page.evaluate(()=>{const b=sqCreateCheckinBackup();b.entries[0].id='visual-import-fixture';sqStageCheckinImport(JSON.stringify(b),'Private NAS backup.json');});
+  await emit(page,'private-journal-import-preview-mobile.jpg',page.locator('#checkinImportPreview'));
   if(unexpected.length||errors.length)throw Error(JSON.stringify({unexpected,errors}));
-  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:11,bytes:total,liveProviderRequests:0,errors}));
+  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:13,bytes:total,liveProviderRequests:0,errors}));
   await context.close();
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close()});

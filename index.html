@@ -248,7 +248,8 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 .sq-companion-panel--inline{margin:0 0 16px;padding:0;border-top:0}.sq-companion-panel--inline>summary{padding:10px 4px}.sq-companion-panel--inline .sq-companion{box-shadow:0 6px 20px #0002}.app-view:not(.active) .sq-companion__art,.app-view:not(.active) .sq-mascot *,.analysis-pane:not(.active) .sq-companion__art,.analysis-pane:not(.active) .sq-mascot *{animation:none!important;transition:none!important}
 /* Local, source-aware reflection. Neutral changes are never performance scores. */
 #viewSaved .screen-title{align-items:flex-start}#viewSaved .screen-title>div{min-width:0}#clearAllBtn{max-width:100px;white-space:normal;flex-shrink:0}
-#researchCheckin[hidden],#checkinJournalCard[hidden],#checkinObservationField[hidden]{display:none}
+#researchCheckin[hidden],#checkinJournalCard[hidden],#checkinObservationField[hidden],#checkinImportPreview[hidden]{display:none}
+.checkin-backup p,.checkin-backup label{font-size:14px;line-height:1.6;color:#c2d8e7}.checkin-backup input{display:block;width:100%;max-width:100%;min-height:44px;margin:8px 0 16px;color:#dceafa;font:inherit;font-size:14px}.checkin-backup .btn{min-height:44px;white-space:normal}.checkin-backup-preview{border:1px solid #52718b;border-radius:12px;padding:14px;overflow-wrap:anywhere}.checkin-backup-preview ul{padding-left:20px;font-size:14px;line-height:1.6}.checkin-backup .row{flex-wrap:wrap}.checkin-backup .note-validation{overflow-wrap:anywhere}
 .checkin-intro p,.checkin-guide,.checkin-reason{font-size:12px;line-height:1.7;color:#c2d8e7}.checkin-guide{padding:14px;border:1px solid #47615a;border-radius:12px;background:#15312e;color:#d3eddf}.checkin-reason{white-space:pre-wrap;overflow-wrap:anywhere;padding-left:12px;border-left:3px solid #aebbd5}.checkin-fields{display:grid;gap:9px;margin-top:18px}.checkin-fields label{font-size:12px;color:#dceafa;margin-top:7px}.checkin-fields select,.checkin-fields textarea{width:100%;min-height:44px;background:#091e30;color:#e6f0fa;border:1px solid #52718b;border-radius:10px;padding:11px;font:inherit;font-size:13px}.checkin-fields textarea{resize:vertical}.checkin-actions{margin-top:18px}.checkin-actions .btn{min-height:44px}.checkin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.checkin-column{min-width:0;background:#0a1d30;border:1px solid #35516b;border-radius:12px;padding:13px}.checkin-column h3{font-size:13px;margin:0 0 12px;color:#e5eff9}.checkin-column dl{margin:0}.checkin-column dt{color:#95b2cc;font-size:10px;margin-top:11px}.checkin-column dd{margin:4px 0 0;font-size:12px;line-height:1.5;color:#e0edf7;overflow-wrap:anywhere;white-space:pre-wrap}.checkin-different{border-left:2px solid #c8b98d;padding-left:7px}.checkin-summary{font-size:12px;line-height:1.7;color:#e0d3b5}.checkin-entry{padding:14px 0;border-top:1px solid #35516b;font-size:12px;line-height:1.6;overflow-wrap:anywhere}.checkin-entry:first-child{border-top:0}.checkin-entry p{white-space:pre-wrap}.checkin-entry summary{cursor:pointer;padding:9px 0;color:#9ed6ee}.checkin-saved{color:#a3ddc4;font-size:11px}.checkin-empty{font-size:12px;line-height:1.6;color:#aec9dc}
 @media(max-width:360px){.checkin-column{padding:9px}.checkin-grid{gap:6px}.checkin-column dd{font-size:11px}.checkin-actions{flex-direction:column}.checkin-actions .btn{width:100%}}
 
@@ -423,6 +424,20 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
       <p class="notice">Leaving Saved discards an unfinished check-in. Your original saved idea is never overwritten. Check-ins are excluded from shared summaries.</p>
     </section>
     <section class="card" id="checkinJournalCard" hidden><h2 class="section-title">Your check-in journal</h2><p class="notice">This journal keeps its own copies of your reflections and snapshots, even if you delete a saved idea. Clear it separately when you want those copies removed.</p><div id="checkinJournal"></div><button type="button" class="btn danger-lite" id="clearCheckinsBtn">Clear check-in journal</button></section>
+    <section class="card checkin-backup" aria-labelledby="checkinBackupTitle">
+      <h2 class="section-title" id="checkinBackupTitle">Private journal backup</h2>
+      <p id="checkinBackupHelp">Export saved check-ins, including their original reasoning, reflections and source details. Keep the file in a private folder on your device or NAS, then import it on another device. API settings, saved-analysis history and unfinished drafts are excluded.</p>
+      <p>The file contains private text and is not encrypted. Nothing is uploaded automatically. Keep it out of public links and shared folders.</p>
+      <div class="row checkin-actions"><button type="button" class="btn secondary" id="exportCheckinsBtn">Export journal (.json)</button></div>
+      <label for="importCheckinsFile">Choose a journal backup (.json)</label>
+      <input type="file" id="importCheckinsFile" accept=".json,application/json" aria-describedby="checkinBackupHelp checkinBackupStatus">
+      <p class="note-validation" id="checkinBackupStatus" role="status" aria-live="polite"></p>
+      <div id="checkinImportPreview" class="checkin-backup-preview" hidden tabindex="-1" aria-labelledby="checkinImportTitle">
+        <h3 id="checkinImportTitle">Review before importing</h3><p id="checkinImportSummary"></p><ul id="checkinImportEntries"></ul>
+        <p>Import adds new check-ins and keeps their IDs, dates and source details. Existing entries are never replaced. Original saved ideas and progress stay on this device.</p>
+        <div class="row checkin-actions"><button type="button" class="btn primary" id="confirmCheckinImportBtn">Import new check-ins</button><button type="button" class="btn secondary" id="cancelCheckinImportBtn">Cancel import</button></div>
+      </div>
+    </section>
     <section class="card"><div id="history" class="research-jump" tabindex="-1"></div><button class="btn secondary" id="saveBtn" style="width:100%;margin-top:8px">Save current analysis</button></section>
   </main>
 
@@ -1152,6 +1167,7 @@ function renderProgressScreens(){
 }
 function setView(view){
   if(typeof sqCheckinDraft!=='undefined'&&sqCheckinDraft&&view!=='saved'&&view!=='settings')sqCancelCheckin(false);
+  if(typeof sqCheckinImport!=='undefined'&&view!=='saved'&&view!=='settings')sqCancelCheckinImport(false);
   if(view!=='settings')sqCompanionView=view;
   if(view==='settings'){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view==='settings'));openSettings();return}
   document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
@@ -1700,6 +1716,7 @@ function sqRenderCheckin(){
   $('checkinStatus').textContent=blocked||sqCheckinDraft.message||'Snapshot captured. Read the comparison, then record your reflection.';
  }
  const journal=sqReadCheckins();$('checkinJournalCard').hidden=!journal.entries.length&&!journal.blocked;
+ $('exportCheckinsBtn').disabled=journal.blocked||!journal.entries.length;
  const labels={changed:'Thinking changed',held:'Reasoning still holds',uncertain:'Still unsure',assumptions:'Inputs or assumptions',source:'Source or data quality',observation:'Self-reported observation'};
  $('checkinJournal').innerHTML=(journal.blocked?'<p class="note-validation">Some check-in data could not be read safely. Existing storage is unchanged; new saves are blocked.</p>':'')+journal.entries.slice().reverse().map(entry=>`<article class="checkin-entry"><b>${escapeHtml(sqCheckinSnapshot(entry.original).ticker)} · ${labels[entry.thinking]}</b><div class="checkin-saved">${escapeHtml(sqCheckinDate(entry.createdAt))} · ${labels[entry.evidence]}</div><p>${escapeHtml(entry.reason)}</p>${entry.evidence==='observation'?`<p>Self-reported observation, not independently verified: ${escapeHtml(entry.observation)}</p>`:''}<details><summary>Read the saved comparison</summary><p class="checkin-reason">Original reasoning: ${escapeHtml(sqCheckinSnapshot(entry.original).reason||'Not recorded')}</p>${sqCheckinColumns(entry.original,entry.current)}</details></article>`).join('');
 }
@@ -1726,7 +1743,7 @@ function sqCancelCheckin(focus=true){
 function sqClearCheckins(){
  if(!confirm('Delete all research check-ins from this device? This removes the journal’s copied notes and snapshots. Original saved ideas and XP stay unchanged.'))return false;
  try{localStorage.removeItem('sq_research_checkins_v1')}catch{status('The journal could not be cleared. Existing check-ins remain on this device.','warn');return false;}
- sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();$('history').focus({preventScroll:true});status('Research check-in journal cleared. Original saved ideas and XP are unchanged.','good');return true;
+ sqCancelCheckinImport(false);sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();$('history').focus({preventScroll:true});status('Research check-in journal cleared. Original saved ideas and XP are unchanged.','good');return true;
 }
 function sqSaveCheckin(){
  if(!sqCheckinDraft)return false;
@@ -1744,17 +1761,156 @@ function sqSaveCheckin(){
  sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();status('Research check-in saved on this device. Your original idea is unchanged.','good');
  $('checkinJournalCard').setAttribute('tabindex','-1');$('checkinJournalCard').scrollIntoView({block:'start',behavior:'auto'});$('checkinJournalCard').focus({preventScroll:true});return true;
 }
+// v10.1.6: user-controlled private files. Never use fetch, app sharing or a NAS endpoint here.
+const SQ_CHECKIN_BACKUP_FORMAT='strikequests-research-checkin-backup',SQ_CHECKIN_BACKUP_LIMIT=2*1024*1024;
+let sqCheckinImport=null,sqCheckinImportGeneration=0;
+function sqBackupError(message){throw new Error(message)}
+function sqBackupObject(value,keys,strict=true){
+ if(!value||typeof value!=='object'||Array.isArray(value)||!keys.every(k=>Object.hasOwn(value,k)))sqBackupError('A required journal field is missing or invalid.');
+ if(strict&&Object.keys(value).some(k=>!keys.includes(k)))sqBackupError('The file contains unsupported fields. Use a journal export from StrikeQuests.');
+ // Explicit projection excludes credentials and unrelated storage, including nested extras.
+ return Object.fromEntries(keys.map(k=>[k,value[k]]));
+}
+function sqBackupText(value,max,nullable=false){return nullable&&value===null||typeof value==='string'&&value.length<=max}
+function sqBackupNumber(value){return value===null||typeof value==='number'&&Number.isFinite(value)}
+function sqBackupTimestamp(value){return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,3})?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.test(value)&&sqValidDate(value.slice(0,10))&&Number.isFinite(Date.parse(value))}
+function sqBackupSnapshot(value,strict){
+ const fields=['ticker','period','correction','divisor','increment','price','perf','low','mid','high','at','reason','inputMode','savedOrigin','sourceContext','researchContext'];
+ const x=sqBackupObject(value,fields,strict);
+ if(typeof x.ticker!=='string'||!/^[A-Z0-9.^-]{1,15}$/.test(x.ticker)||(x.period!==null&&(typeof x.period!=='string'||!Object.hasOwn(PERIODS,x.period)))||!['correction','divisor','increment','price','perf','low','mid','high'].every(k=>sqBackupNumber(x[k]))||!sqBackupText(x.at,80,true)||!sqBackupText(x.reason,2000)||![null,'manual','demo','auto_eod'].includes(x.inputMode)||!sqBackupText(x.savedOrigin,40,true))sqBackupError('A research snapshot has invalid values. No entries were changed.');
+ if(x.sourceContext!==null){
+  const m=sqBackupObject(x.sourceContext,['source','session','fetchedAt','stale','synthetic','symbol','baselineOffset','issue','coverage'],strict);
+  if(!sqBackupText(m.source,160,true)||(m.session!==null&&!sqValidDate(m.session))||!sqBackupNumber(m.fetchedAt)||typeof m.stale!=='boolean'||typeof m.synthetic!=='boolean'||(m.symbol!==null&&m.symbol!==x.ticker)||!sqBackupNumber(m.baselineOffset)||!sqBackupText(m.issue,1000,true))sqBackupError('Source details are invalid or name a different instrument.');
+  if(m.coverage!==null){
+   const c=sqBackupObject(m.coverage,['fullRange','monthlyGaps','weeklyGaps','weeklyPoints','monthlyRows'],strict);
+   if(!(c.fullRange===null||typeof c.fullRange==='boolean')||!['monthlyGaps','weeklyGaps','weeklyPoints','monthlyRows'].every(k=>sqBackupNumber(c[k])))sqBackupError('Coverage details are invalid.');
+   m.coverage=c;
+  }
+  x.sourceContext=m;
+ }
+ if(x.researchContext!==null){
+  const h=sqBackupObject(x.researchContext,['baselineDate','baselineClose','trend1m','trend3m','low52','high52','sampleMonths'],strict);
+  if((h.baselineDate!==null&&!sqValidDate(h.baselineDate))||!['baselineClose','low52','high52','sampleMonths'].every(k=>sqBackupNumber(h[k]))||![null,'Up','Down','Flat'].includes(h.trend1m)||![null,'Up','Down','Flat'].includes(h.trend3m))sqBackupError('Historical context is invalid.');
+  x.researchContext=h;
+ }
+ return x;
+}
+function sqBackupEntry(value,strict=true){
+ const x=sqBackupObject(value,['id','originalId','createdAt','thinking','evidence','reason','observation','original','current'],strict);
+ if(!sqBackupText(x.id,200)||!x.id.trim()||!sqBackupText(x.originalId,512)||!x.originalId.trim()||!sqBackupTimestamp(x.createdAt)||!['changed','held','uncertain'].includes(x.thinking)||!['assumptions','source','observation'].includes(x.evidence)||!sqBackupText(x.reason,2000)||x.reason.trim().length<12||!sqBackupText(x.observation,1000)||(x.evidence==='observation'&&x.observation.trim().length<12)||(x.evidence!=='observation'&&x.observation!==''))sqBackupError('A check-in has invalid identity, date or reflection fields.');
+ x.original=sqBackupSnapshot(x.original,strict);x.current=sqBackupSnapshot(x.current,strict);
+ if(x.original.ticker!==x.current.ticker)sqBackupError('A check-in compares different instruments.');
+ return x;
+}
+function sqBackupSecretGuard(value){
+ const text=JSON.stringify(value);
+ const secrets=[localStorage.getItem('sq_alpha_key'),localStorage.getItem('splab_barchart_key'),$('alphaKey')?.value,$('apiKey')?.value].filter(x=>typeof x==='string'&&x.trim());
+ if(secrets.some(key=>[key,encodeURIComponent(key),JSON.stringify(key).slice(1,-1)].some(token=>text.includes(token)))||/(?:api[_-]?key|authorization|access[_-]?token|client[_-]?secret)\s*[=:]\s*["']?[a-z0-9%+./_-]{6,}/i.test(text))sqBackupError('Possible API credentials were found in journal text. Remove them from the affected notes before using backup. Existing data is unchanged.');
+}
+function sqCreateCheckinBackup(){
+ const journal=sqReadCheckins();
+ if(journal.blocked||!journal.entries.length||journal.entries.length>100)sqBackupError('The journal is empty, full beyond its supported limit, or could not be read safely. Existing data is unchanged.');
+ const backup={format:SQ_CHECKIN_BACKUP_FORMAT,version:1,journalVersion:1,appVersion:'10.1.6',exportedAt:new Date().toISOString(),entries:journal.entries.map(x=>sqBackupEntry(x,false))};
+ sqBackupSecretGuard(backup);return backup;
+}
+function sqParseCheckinBackup(text){
+ if(typeof text!=='string'||!text.length||text.length>SQ_CHECKIN_BACKUP_LIMIT)sqBackupError('Choose a journal JSON file no larger than 2 MB.');
+ let value;try{value=JSON.parse(text)}catch{sqBackupError('The file is not valid JSON. No entries were changed.')}
+ const b=sqBackupObject(value,['format','version','journalVersion','appVersion','exportedAt','entries']);
+ if(b.format!==SQ_CHECKIN_BACKUP_FORMAT||b.version!==1||b.journalVersion!==1||!sqBackupText(b.appVersion,40)||!sqBackupTimestamp(b.exportedAt)||!Array.isArray(b.entries)||b.entries.length>100)sqBackupError('This is not a supported StrikeQuests journal backup.');
+ b.entries=b.entries.map(x=>sqBackupEntry(x));sqBackupSecretGuard(b);return b;
+}
+function sqPlanCheckinImport(backup){
+ const journal=sqReadCheckins();if(journal.blocked||journal.entries.length>100)sqBackupError('This device’s journal could not be read safely. Import is blocked; existing data is unchanged.');
+ const existing=new Map(journal.entries.map(x=>[x.id,JSON.stringify(sqBackupEntry(x,false))])),seen=new Map(),additions=[];
+ let duplicates=0,conflicts=0;
+ for(const entry of backup.entries){
+  const signature=JSON.stringify(entry),prior=seen.get(entry.id)??existing.get(entry.id);
+  if(prior!==undefined){if(prior===signature)duplicates++;else conflicts++;}
+  else additions.push(entry);
+  // Remember the first occurrence; conflicting copies never replace it.
+  if(!seen.has(entry.id))seen.set(entry.id,signature);
+ }
+ return {additions,duplicates,conflicts,total:journal.entries.length+additions.length,existing:journal.entries.length};
+}
+function sqBackupStatus(message){$('checkinBackupStatus').textContent=message}
+function sqWithCheckinJournalLock(operation){
+ // Serialize UI saves, clears and imports across cooperating tabs where supported.
+ // Older/unsupported browsers still get fresh reads and the stale-preview checks.
+ if(navigator.locks?.request)return navigator.locks.request('strikequests-checkin-journal',operation).catch(()=>{sqBackupStatus('Journal storage is unavailable. Nothing was changed; try again.');return false;});
+ return operation();
+}
+function sqExportCheckins(){
+ let url,link;
+ try{
+  const backup=sqCreateCheckinBackup(),blob=new Blob([JSON.stringify(backup,null,2)+'\n'],{type:'application/json'});
+  if(blob.size>SQ_CHECKIN_BACKUP_LIMIT)sqBackupError('This backup exceeds 2 MB. Existing data is unchanged.');
+  url=URL.createObjectURL(blob);link=document.createElement('a');link.href=url;
+  link.download='StrikeQuests-Journal-'+backup.exportedAt.replace(/[:.]/g,'-')+'.json';
+  document.body.appendChild(link);link.click();
+  sqBackupStatus('Private backup file prepared. Save it in a private folder on your device or NAS. No file was uploaded.');return true;
+ }catch(error){sqBackupStatus(error.message||'The backup file could not be prepared. Your journal is unchanged.');return false;}
+ finally{link?.remove();if(url)setTimeout(()=>URL.revokeObjectURL(url),60000);}
+}
+function sqCancelCheckinImport(focus=true){
+ sqCheckinImportGeneration++;sqCheckinImport=null;
+ $('importCheckinsFile').value='';$('checkinImportPreview').hidden=true;$('checkinImportSummary').textContent='';$('checkinImportEntries').innerHTML='';$('confirmCheckinImportBtn').disabled=true;
+ if(focus){sqBackupStatus('Import cancelled. Your journal is unchanged.');$('importCheckinsFile').focus({preventScroll:true});}
+}
+function sqStageCheckinImport(text,name='Journal backup'){
+ sqCheckinImport=null;$('checkinImportPreview').hidden=true;$('confirmCheckinImportBtn').disabled=true;
+ try{
+  const backup=sqParseCheckinBackup(text),raw=localStorage.getItem('sq_research_checkins_v1'),plan=sqPlanCheckinImport(backup);
+  sqCheckinImport={backup,raw,plan};
+  const blocked=plan.conflicts>0||plan.total>100;
+  $('checkinImportSummary').textContent=String(name).slice(0,200)+' · '+plan.additions.length+' new · '+plan.duplicates+' duplicate(s) skipped · '+plan.conflicts+' conflicting ID(s) · '+plan.total+'/100 after import. Exported '+sqCheckinDate(backup.exportedAt)+'.';
+  $('checkinImportEntries').innerHTML=plan.additions.slice(0,5).map(x=>`<li>${escapeHtml(x.original.ticker)} · ${escapeHtml(sqCheckinDate(x.createdAt))}</li>`).join('')+(plan.additions.length>5?'<li>And '+(plan.additions.length-5)+' more check-ins.</li>':'');
+  $('checkinImportPreview').hidden=false;$('confirmCheckinImportBtn').disabled=blocked||!plan.additions.length;
+  sqBackupStatus(plan.conflicts?'Import blocked: an ID has different content. No entries will be overwritten. Keep both backup files for review.':plan.total>100?'Import blocked: the combined journal exceeds 100 entries. Nothing will be discarded.':!plan.additions.length?'All check-ins are already on this device. No changes are needed.':'Review the preview, then choose Import new check-ins. Your journal has not changed.');
+  $('checkinImportPreview').focus({preventScroll:true});return !blocked;
+ }catch(error){sqBackupStatus(error.message||'The file could not be validated. Your journal is unchanged.');return false;}
+}
+async function sqChooseCheckinImport(event){
+ const file=event.target.files?.[0];sqCancelCheckinImport(false);const generation=sqCheckinImportGeneration;
+ if(!file)return;
+ if(file.size>SQ_CHECKIN_BACKUP_LIMIT){sqBackupStatus('Choose a journal JSON file no larger than 2 MB.');return;}
+ sqBackupStatus('Reading the file on this device…');
+ try{const text=await file.text();if(generation!==sqCheckinImportGeneration)return;sqStageCheckinImport(text,file.name);}
+ catch{if(generation===sqCheckinImportGeneration)sqBackupStatus('The file could not be read. Your journal is unchanged. Choose it again to retry.');}
+ finally{if(generation===sqCheckinImportGeneration)$('importCheckinsFile').value='';}
+}
+function sqConfirmCheckinImport(){
+ if(!sqCheckinImport)return false;
+ try{
+  const pending=sqCheckinImport;
+  // A preview is never permission to replace changes made since it was prepared.
+  if(localStorage.getItem('sq_research_checkins_v1')!==pending.raw){sqCancelCheckinImport(false);sqBackupStatus('The journal changed since the preview. Choose the backup again to review a fresh merge. Nothing was imported.');return false;}
+  sqBackupSecretGuard(pending.backup);const plan=sqPlanCheckinImport(pending.backup);
+  if(plan.conflicts||plan.total>100||!plan.additions.length)return false;
+  const journal=sqReadCheckins();
+  const next=JSON.stringify({version:1,entries:[...journal.entries,...plan.additions]});
+  // No asynchronous work occurs between this last check and the one storage write.
+  if(localStorage.getItem('sq_research_checkins_v1')!==pending.raw)sqBackupError('The journal changed. Choose the file again; nothing was imported.');
+  localStorage.setItem('sq_research_checkins_v1',next);
+  sqCancelCheckinImport(false);sqRenderCheckin();
+  sqBackupStatus('Imported '+plan.additions.length+' check-in(s); skipped '+plan.duplicates+' duplicate(s). Existing entries, original ideas and progress are unchanged.');return true;
+ }catch(error){sqBackupStatus('Import did not complete. '+(error.name==='QuotaExceededError'?'This device has insufficient storage.':error.message||'Storage is unavailable.')+' Your preview is kept for retry; no existing entries were replaced.');return false;}
+}
+$('exportCheckinsBtn').addEventListener('click',sqExportCheckins);
+$('importCheckinsFile').addEventListener('change',sqChooseCheckinImport);
+$('confirmCheckinImportBtn').addEventListener('click',()=>sqWithCheckinJournalLock(sqConfirmCheckinImport));
+$('cancelCheckinImportBtn').addEventListener('click',()=>sqCancelCheckinImport());
 $('history').addEventListener('click',event=>{
  const check=event.target.closest?.('[data-checkin-id]'),load=event.target.closest?.('[data-saved-load]'),remove=event.target.closest?.('[data-saved-delete]');
  if(check)sqStartCheckin(check.dataset.checkinId);else if(load)loadSaved(load.dataset.savedLoad);else if(remove)deleteSaved(remove.dataset.savedDelete);
 });
-$('clearCheckinsBtn').addEventListener('click',sqClearCheckins);
-$('captureCheckinBtn').addEventListener('click',sqCaptureCheckin);$('saveCheckinBtn').addEventListener('click',sqSaveCheckin);$('cancelCheckinBtn').addEventListener('click',()=>sqCancelCheckin());
+$('clearCheckinsBtn').addEventListener('click',()=>sqWithCheckinJournalLock(sqClearCheckins));
+$('captureCheckinBtn').addEventListener('click',sqCaptureCheckin);$('saveCheckinBtn').addEventListener('click',()=>sqWithCheckinJournalLock(sqSaveCheckin));$('cancelCheckinBtn').addEventListener('click',()=>sqCancelCheckin());
 $('checkinEvidence').addEventListener('change',()=>{$('checkinObservationField').hidden=$('checkinEvidence').value!=='observation';});
 if(typeof window.addEventListener==='function'){
- window.addEventListener('popstate',()=>sqCancelCheckin());
- window.addEventListener('pagehide',()=>sqCancelCheckin(false));
- window.addEventListener('storage',event=>{if(['splab_history','sq_research_checkins_v1'].includes(event.key)){sqRenderCheckin();}});
+ window.addEventListener('popstate',()=>{sqCancelCheckin();sqCancelCheckinImport(false);});
+ window.addEventListener('pagehide',()=>{sqCancelCheckin(false);sqCancelCheckinImport(false);});
+ window.addEventListener('storage',event=>{if(['splab_history','sq_research_checkins_v1'].includes(event.key)||event.key===null){if(sqCheckinImport){sqCancelCheckinImport(false);sqBackupStatus('Storage changed in another tab. Choose the backup again to review a fresh merge.');}sqRenderCheckin();}});
 }
 
 $("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
