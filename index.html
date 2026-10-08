@@ -246,6 +246,12 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 .core-access{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}.core-access button{display:grid;grid-template-columns:30px minmax(0,1fr);gap:3px 8px;align-items:center;text-align:left;min-height:76px;padding:13px;border:1px solid #49769a;border-radius:16px;background:linear-gradient(120deg,#234568,#122b44);color:#edf7ff}.core-access button>span{grid-row:1/3;font-size:27px;color:#e6cd86}.core-access b{font-size:14px}.core-access small{font-size:10px;color:#afcde6;line-height:1.5}.sq-companion-panel{margin-top:16px;border-top:1px solid #365570;padding-top:12px}.sq-companion-panel>summary{color:#c7dcf4;font-size:12px;min-height:44px;padding:10px 0;cursor:pointer}.sq-companion-panel:not([open]) .sq-companion__art,.sq-companion-panel:not([open]) .sq-mascot *{animation:none!important}.sq-companion__motion{min-height:44px!important}.mission-step-label{display:block;color:#a9c6df;font-size:10px;line-height:1.5;margin-top:5px}.mission-next progress{display:block;width:100%;height:5px;margin:10px 0 0}.core-access button:focus-visible,.sq-companion-panel summary:focus-visible{outline:3px solid #8ed9ff;outline-offset:3px}
 @media(max-width:350px){.core-access{gap:7px}.core-access button{grid-template-columns:minmax(0,1fr);padding:11px}.core-access button>span{display:none}.core-access b{font-size:13px}.core-access small{font-size:10px}}
 .sq-companion-panel--inline{margin:0 0 16px;padding:0;border-top:0}.sq-companion-panel--inline>summary{padding:10px 4px}.sq-companion-panel--inline .sq-companion{box-shadow:0 6px 20px #0002}.app-view:not(.active) .sq-companion__art,.app-view:not(.active) .sq-mascot *,.analysis-pane:not(.active) .sq-companion__art,.analysis-pane:not(.active) .sq-mascot *{animation:none!important;transition:none!important}
+/* Local, source-aware reflection. Neutral changes are never performance scores. */
+#viewSaved .screen-title{align-items:flex-start}#viewSaved .screen-title>div{min-width:0}#clearAllBtn{max-width:100px;white-space:normal;flex-shrink:0}
+#researchCheckin[hidden],#checkinJournalCard[hidden],#checkinObservationField[hidden]{display:none}
+.checkin-intro p,.checkin-guide,.checkin-reason{font-size:12px;line-height:1.7;color:#c2d8e7}.checkin-guide{padding:14px;border:1px solid #47615a;border-radius:12px;background:#15312e;color:#d3eddf}.checkin-reason{white-space:pre-wrap;overflow-wrap:anywhere;padding-left:12px;border-left:3px solid #aebbd5}.checkin-fields{display:grid;gap:9px;margin-top:18px}.checkin-fields label{font-size:12px;color:#dceafa;margin-top:7px}.checkin-fields select,.checkin-fields textarea{width:100%;min-height:44px;background:#091e30;color:#e6f0fa;border:1px solid #52718b;border-radius:10px;padding:11px;font:inherit;font-size:13px}.checkin-fields textarea{resize:vertical}.checkin-actions{margin-top:18px}.checkin-actions .btn{min-height:44px}.checkin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.checkin-column{min-width:0;background:#0a1d30;border:1px solid #35516b;border-radius:12px;padding:13px}.checkin-column h3{font-size:13px;margin:0 0 12px;color:#e5eff9}.checkin-column dl{margin:0}.checkin-column dt{color:#95b2cc;font-size:10px;margin-top:11px}.checkin-column dd{margin:4px 0 0;font-size:12px;line-height:1.5;color:#e0edf7;overflow-wrap:anywhere;white-space:pre-wrap}.checkin-different{border-left:2px solid #c8b98d;padding-left:7px}.checkin-summary{font-size:12px;line-height:1.7;color:#e0d3b5}.checkin-entry{padding:14px 0;border-top:1px solid #35516b;font-size:12px;line-height:1.6;overflow-wrap:anywhere}.checkin-entry:first-child{border-top:0}.checkin-entry p{white-space:pre-wrap}.checkin-entry summary{cursor:pointer;padding:9px 0;color:#9ed6ee}.checkin-saved{color:#a3ddc4;font-size:11px}.checkin-empty{font-size:12px;line-height:1.6;color:#aec9dc}
+@media(max-width:360px){.checkin-column{padding:9px}.checkin-grid{gap:6px}.checkin-column dd{font-size:11px}.checkin-actions{flex-direction:column}.checkin-actions .btn{width:100%}}
+
 </style>
 </head>
 <body>
@@ -394,8 +400,29 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
   </main>
 
   <main id="viewSaved" class="app-view">
-    <div class="screen-title"><div><div class="section-kicker">Saved</div><h2>Analysis History</h2><p>Reload, compare, or delete past research runs.</p></div><button class="btn danger-lite" id="clearAllBtn">Clear all</button></div>
+    <div class="screen-title"><div><div class="section-kicker">Saved</div><h2>Analysis History</h2><p>Revisit saved ideas and record how your thinking changes.</p></div><button class="btn danger-lite" id="clearAllBtn">Clear saved ideas</button></div>
     <details class="sq-companion-panel sq-companion-panel--inline" id="savedCompanionPanel" open><summary id="savedCompanionSummary">Lumi · Revisit your reasoning</summary><div id="savedCompanionHost"></div></details>
+    <section class="card checkin-intro"><div class="section-kicker">A thoughtful return</div><h2 class="section-title">Research Check-in</h2><p>Prepare a current scenario in Research, then choose Check in on a saved idea for the same instrument. Compare what you assumed with what you think now.</p><p class="notice">Private on this device. No automatic refresh, trading score or extra XP.</p></section>
+    <section class="card research-jump" id="researchCheckin" hidden aria-labelledby="checkinTitle" tabindex="-1">
+      <div class="section-kicker">Original idea → current thinking</div><h2 id="checkinTitle" class="section-title">Research Check-in</h2>
+      <p id="checkinOriginalReason" class="checkin-reason"></p>
+      <p class="checkin-guide" id="checkinGuide">Lumi’s prompt: Which assumption changed? Is this a different scenario, a different source, or new dated evidence? “I’m still unsure” is a useful conclusion.</p>
+      <div id="checkinComparison"></div>
+      <p id="checkinStatus" class="note-validation" role="status" aria-live="polite"></p>
+      <div class="row"><button type="button" id="captureCheckinBtn" class="btn secondary">Use current research snapshot</button></div>
+      <div class="checkin-fields">
+        <label for="checkinThinking">Where does your thinking stand?</label>
+        <select id="checkinThinking"><option value="">Choose a reflection</option><option value="changed">My thinking changed</option><option value="held">My reasoning still holds</option><option value="uncertain">I’m still unsure</option></select>
+        <label for="checkinEvidence">What are you reflecting on?</label>
+        <select id="checkinEvidence"><option value="">Choose the basis</option><option value="assumptions">Inputs or scenario assumptions</option><option value="source">Source or data quality</option><option value="observation">New observed evidence I can describe</option></select>
+        <label for="checkinReason">What changed, held up, or needs more evidence?</label>
+        <textarea id="checkinReason" rows="4" maxlength="2000" aria-describedby="checkinGuide checkinStatus" placeholder="Name the assumption, explain your thinking, and note what you would want to learn next."></textarea>
+        <div id="checkinObservationField" hidden><label for="checkinObservation">Describe the observation, its source and date</label><textarea id="checkinObservation" rows="3" maxlength="1000" placeholder="What did you observe, where did it come from, and when?"></textarea><p class="notice">Your description is self-reported, not independently verified. A changed hypothetical target is not an observed market outcome.</p></div>
+      </div>
+      <div class="row checkin-actions"><button type="button" id="saveCheckinBtn" class="btn primary">Save check-in</button><button type="button" id="cancelCheckinBtn" class="btn secondary">Cancel</button></div>
+      <p class="notice">Leaving Saved discards an unfinished check-in. Your original saved idea is never overwritten. Check-ins are excluded from shared summaries.</p>
+    </section>
+    <section class="card" id="checkinJournalCard" hidden><h2 class="section-title">Your check-in journal</h2><p class="notice">This journal keeps its own copies of your reflections and snapshots, even if you delete a saved idea. Clear it separately when you want those copies removed.</p><div id="checkinJournal"></div><button type="button" class="btn danger-lite" id="clearCheckinsBtn">Clear check-in journal</button></section>
     <section class="card"><div id="history" class="research-jump" tabindex="-1"></div><button class="btn secondary" id="saveBtn" style="width:100%;margin-top:8px">Save current analysis</button></section>
   </main>
 
@@ -408,7 +435,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
     <section class="card quest-legacy"><h2 class="section-title">Research Quests</h2><div class="quest-list" id="questList"></div></section>
   </main>
 
-  <div class="foot">StrikeQuests v10.1.4 • learning before action • hypothetical scenarios</div>
+  <div class="foot">StrikeQuests v10.1.5 • learning before action • hypothetical scenarios</div>
 </div>
 
 <nav class="bottom-nav" aria-label="App navigation">
@@ -989,7 +1016,8 @@ function loadPreset(which){
   }
 }
 function saveCurrent(){
-  const r=calc();if(!r)return;const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
+  if(sqHistoryRead().blocked){status("Saved research could not be read safely. Existing data was kept unchanged.","warn");return false;}
+  const r=calc();if(!r)return;const arr=sqHistoryRecords();
   const id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
   arr.unshift({
     id,
@@ -1008,7 +1036,8 @@ function saveCurrent(){
   localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));recordProgressEvent("saved");awardAchievement("saved","Saved Analysis",25);renderHistory();renderProgressScreens();status("Analysis saved.","good")
 }
 function deleteSaved(id){
-  const arr=JSON.parse(localStorage.getItem("splab_history")||"[]");
+  if(sqHistoryRead().blocked){status("Saved research could not be read safely. Existing data was kept unchanged.","warn");return;}
+  const arr=sqHistoryRecords();
   localStorage.setItem("splab_history",JSON.stringify(arr.filter(x=>String(x.id)!==String(id))));
   renderHistory();
 }
@@ -1017,10 +1046,10 @@ function clearAllSaved(){
   localStorage.removeItem("splab_history");renderHistory();
 }
 function renderHistory(){
-  const arr=JSON.parse(localStorage.getItem("splab_history")||"[]"),el=$("history");
-  if(!arr.length){el.innerHTML='<div class="saved-empty">No saved analyses yet. Save a research run from the Research screen.</div>';return}
-  let changed=false;arr.forEach((x,i)=>{if(!x.id){x.id=`legacy-${x.at||i}-${i}`;changed=true}});if(changed)localStorage.setItem("splab_history",JSON.stringify(arr));
-  el.innerHTML=arr.map(x=>`<div class="history-item"><div class="history-top"><div><b>${x.ticker}</b><br><small>${PERIODS[x.p]?.label||x.p} • ${new Date(x.at).toLocaleString()}</small></div><div style="text-align:right"><div class="history-values">${money(x.low,0)} / ${money(x.mid,0)} / ${money(x.high,0)}</div><small>Low / Mid / High</small></div></div>${sqSnapshotSource(x)}<div class="history-actions">${x.price!=null?`<button class="btn secondary" onclick="loadSaved('${x.id}')">Load</button>`:''}<button class="btn danger" onclick="deleteSaved('${x.id}')">Delete</button></div></div>`).join("")
+  const arr=sqHistoryRecords(),el=$("history");
+  if(!arr.length){el.innerHTML='<div class="saved-empty">'+(sqHistoryRead().blocked?'Saved data could not be read safely. Existing storage is unchanged.':'No saved analyses yet. Save a research run from the Research screen.')+'</div>';return}
+  el.innerHTML=arr.map(x=>`<div class="history-item"><div class="history-top"><div><b>${escapeHtml(String(x.ticker||'Unknown instrument'))}</b><br><small>${escapeHtml(PERIODS[x.p]?.label||String(x.p||'Unknown horizon'))} • ${escapeHtml(sqCheckinDate(x.at))}</small></div><div style="text-align:right"><div class="history-values">${sqCheckinSavedTarget(x.low)} / ${sqCheckinSavedTarget(x.mid)} / ${sqCheckinSavedTarget(x.high)}</div><small>Low / Mid / High · hypothetical</small></div></div>${sqSnapshotSource(x)}<div class="history-actions"><button type="button" class="btn primary" data-checkin-id="${escapeHtml(String(x.id))}">Check in</button>${x.price!=null?`<button type="button" class="btn secondary" data-saved-load="${escapeHtml(String(x.id))}">Load</button>`:''}<button type="button" class="btn danger" data-saved-delete="${escapeHtml(String(x.id))}">Delete</button></div></div>`).join("");
+  if(sqHistoryRead().blocked)el.innerHTML+='<p class="note-validation">Some saved data could not be read safely. Existing storage is unchanged; saving and deleting individual records are blocked.</p>';
 }
 
 
@@ -1051,7 +1080,7 @@ function makeSnapshot(symbol){
   return {...sqProvenance(),symbol,price:r.p,perf:r.perf,low:r.low,mid:r.mid,high:r.high,period:state.period,correction:Math.round(r.c*100),score:currentResearchScore(),updatedAt:new Date().toISOString(),returnPct:Number.isFinite(state.extra.returnPct)?state.extra.returnPct:null,high52:Number.isFinite(state.extra.high52)?state.extra.high52:null,low52:Number.isFinite(state.extra.low52)?state.extra.low52:null};
 }
 function latestSavedSnapshot(symbol){
-  const arr=JSON.parse(localStorage.getItem('splab_history')||'[]').filter(x=>x.ticker===symbol&&x.price!=null).sort((a,b)=>new Date(b.at)-new Date(a.at));
+  const arr=sqHistoryRecords().filter(x=>x.ticker===symbol&&x.price!=null).sort((a,b)=>new Date(b.at)-new Date(a.at));
   const x=arr[0]; if(!x||!['price','perf','low','mid','high'].every(k=>sqFiniteSavedValue(x[k]))||!['price','low','mid','high'].every(k=>Number(x[k])>0))return null;
   return {inputMode:x.inputMode,savedOrigin:x.savedOrigin,sourceContext:x.sourceContext,symbol,price:Number(x.price),perf:Number(x.perf),low:Number(x.low),mid:Number(x.mid),high:Number(x.high),period:x.p||'1y',correction:Number(x.correction??x.c??10),score:60,updatedAt:x.at};
 }
@@ -1122,6 +1151,7 @@ function renderProgressScreens(){
   const s=p.stats||{};if($("statAnalyses"))$("statAnalyses").textContent=s.analyses||0;if($("statSaved"))$("statSaved").textContent=s.saved||0;if($("statWatch"))$("statWatch").textContent=s.watch||0;if($("statCompare"))$("statCompare").textContent=s.compare||0;
 }
 function setView(view){
+  if(typeof sqCheckinDraft!=='undefined'&&sqCheckinDraft&&view!=='saved'&&view!=='settings')sqCancelCheckin(false);
   if(view!=='settings')sqCompanionView=view;
   if(view==='settings'){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view==='settings'));openSettings();return}
   document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
@@ -1149,7 +1179,7 @@ function renderWatchlist(){
   el.innerHTML=list.map(x=>{const s=sqWatchSnapshot(x);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Reference</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Correction</span><b>${Number.isFinite(s.correction)?s.correction+'%':'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${s?sqSnapshotSource(s):''}${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
 }
 function loadSaved(id){
-  const arr=JSON.parse(localStorage.getItem('splab_history')||'[]');
+  const arr=sqHistoryRecords();
   const x=arr.find(v=>String(v.id)===String(id));
   if(!x)return;
   // Stop automatic loading before changing the ticker or restoring saved values.
@@ -1159,7 +1189,7 @@ function loadSaved(id){
   if(x.ticker)applySymbol(x.ticker);
   if(x.instrument)$("selectedInstrument").textContent=x.instrument;
   // The period supplies a default divisor; restore the saved override afterward.
-  setPeriod(x.p&&PERIODS[x.p]?x.p:'1y');
+  setPeriod(typeof x.p==='string'&&Object.hasOwn(PERIODS,x.p)?x.p:'1y');
   $("price").value=sqFiniteSavedValue(x.price)?Number(x.price).toFixed(2):'';
   $("perf").value=sqFiniteSavedValue(x.perf)?Number(x.perf).toFixed(2):'';
   if(x.divisor!=null)$("divisor").value=sqFiniteSavedValue(x.divisor)?String(x.divisor):'';
@@ -1300,7 +1330,7 @@ setMode=function(mode){
  render();sqPersist();
 };
 const sqOldPeriod=setPeriod;
-setPeriod=function(period){if(!PERIODS[period])return;if(period!==state.period&&!sqRestoring)state.loadedResearchId=null;if(period!==state.period&&!sqRestoring&&state.mode!=='demo'){state.extra={};state.dataMeta=null;$('perf').value='';}sqOldPeriod(period);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqVisitHorizon();renderSeasonality();sqPersist();};
+setPeriod=function(period){if(typeof period!=='string'||!Object.hasOwn(PERIODS,period))return;if(period!==state.period&&!sqRestoring)state.loadedResearchId=null;if(period!==state.period&&!sqRestoring&&state.mode!=='demo'){state.extra={};state.dataMeta=null;$('perf').value='';}sqOldPeriod(period);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqVisitHorizon();renderSeasonality();sqPersist();};
 const sqOldSymbol=applySymbol;
 applySymbol=function(symbol){const changed=$('ticker').value.trim().toUpperCase()!==symbol.toUpperCase();if(changed){state.loadedResearchId=null;state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$('price').value='';$('perf').value='';sqDataIssue='';}sqOldSymbol(symbol);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqPersist();};
 const sqOldSuggestion=chooseSuggestion;
@@ -1311,7 +1341,7 @@ const sqOldCacheLoad=loadCachedEod;
 loadCachedEod=function(silent=false){if(sqPrivate())return false;const item=readEodCache()[eodCacheKey()];if(!item||!(Number(item.price)>0)||!Number.isFinite(Number(item.perf)))return false;const ok=sqOldCacheLoad(true);state.dataMeta={...(item.origin||{}),symbol:$('ticker').value.trim().toUpperCase(),source:item.extra?.dataProvider||'Previously saved provider snapshot',session:item.eodDate,fetchedAt:item.origin?.fetchedAt||item.savedAt,stale:true};if(!silent)status('Showing a previously cached snapshot. Verify its session and age before using it.','warn');render();return ok;};
 const sqOldRender=render;
 render=function(){
- const r=calc();sqOldRender();renderSeasonality();
+ const r=calc();sqOldRender();renderSeasonality();if(typeof sqCheckinDraft!=='undefined'&&sqCheckinDraft)sqRenderCheckin();
  const contextPanel=$('researchContext');if(contextPanel)contextPanel.style.display=r||document.querySelector('#analysisSeasonality.active')?'':'none';
  if(!r){for(const id of ['low','mid','high','outPrice','outPerf','outAdjusted','outProjected','perfMirror','adjustedMirror','projectedMirror'])if($(id))$(id).textContent='—';$('details').textContent='Enter a finite positive price, a finite historical change, a positive divisor and a positive increment.';}
  $('targetInvalid').textContent=r?'':'Enter valid inputs to see hypothetical levels. Previous targets are hidden.';
@@ -1349,14 +1379,14 @@ render=function(){
 };
 // Milestone artwork, migration and learning actions live in badges.js.
 const sqOldSaved=loadSaved;
-loadSaved=function(id){const item=sqJSON('splab_history',[]).find(x=>String(x.id)===String(id));if(!item)return;sqRestoring=true;sqOldSaved(id);sqSetCorrection(item.correction??item.c??10,{persist:false});state.savedOrigin=item.savedOrigin||item.inputMode||'manual';state.loadedResearchId=calc()?item.id:null;$('researchReason').value=String(item.reason||'');sqRestoring=false;state.dataMeta=null;state.extra={};render();renderSeasonality();sqPersist();status(calc()?`Loaded saved ${state.savedOrigin==='demo'?'synthetic demo':'manual / unverified'} analysis for ${item.ticker}. Provider connections stay off.`:'Saved inputs are incomplete or invalid. Previous values are hidden; enter valid private Manual values.','warn');};
+loadSaved=function(id){if(sqHistoryRead().blocked){status('Saved research could not be read safely. Existing data is unchanged.','warn');return}const item=sqHistoryRecords().find(x=>String(x.id)===String(id));if(!item)return;sqRestoring=true;sqOldSaved(id);sqSetCorrection(item.correction??item.c??10,{persist:false});state.savedOrigin=item.savedOrigin||item.inputMode||'manual';state.loadedResearchId=calc()?item.id:null;$('researchReason').value=String(item.reason||'');sqRestoring=false;state.dataMeta=null;state.extra={};render();renderSeasonality();sqPersist();status(calc()?`Loaded saved ${state.savedOrigin==='demo'?'synthetic demo':'manual / unverified'} analysis for ${item.ticker}. Provider connections stay off.`:'Saved inputs are incomplete or invalid. Previous values are hidden; enter valid private Manual values.','warn');};
 const sqOldPreset=loadPreset;
 loadPreset=function(which){state.correction=10;sqOldPreset(which);sqSetCorrection(10);state.savedOrigin='demo';render();status('Synthetic formula test fixture • not verified market prices.','warn');sqPersist()};
 const sqOldSummary=resultSummary;
 resultSummary=function(){const r=calc();if(!r)return 'StrikeQuests: valid inputs are required.';return `${state.mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC EXAMPLE — NOT MARKET DATA':state.mode==='manual'?'MANUAL / UNVERIFIED INPUTS':'EOD SNAPSHOT — VERIFY SESSION'}\n${state.mode==='auto_eod'?sqSourceInfo(sqProvenance()).detail+'\n':''}${sqOldSummary()}\nHypothetical price levels only; not listed option strikes, Greeks or profit forecasts. Notes and saved history are not included.`};
 function sqInitNext(){
  const saved=sqJSON('sq_next_session',null);sqRestoring=true;state.mode=['demo','manual','auto_eod'].includes(saved?.mode)?saved.mode:'demo';state.correction=10;
- setPeriod(PERIODS[saved?.period]?saved.period:'2y');
+ setPeriod(typeof saved?.period==='string'&&Object.hasOwn(PERIODS,saved.period)?saved.period:'2y');
  if(saved){if(/^[A-Z0-9.^-]{1,15}$/.test(saved.ticker||''))$('ticker').value=saved.ticker;for(const id of ['price','perf','divisor','increment'])if(saved[id]!=null)$(id).value=String(saved[id]);$('researchReason').value=String(saved.reason||'').slice(0,2000);state.savedOrigin=saved.savedOrigin||null;}
  sqSetCorrection(saved?.correction??10,{persist:false});sqRestoring=false;
  $('targetCorrection').addEventListener('input',e=>sqSetCorrection(e.target.value));
@@ -1367,7 +1397,7 @@ function sqInitNext(){
  $('researchReason').addEventListener('input',()=>{state.loadedResearchId=null;$('researchReason').setAttribute('aria-invalid','false');$('noteValidation').textContent='';sqPersist();sqRenderBadges()});
  $('saveReasonBtn').addEventListener('click',sqSaveNote);
  $('reviewSampleBtn').addEventListener('click',()=>{if(!state.extra.seasonality?.totalMonths){status('No monthly sample is available to review. Explore the labeled demo or load valid history.','warn');return}sqEarn('season')});
- $('reviewHypothesisBtn').addEventListener('click',()=>{const x=sqJSON('splab_history',[]).find(x=>x.id===state.loadedResearchId);if(typeof x?.reason==='string'&&x.reason.trim().length>=12)sqEarn('review')});
+ $('reviewHypothesisBtn').addEventListener('click',()=>{const x=sqHistoryRecords().find(x=>x.id===state.loadedResearchId);if(typeof x?.reason==='string'&&x.reason.trim().length>=12)sqEarn('review')});
  $('reviewTrendsBtn').addEventListener('click',()=>{if(sqHasTrend())sqEarn('trend')});
  $('reviewRangeBtn').addEventListener('click',()=>{if(sqHasRange())sqEarn('range')});
  $('completeResearchBtn').addEventListener('click',()=>{if(sqBadgeProgress('complete',sqBadges())===8)sqEarn('complete')});
@@ -1401,7 +1431,7 @@ const SQ_COMPANION_HOSTS=[
 ];
 function sqResearchXp(){const b=sqBadges();return SQ_CORE.reduce((sum,step)=>sum+(sqEarnedRecord(b.earned[step.id])?ACHIEVEMENTS[step.id].xp:0),0)}
 function sqCompanionGuide(context){
- const valid=!!calc(),history=sqJSON('splab_history',[]),saved=Array.isArray(history)?history:[];
+ const valid=!!calc(),history=sqHistoryRecords(),saved=Array.isArray(history)?history:[];
  const loaded=saved.find(x=>x.id===state.loadedResearchId),reviewable=valid&&typeof loaded?.reason==='string'&&loaded.reason.trim().length>=12;
  if(context==='quests'){const mission=sqNextMission();return {title:mission.title,text:mission.text,label:mission.label,action:'mission'};}
  if(context==='seasonality'){
@@ -1412,6 +1442,7 @@ function sqCompanionGuide(context){
   return {title:n?'Count the observations':'Check the selected years',text:`${origin} ${range} ${n} ${month} observation${n===1?'':'s'} in this selection. ${n>0&&n<5?'This small sample is especially uncertain. ':''}Historical averages and positive-year percentages are not forecasts.`,label:n?'Review sample limits':'Review year selection',action:n?'sample':'seasonControls'};
  }
  if(context==='saved'){
+  if(typeof sqCheckinDraft!=='undefined'&&sqCheckinDraft)return {title:'Separate evidence from assumptions',text:'Compare the original idea with your current snapshot. Different inputs or hypothetical levels do not prove the market changed. Record what changed your thinking, or why you remain unsure.',label:'Continue your check-in',action:'checkin'};
   if(reviewable)return {title:'Return to your saved reasoning',text:'Your loaded note is ready to revisit. Read what you wrote and decide whether your assumptions still hold; marking it reviewed remains your choice.',label:'Read the loaded note',action:'review'};
   return saved.length?{title:'Revisit an idea',text:`${saved.length} saved research ${saved.length===1?'snapshot':'snapshots'} on this device. Choose a record to load, then compare its original assumptions with what you know now. Loading does not refresh market data.`,label:'Browse saved research',action:'history'}:{title:'Keep a thought to revisit',text:'Write what you noticed and what would change your mind. Your note stays on this device and is excluded from shared summaries.',label:'Write a research note',action:'notes'};
  }
@@ -1436,7 +1467,7 @@ function sqCompanionAction(context){
  if(action==='mission'){sqGoToMission();return;}
  if(action==='targets'){sqOpenResearchTool('targets');return;}
  if(action==='seasonControls'){sqOpenResearchTool('seasonality');sqCompanionFocus('research','seasonModeSwitch');return;}
- const targets={sample:['research','coverageSummary',true],modes:['research','dataModes'],review:['research','researchReason'],history:['saved','history'],notes:['research','researchReason'],compare:['watchlist','comparePanel'],watchlist:['watchlist','watchlist'],watch:['research','watchCurrentBtn'],inputs:['research','price']};
+ const targets={checkin:['saved','researchCheckin'],sample:['research','coverageSummary',true],modes:['research','dataModes'],review:['research','researchReason'],history:['saved','history'],notes:['research','researchReason'],compare:['watchlist','comparePanel'],watchlist:['watchlist','watchlist'],watch:['research','watchCurrentBtn'],inputs:['research','price']};
  if(targets[action])sqCompanionFocus(...targets[action]);
 }
 function sqCompanionIsVisible(context,record){
@@ -1576,19 +1607,155 @@ function sqRenderBadges(){
  for(const id of ['nextBadgeProgress','missionNextProgress']){$(id).max=next?next.steps:9;$(id).value=next?sqBadgeProgress(next.id,b):9;}
  $('missionNextStepLabel').textContent=next?`${sqBadgeProgress(next.id,b)} of ${next.steps} steps · milestone not yet earned`:'9 of 9 milestones completed';
  sqRenderCompanion(false);
- $('reviewHypothesisBtn').disabled=!sqJSON('splab_history',[]).some(x=>x.id===state.loadedResearchId&&typeof x.reason==='string'&&x.reason.trim().length>=12);$('reviewSampleBtn').disabled=!state.extra.seasonality?.totalMonths;$('reviewTrendsBtn').disabled=!sqHasTrend();$('reviewRangeBtn').disabled=!sqHasRange();
+ $('reviewHypothesisBtn').disabled=!sqHistoryRecords().some(x=>x.id===state.loadedResearchId&&typeof x.reason==='string'&&x.reason.trim().length>=12);$('reviewSampleBtn').disabled=!state.extra.seasonality?.totalMonths;$('reviewTrendsBtn').disabled=!sqHasTrend();$('reviewRangeBtn').disabled=!sqHasRange();
  $('completeResearchBtn').disabled=!!b.earned.complete||sqBadgeProgress('complete',b)<8;$('completeResearchBtn').textContent=b.earned.complete?'Research run complete':'Finish this research run';
 }
 // Rendering, repeated selections and legacy counters cannot farm rewards.
 awardAchievement=function(){};markPeriod=function(){};updateResearchProgress=function(){};recordProgressEvent=function(){};renderProgressScreens=function(){if($('nextBadgeTitle'))sqRenderBadges()};
 async function sqAnalyze(){const symbol=$('ticker').value,period=state.period,mode=state.mode;if(mode==='auto_eod')await fetchData();else render();if(symbol===$('ticker').value&&period===state.period&&mode===state.mode&&calc()&&(mode!=='auto_eod'||state.dataMeta?.symbol===symbol))sqEarn('first')}
 const sqOriginalSave=saveCurrent;
-saveCurrent=function(){if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqJSON('splab_history',[]);if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,...sqProvenance()});localStorage.setItem('splab_history',JSON.stringify(list));renderHistory();sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
+saveCurrent=function(){if(sqHistoryRead().blocked){status('Saved research could not be read safely. Existing data was kept unchanged.','warn');return false}if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqHistoryRecords();if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,...sqProvenance(),researchContext:sqCheckinHistorical()});localStorage.setItem('splab_history',JSON.stringify(list));renderHistory();sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
 function sqSaveNote(){const valid=$('researchReason').value.trim().length>=12;$('researchReason').setAttribute('aria-invalid',String(!valid));$('noteValidation').textContent=valid?'':'Add a little more detail: use at least 12 characters to capture your reasoning.';if(valid&&saveCurrent())$('noteValidation').textContent='Research note saved on this device.'}
 const sqOriginalWatch=addToWatchlist;
 addToWatchlist=function(symbol){sqOriginalWatch(symbol);const current=(symbol||$('ticker').value).trim().toUpperCase(),item=getWatchlist().find(x=>x.symbol===current);if(sqUsableSnapshot(item?.snapshot))sqEarn('watch')};
 const sqOriginalCompare=toggleCompare;
 toggleCompare=function(symbol){sqOriginalCompare(symbol);if(sqCompareSnapshots().length>=2)sqEarn('compare');sqRenderBadges()};
+
+// v10.1.5: immutable, local Research Check-ins. No requests, trade actions or rewards.
+let sqCheckinDraft=null;
+function sqHistoryRead(){
+ let value;try{value=JSON.parse(localStorage.getItem('splab_history')||'[]')}catch{return {records:[],blocked:true}}
+ if(!Array.isArray(value))return {records:[],blocked:true};
+ const object=x=>x&&typeof x==='object'&&!Array.isArray(x),stringOrNull=x=>x==null||typeof x==='string',numberOrNull=x=>x==null||typeof x==='string'||typeof x==='number'&&Number.isFinite(x);
+ const valid=x=>object(x)&&(x.id==null||typeof x.id==='string'||typeof x.id==='number'&&Number.isFinite(x.id))&&['ticker','instrument','p','period','at','inputMode','savedOrigin'].every(k=>stringOrNull(x[k]))&&(x.reason==null||['string','number','boolean'].includes(typeof x.reason))&&['price','perf','low','mid','high','correction','c','divisor','increment'].every(k=>numberOrNull(x[k]))&&(x.sourceContext==null||object(x.sourceContext)&&['source','session','symbol'].every(k=>stringOrNull(x.sourceContext[k]))&&numberOrNull(x.sourceContext.fetchedAt))&&(x.researchContext==null||object(x.researchContext));
+ const records=value.map((x,i)=>valid(x)?{...x,id:x.id==null||x.id===''?`legacy-${i}-${typeof x.at==='string'?x.at:''}`:String(x.id)}:null).filter(Boolean),ids=records.map(x=>x.id);
+ return {records,blocked:records.length!==value.length||new Set(ids).size!==ids.length};
+}
+function sqHistoryRecords(){return sqHistoryRead().records}
+function sqCheckinSavedTarget(value){return sqFiniteSavedValue(value)&&Number(value)>0?money(Number(value),0):'Unknown'}
+function sqCheckinDate(value){return typeof value==='string'&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleString():'Unknown date'}
+function sqCheckinNumber(value){return sqFiniteSavedValue(value)?Number(value):null}
+function sqCheckinHistorical(){return {baselineDate:sqValidDate(state.extra?.baselineDate)?state.extra.baselineDate:null,baselineClose:sqCheckinNumber(state.extra?.baselineClose),trend1m:state.extra?.trend1m||null,trend3m:state.extra?.trend3m||null,low52:sqCheckinNumber(state.extra?.low52),high52:sqCheckinNumber(state.extra?.high52),sampleMonths:sqCheckinNumber(state.extra?.seasonality?.totalMonths)}}
+function sqCheckinSnapshot(x){
+ const text=(v,max=2000)=>typeof v==='string'?v.slice(0,max):null,meta=x?.sourceContext;
+ const sourceContext=meta&&typeof meta==='object'&&!Array.isArray(meta)?{source:text(meta.source,160),session:sqValidDate(meta.session)?meta.session:null,fetchedAt:sqCheckinNumber(meta.fetchedAt),stale:meta.stale===true,synthetic:meta.synthetic===true,symbol:typeof meta.symbol==='string'?meta.symbol.trim().toUpperCase():null,baselineOffset:sqCheckinNumber(meta.baselineOffset),issue:text(meta.issue,1000),coverage:meta.coverage&&typeof meta.coverage==='object'&&!Array.isArray(meta.coverage)?{fullRange:typeof meta.coverage.fullRange==='boolean'?meta.coverage.fullRange:null,monthlyGaps:sqCheckinNumber(meta.coverage.monthlyGaps),weeklyGaps:sqCheckinNumber(meta.coverage.weeklyGaps),weeklyPoints:sqCheckinNumber(meta.coverage.weeklyPoints),monthlyRows:sqCheckinNumber(meta.coverage.monthlyRows)}:null}:null;
+ const h=x?.researchContext,period=typeof (x?.p||x?.period)==='string'?(x.p||x.period):null,rawTicker=typeof (x?.ticker||x?.symbol)==='string'?(x.ticker||x.symbol).trim().toUpperCase():'';
+ return {ticker:/^[A-Z0-9.^-]{1,15}$/.test(rawTicker)?rawTicker:null,period:period&&Object.hasOwn(PERIODS,period)?period:null,correction:sqCheckinNumber(x?.correction??x?.c),divisor:sqCheckinNumber(x?.divisor),increment:sqCheckinNumber(x?.increment),price:sqCheckinNumber(x?.price),perf:sqCheckinNumber(x?.perf),low:sqCheckinNumber(x?.low),mid:sqCheckinNumber(x?.mid),high:sqCheckinNumber(x?.high),at:text(x?.at,80),reason:text(x?.reason)||'',inputMode:['manual','demo','auto_eod'].includes(x?.inputMode)?x.inputMode:null,savedOrigin:text(x?.savedOrigin,40),sourceContext,researchContext:h&&typeof h==='object'&&!Array.isArray(h)?{baselineDate:sqValidDate(h.baselineDate)?h.baselineDate:null,baselineClose:sqCheckinNumber(h.baselineClose),trend1m:['Up','Down','Flat'].includes(h.trend1m)?h.trend1m:null,trend3m:['Up','Down','Flat'].includes(h.trend3m)?h.trend3m:null,low52:sqCheckinNumber(h.low52),high52:sqCheckinNumber(h.high52),sampleMonths:sqCheckinNumber(h.sampleMonths)}:null};
+}
+function sqCheckinCurrent(){
+ const r=calc(),ticker=$('ticker').value.trim().toUpperCase();if(!r||!/^[A-Z0-9.^-]{1,15}$/.test(ticker)||typeof state.dataMeta?.symbol==='string'&&state.dataMeta.symbol.trim().toUpperCase()!==ticker)return null;
+ return sqCheckinSnapshot({ticker,p:state.period,correction:Math.round(r.c*100),divisor:r.div,increment:r.inc,price:r.p,perf:r.perf,low:r.low,mid:r.mid,high:r.high,at:new Date().toISOString(),reason:$('researchReason').value,...sqProvenance(),researchContext:sqCheckinHistorical()});
+}
+function sqCheckinFingerprint(x){if(!x)return '';const {at,...rest}=sqCheckinSnapshot(x);return JSON.stringify(rest)}
+function sqCheckinSourceMismatch(x){return !!x?.sourceContext?.symbol&&x.sourceContext.symbol!==x.ticker}
+function sqCheckinLimitations(x){
+ const meta=x?.sourceContext;if(!meta)return 'Unknown · not recorded';
+ const warnings=[meta.issue,meta.baselineOffset>10?'Approximate baseline: '+meta.baselineOffset+' days before the requested horizon.':null,meta.coverage?.monthlyGaps>0?meta.coverage.monthlyGaps+' monthly gap(s); returns across gaps are excluded.':null,meta.coverage?.fullRange===false?'52-week coverage is incomplete.':null].filter(Boolean);
+ return warnings.length?[...new Set(warnings)].join(' '):meta.coverage||meta.baselineOffset!=null?'No additional caveat recorded; source limits still apply.':'Unknown · not recorded';
+}
+function sqCheckinComparison(original,current){
+ const old=sqCheckinSnapshot(original),now=sqCheckinSnapshot(current),sameInstrument=!!old.ticker&&old.ticker===now.ticker&&!sqCheckinSourceMismatch(old)&&!sqCheckinSourceMismatch(now);
+ const unknown='Unknown · not recorded',number=v=>v==null?unknown:String(v),price=v=>v==null?unknown:Number(v.toFixed(2))===v?money(v):'$'+String(v),source=x=>{if(sqCheckinSourceMismatch(x))return 'Source mismatch · metadata names '+x.sourceContext.symbol+' rather than '+x.ticker;const s=sqSourceInfo(x);return s.label+' · '+s.detail},session=x=>x.sourceContext?.session||unknown;
+ const fields=[['Instrument',x=>x.ticker||unknown,'identity'],['Source & provenance',source,'source'],['Data session',session,'source'],['Coverage & limitations',sqCheckinLimitations,'source'],['Horizon',x=>PERIODS[x.period]?.label||unknown,'assumption'],['Correction',x=>x.correction==null?unknown:x.correction+'%','assumption'],['Divisor',x=>number(x.divisor),'assumption'],['Rounding increment',x=>number(x.increment),'assumption'],['Reference input',x=>price(x.price),'input'],['Historical change input',x=>price(x.perf),'input'],['Low · hypothetical',x=>price(x.low),'target'],['Mid · hypothetical',x=>price(x.mid),'target'],['High · hypothetical',x=>price(x.high),'target'],['Baseline date',x=>x.researchContext?.baselineDate||unknown,'history'],['Baseline close',x=>price(x.researchContext?.baselineClose),'history'],['Monthly sample',x=>x.researchContext?.sampleMonths==null?unknown:x.researchContext.sampleMonths+' observations','history'],['1M / 3M trend context',x=>x.researchContext?.trend1m&&x.researchContext?.trend3m?x.researchContext.trend1m+' / '+x.researchContext.trend3m:unknown,'history'],['52-week range',x=>x.researchContext?.low52!=null&&x.researchContext?.high52!=null?price(x.researchContext.low52)+' – '+price(x.researchContext.high52):unknown,'history']];
+ const numericKeys={'Correction':'correction','Divisor':'divisor','Rounding increment':'increment','Reference input':'price','Historical change input':'perf','Low · hypothetical':'low','Mid · hypothetical':'mid','High · hypothetical':'high'};
+ const rows=fields.map(([label,read,kind])=>({label,original:read(old),current:current?read(now):'No valid snapshot captured',kind,changed:!!current&&(numericKeys[label]?old[numericKeys[label]]!==now[numericKeys[label]]:read(old)!==read(now))}));
+ const changed=rows.filter(x=>x.changed),scenarioChanged=changed.some(x=>['assumption','input','target'].includes(x.kind)),sourceChanged=changed.some(x=>x.kind==='source');
+ const stale=[old,now].some(x=>sqSourceInfo(x).kind==='stale');
+ const summary=!current?'A valid current research snapshot is needed.':!sameInstrument?'Different instruments cannot form a check-in. Prepare current research for '+(old.ticker||'the saved instrument')+'.':scenarioChanged?'Inputs or scenario assumptions differ. Changes in hypothetical levels are not evidence of a market move or an investment outcome.':'The recorded scenario inputs match where known. That does not establish that the market is unchanged or that the idea succeeded.';
+ const warnings=['Missing original fields remain unknown; they are never filled from today’s settings.',...(sourceChanged?['The source or session differs. Review provenance before drawing conclusions.']:[]),...(stale?['This comparison includes a stale EOD snapshot. Saving a check-in does not refresh it.']:[])];
+ return {sameInstrument,rows,summary,warnings,scenarioChanged,sourceChanged,stale};
+}
+function sqCheckinColumns(original,current){
+ const comparison=sqCheckinComparison(original,current),esc=x=>escapeHtml(String(x));
+ return `<p class="checkin-summary">${esc(comparison.summary)}</p><div class="checkin-grid">${[['Original saved idea','original',original],['Current research snapshot','current',current]].map(([title,key,snapshot])=>`<section class="checkin-column"><h3>${title}</h3><p class="notice">${key==='original'?'Saved':'Captured'}: ${esc(sqCheckinDate(snapshot?.at))}</p><dl>${comparison.rows.map(row=>`<dt>${esc(row.label)}${row.changed?' · differs':''}</dt><dd class="${row.changed?'checkin-different':''}">${esc(row[key])}</dd>`).join('')}</dl></section>`).join('')}</div><p class="notice">${comparison.warnings.map(esc).join(' ')}</p>`;
+}
+function sqReadCheckins(){
+ let value;try{value=JSON.parse(localStorage.getItem('sq_research_checkins_v1')||'{"version":1,"entries":[]}')}catch{return {version:1,entries:[],blocked:true}}
+ if(!value||value.version!==1||!Array.isArray(value.entries))return {version:1,entries:[],blocked:true};
+ const valid=x=>x&&typeof x==='object'&&typeof x.id==='string'&&typeof x.originalId==='string'&&typeof x.reason==='string'&&x.reason.trim().length>=12&&x.reason.length<=2000&&['changed','held','uncertain'].includes(x.thinking)&&['assumptions','source','observation'].includes(x.evidence)&&typeof x.createdAt==='string'&&Number.isFinite(Date.parse(x.createdAt))&&x.original&&x.current&&typeof x.original==='object'&&typeof x.current==='object'&&!!sqCheckinSnapshot(x.original).ticker&&sqCheckinSnapshot(x.original).ticker===sqCheckinSnapshot(x.current).ticker&&(x.evidence!=='observation'||typeof x.observation==='string'&&x.observation.trim().length>=12&&x.observation.length<=1000);
+ const entries=value.entries.filter(valid),ids=entries.map(x=>x.id);
+ return {version:1,entries,blocked:entries.length!==value.entries.length||new Set(ids).size!==ids.length};
+}
+function sqCheckinBlock(){
+ if(!sqCheckinDraft)return 'Choose a saved idea to begin.';
+ const source=sqHistoryRecords().find(x=>String(x.id)===sqCheckinDraft.originalId);
+ if(!source||sqHistoryRead().blocked||JSON.stringify(sqCheckinSnapshot(source))!==JSON.stringify(sqCheckinDraft.original))return 'The saved idea changed or is unavailable. Cancel and choose it again; existing data is unchanged.';
+ const live=sqCheckinCurrent();
+ if(sqCheckinDraft.current&&sqCheckinFingerprint(live)!==sqCheckinFingerprint(sqCheckinDraft.current))sqCheckinDraft.invalidated=true;
+ if(sqCheckinSourceMismatch(sqCheckinDraft.original)||sqCheckinSourceMismatch(live)||typeof state.dataMeta?.symbol==='string'&&state.dataMeta.symbol.trim().toUpperCase()!==$('ticker').value.trim().toUpperCase())return 'Snapshot source metadata names a different instrument. Cancel and prepare matching research before starting again.';
+ if(!live||live.ticker!==sqCheckinDraft.original.ticker)return 'Prepare valid current research for '+(sqCheckinDraft.original.ticker||'the saved instrument')+', then return to Saved and begin again. No provider is contacted here.';
+ if(!sqCheckinDraft.current||sqCheckinDraft.invalidated||sqCheckinFingerprint(live)!==sqCheckinFingerprint(sqCheckinDraft.current))return 'Current research changed after capture. Use current research snapshot again before saving.';
+ const store=sqReadCheckins();if(store.blocked)return 'The check-in journal could not be read safely. Existing data is unchanged; saving is blocked.';
+ if(store.entries.length>=100&&!store.entries.some(x=>x.id===sqCheckinDraft.id))return 'This device’s journal has reached 100 check-ins. Existing entries are kept; a new one cannot be added.';
+ return '';
+}
+function sqRenderCheckin(){
+ if(!$('researchCheckin'))return;
+ $('researchCheckin').hidden=!sqCheckinDraft;
+ if(sqCheckinDraft){
+  $('checkinTitle').textContent=(sqCheckinDraft.original.ticker||'Saved idea')+' · Research Check-in';
+  $('checkinOriginalReason').textContent='Original reasoning: '+(sqCheckinDraft.original.reason||'No reasoning was recorded with this saved idea.');
+  $('checkinComparison').innerHTML=sqCheckinColumns(sqCheckinDraft.original,sqCheckinDraft.current);
+  const blocked=sqCheckinBlock();$('saveCheckinBtn').disabled=!!blocked;
+  $('checkinStatus').textContent=blocked||sqCheckinDraft.message||'Snapshot captured. Read the comparison, then record your reflection.';
+ }
+ const journal=sqReadCheckins();$('checkinJournalCard').hidden=!journal.entries.length&&!journal.blocked;
+ const labels={changed:'Thinking changed',held:'Reasoning still holds',uncertain:'Still unsure',assumptions:'Inputs or assumptions',source:'Source or data quality',observation:'Self-reported observation'};
+ $('checkinJournal').innerHTML=(journal.blocked?'<p class="note-validation">Some check-in data could not be read safely. Existing storage is unchanged; new saves are blocked.</p>':'')+journal.entries.slice().reverse().map(entry=>`<article class="checkin-entry"><b>${escapeHtml(sqCheckinSnapshot(entry.original).ticker)} · ${labels[entry.thinking]}</b><div class="checkin-saved">${escapeHtml(sqCheckinDate(entry.createdAt))} · ${labels[entry.evidence]}</div><p>${escapeHtml(entry.reason)}</p>${entry.evidence==='observation'?`<p>Self-reported observation, not independently verified: ${escapeHtml(entry.observation)}</p>`:''}<details><summary>Read the saved comparison</summary><p class="checkin-reason">Original reasoning: ${escapeHtml(sqCheckinSnapshot(entry.original).reason||'Not recorded')}</p>${sqCheckinColumns(entry.original,entry.current)}</details></article>`).join('');
+}
+function sqStartCheckin(id){
+ const record=sqHistoryRecords().find(x=>String(x.id)===String(id));if(!record||sqHistoryRead().blocked){status('This saved idea could not be read safely. Existing data is unchanged.','warn');return false;}
+ sqCancelCheckin(false);setView('saved');
+ const original=sqCheckinSnapshot(record),current=sqCheckinCurrent();
+ sqCheckinDraft={id:crypto.randomUUID(),originalId:String(record.id),original,current:current?.ticker===original.ticker&&!sqCheckinSourceMismatch(current)?current:null,message:''};
+ for(const id of ['checkinReason','checkinThinking','checkinEvidence','checkinObservation'])$(id).value='';
+ $('checkinObservationField').hidden=true;$('checkinReason').setAttribute('aria-invalid','false');sqRenderCheckin();sqRenderCompanion();
+ $('researchCheckin').scrollIntoView({block:'start',behavior:'auto'});$('researchCheckin').focus({preventScroll:true});return true;
+}
+function sqCaptureCheckin(){
+ if(!sqCheckinDraft)return false;const current=sqCheckinCurrent();
+ if(!current||current.ticker!==sqCheckinDraft.original.ticker||sqCheckinSourceMismatch(current)||sqCheckinSourceMismatch(sqCheckinDraft.original)){sqRenderCheckin();return false;}
+ sqCheckinDraft.current=current;sqCheckinDraft.invalidated=false;sqCheckinDraft.message='Current snapshot captured. Recheck the comparison before saving.';sqRenderCheckin();return true;
+}
+function sqCancelCheckin(focus=true){
+ const id=sqCheckinDraft?.originalId;sqCheckinDraft=null;
+ for(const key of ['checkinReason','checkinThinking','checkinEvidence','checkinObservation'])if($(key))$(key).value='';
+ if($('researchCheckin')){$('researchCheckin').hidden=true;$('checkinStatus').textContent='';$('checkinComparison').innerHTML='';$('checkinOriginalReason').textContent='';}
+ if(focus){const button=[...document.querySelectorAll('[data-checkin-id]')].find(x=>x.dataset.checkinId===id);(button||$('history'))?.focus({preventScroll:true});sqRenderCompanion();}
+}
+function sqClearCheckins(){
+ if(!confirm('Delete all research check-ins from this device? This removes the journal’s copied notes and snapshots. Original saved ideas and XP stay unchanged.'))return false;
+ try{localStorage.removeItem('sq_research_checkins_v1')}catch{status('The journal could not be cleared. Existing check-ins remain on this device.','warn');return false;}
+ sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();$('history').focus({preventScroll:true});status('Research check-in journal cleared. Original saved ideas and XP are unchanged.','good');return true;
+}
+function sqSaveCheckin(){
+ if(!sqCheckinDraft)return false;
+ const blocked=sqCheckinBlock();if(blocked){sqCheckinDraft.message=blocked;sqRenderCheckin();return false;}
+ const reason=$('checkinReason').value.trim().slice(0,2000),thinking=$('checkinThinking').value,evidence=$('checkinEvidence').value,observation=$('checkinObservation').value.trim().slice(0,1000);
+ const invalid=reason.length<12||!['changed','held','uncertain'].includes(thinking)||!['assumptions','source','observation'].includes(evidence)||(evidence==='observation'&&observation.length<12);
+ $('checkinReason').setAttribute('aria-invalid',String(reason.length<12));
+ if(invalid){sqCheckinDraft.message='Choose your thinking and its basis, and write at least 12 characters. Observed evidence also needs a description with source and date.';sqRenderCheckin();return false;}
+ const store=sqReadCheckins();
+ if(!store.entries.some(x=>x.id===sqCheckinDraft.id)){
+  const entry={id:sqCheckinDraft.id,originalId:sqCheckinDraft.originalId,original:sqCheckinDraft.original,current:sqCheckinDraft.current,reason,thinking,evidence,observation:evidence==='observation'?observation:'',createdAt:new Date().toISOString()};
+  try{localStorage.setItem('sq_research_checkins_v1',JSON.stringify({version:1,entries:[...store.entries,entry]}));}
+  catch{sqCheckinDraft.message='This device could not save the check-in. Your draft is still here; free storage or try again.';sqRenderCheckin();return false;}
+ }
+ sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();status('Research check-in saved on this device. Your original idea is unchanged.','good');
+ $('checkinJournalCard').setAttribute('tabindex','-1');$('checkinJournalCard').scrollIntoView({block:'start',behavior:'auto'});$('checkinJournalCard').focus({preventScroll:true});return true;
+}
+$('history').addEventListener('click',event=>{
+ const check=event.target.closest?.('[data-checkin-id]'),load=event.target.closest?.('[data-saved-load]'),remove=event.target.closest?.('[data-saved-delete]');
+ if(check)sqStartCheckin(check.dataset.checkinId);else if(load)loadSaved(load.dataset.savedLoad);else if(remove)deleteSaved(remove.dataset.savedDelete);
+});
+$('clearCheckinsBtn').addEventListener('click',sqClearCheckins);
+$('captureCheckinBtn').addEventListener('click',sqCaptureCheckin);$('saveCheckinBtn').addEventListener('click',sqSaveCheckin);$('cancelCheckinBtn').addEventListener('click',()=>sqCancelCheckin());
+$('checkinEvidence').addEventListener('change',()=>{$('checkinObservationField').hidden=$('checkinEvidence').value!=='observation';});
+if(typeof window.addEventListener==='function'){
+ window.addEventListener('popstate',()=>sqCancelCheckin());
+ window.addEventListener('pagehide',()=>sqCancelCheckin(false));
+ window.addEventListener('storage',event=>{if(['splab_history','sq_research_checkins_v1'].includes(event.key)){sqRenderCheckin();}});
+}
 
 $("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
 $("ticker").addEventListener("keydown",e=>{
@@ -1643,7 +1810,7 @@ function closeSettings(){$("settingsModal").classList.remove("show");const activ
 const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=localStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback")){$("seasonalityLookback").value=localStorage.getItem("sq_seasonality_lookback")||"10";if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`}
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
 // Refresh companion copy after collection and selection changes, including empty states.
-const sqLumiHistory=renderHistory;renderHistory=function(){sqLumiHistory();if(state.loadedResearchId&&!sqJSON('splab_history',[]).some(x=>x.id===state.loadedResearchId)){state.loadedResearchId=null;$('reviewHypothesisBtn').disabled=true;}sqRenderCompanion();};
+const sqLumiHistory=renderHistory;renderHistory=function(){sqLumiHistory();sqRenderCheckin();if(state.loadedResearchId&&!sqHistoryRecords().some(x=>x.id===state.loadedResearchId)){state.loadedResearchId=null;$('reviewHypothesisBtn').disabled=true;}sqRenderCompanion();};
 const sqLumiWatch=renderWatchlist;renderWatchlist=function(){sqLumiWatch();sqRenderCompanion();};
 const sqLumiCompare=renderComparePanel;renderComparePanel=function(){sqLumiCompare();sqRenderCompanion();};
 const sqLumiSeason=renderSeasonality;renderSeasonality=function(){sqLumiSeason();const n=Number(state.extra.seasonality?.currentMonth?.observations)||0;$('coverageSummary').textContent=`Current-month seasonal sample: ${n?n+' observations':'unavailable'}. ${state.dataMeta?.issue||''} ${n&&n<5?'Small sample: results are especially uncertain.':''} History adjustment conventions are inherited and not normalized by this update.`;$('sampleCount').textContent=n?`${n} monthly observations in this selection`:'No monthly sample available';$('reviewSampleBtn').disabled=!state.extra.seasonality?.totalMonths;sqRenderCompanion();};

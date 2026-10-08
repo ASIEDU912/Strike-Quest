@@ -50,7 +50,16 @@ async function emit(page,name,locator){
   await page.setViewportSize({width:320,height:780});await page.locator('[data-private-mode="manual"]').click();await page.locator('#price').fill('999999.99');await page.locator('#perf').fill('1200');await page.locator('#openTargetsBtn').click();
   console.log('SQ_LAYOUT_DIAGNOSTIC '+JSON.stringify(await page.evaluate(()=>({viewport:innerWidth,page:document.documentElement.scrollWidth,overflow:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).slice(0,15).map(e=>({tag:e.tagName,id:e.id,class:e.getAttribute('class'),right:e.getBoundingClientRect().right,width:e.getBoundingClientRect().width}))}))));
   await emit(page,'large-manual-320.jpg');
+  await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>{setMode('demo');applySymbol('XLK');setPeriod('2y');sqSetCorrection(10);$('researchReason').value='The wider horizon changes my scenario; I would revisit the source and baseline before trusting it.';saveCurrent();sqSetCorrection(20);setView('saved');sqStartCheckin(sqHistoryRecords()[0].id);});
+  await emit(page,'research-checkin-comparison-mobile.jpg');
+  await page.locator('#checkinThinking').selectOption('uncertain');await page.locator('#checkinEvidence').selectOption('assumptions');
+  await page.locator('#checkinReason').fill('I changed only the correction assumption. These new hypothetical levels do not show a market move. I still need dated evidence.');
+  await page.locator('#checkinThinking').scrollIntoViewIfNeeded();
+  await emit(page,'research-checkin-reflection-mobile.jpg');
+  await page.locator('#saveCheckinBtn').click();
+  await emit(page,'research-checkin-journal-mobile.jpg');
   if(unexpected.length||errors.length)throw Error(JSON.stringify({unexpected,errors}));
-  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:8,bytes:total,liveProviderRequests:0,errors}));
+  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:11,bytes:total,liveProviderRequests:0,errors}));
   await context.close();
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close()});
