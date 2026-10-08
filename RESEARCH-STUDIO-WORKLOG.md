@@ -53,8 +53,16 @@
 
 - Exact commit `09169bbf946d70fefc1c319c0e64a595e73aa726` passed core and journal checks, including the full one-line mobile decimal-price matrix. Its Studio stress case exposed desktop price-area overflow. Removed the desktop price indent and let scenario cards wrap at a readable minimum width, while preserving the complete-number, 32px minimum, privacy and navigation assertions. Added 768px coverage in both engines and bounded scenario screenshots for final visual inspection; this refinement still requires exact-commit hosted verification.
 
+## Verified integrated source
+- Tested source: `98287b4c9062556d4be7a191878d636604e2dd4d`; [Actions run 37816736175](https://github.com/ASIEDU912/Strike-Quest/actions/runs/37816736175). All six jobs succeeded: source, core, journal, Studio, tap and motion. Integration verification is complete for this guest-only review source.
+- All 104 Studio browser checks passed in Chromium/WebKit at 320/390/768/1440px. Core passed the retained Node and browser suites, including 41 cache checks, 21 UI/PWA flows, 33 next-build cases, 34 research-guidance cases and 18 companion-placement cases. Both engines passed 18 Research Check-in cases and 14 backup workflows. All data was synthetic; no live provider or user account was used.
+- The tap suite passed 78 interaction checks across 50 host/stage combinations. Motion suites passed 24 mascot and 22 contextual-role temporal checks in both engines, including reduced motion, pause/collapse and cosmetic interactions without research/storage side effects.
+- Verified twelve Studio screenshot byte counts, SHA256 hashes and commit identifiers plus the 320px core scenario image. Inspected phone/desktop Home, the small WebKit Research Brief, instrument/chart, Settings, What's New and scenario layouts at 320/390/768/1440px. Complete decimal amounts remain on one line at a minimum 32px; the narrow-screen slider remains above navigation.
+- No merge or deployment occurred. Main remains `df587a2ef72e47f5518049a94c9d5df67fb2b890`; PR #8 remains open and unmerged at `615485fa7c0e47fa6303230df025b882a5fe83fb`. Authentication/cloud sync and physical-device Safari/installed-PWA verification remain separate gates. The owner's Supabase development-only approval below is preserved.
+- The final results commit changes only this work log and the review document and skips redundant CI. Application, workflow and test source remain byte-for-byte identical to the verified commit above.
+
 ## Review requirements
-1. Inspect hosted tests and mobile/desktop evidence for the new exact commit, repair remaining regressions, and record verified results. Packaging success and local Node checks are not review readiness.
+1. Rerun exact-source hosted tests and mobile/desktop inspection for any further application changes. Packaging success or local Node checks alone do not replace browser verification.
 2. Configure the approved Supabase Free development-only project after the owner completes the connection gate below. No fake login; authentication and sync remain separate verification gates.
 3. Real-device Safari/installed-PWA verification and any production release remain separate owner review steps.
 
