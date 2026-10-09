@@ -14,7 +14,7 @@ async function fixture(width,seed={}){
   if(!sessionStorage.getItem('backup_seeded')){for(const [key,value] of Object.entries(seed))localStorage.setItem(key,value);sessionStorage.setItem('backup_seeded','1');}
   sessionStorage.setItem('strikequests_v9_splash_seen','1');
  },seed);
- const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+ const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/account-core.js','/account.js','/account.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
  await context.route('**/*',route=>{
   const url=new URL(route.request().url());
   if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:'{"marketDataApi":"https://forbidden-provider.fixture.test"}'});

@@ -32,7 +32,7 @@ async function fixture(width,seed={},raw={}){
     }
     sessionStorage.setItem('strikequests_v9_splash_seen','1');
   },{fixedNow,seed,raw,original});
-  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/account-core.js','/account.js','/account.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());allRequests.push({origin:url.origin,path:url.pathname});
     if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:JSON.stringify({marketDataApi:'https://blocked-provider.fixture.test'})});

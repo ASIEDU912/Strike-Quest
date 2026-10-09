@@ -1,6 +1,6 @@
 # StrikeQuests Research Studio — v10.2.0 review package
 
-**Status: guest-first prototype for review. NOT published or merged.** October 8, 2026.
+**Status: guest-first development integration for review. NOT published or merged.** October 8, 2026.
 
 This review builds on the separate `feat/private-journal-backup` review (PR #8, commit `615485fa7c0e47fa6303230df025b882a5fe83fb`) and integrates the Research Studio UI on `feat/research-studio`. The private backup implementation is unchanged. Production remains at v10.1.5; this branch is not merged or deployed. The attached review bundle supplies the UI and navigation adaptations; the branch adds exact-commit CI and updates the offline-shell regression for the two new assets.
 
@@ -12,18 +12,18 @@ This review builds on the separate `feat/private-journal-backup` review (PR #8, 
 - Source-identified historical chart when current displayed data exactly match stored dated history; no invented series in Manual mode. Demo charts are labeled synthetic.
 - Deterministic Research Brief with uncertainty and source caveats; no AI provider or automated trading advice.
 - What's New panel with review-vs-release labels; grouped Settings; optional local nickname and quiet appearance mode.
-- Transparent guest-only account status. No fake working sign-in, no cloud sync, and no automatic journal upload.
+- Optional email/password accounts enabled through development configuration. Guest and each account have separate local workspaces. Guest import and manual sync require previews and consent; conflicts require an explicit version choice. Private Research Check-in entries remain on-device.
 - All pre-existing private Research Check-in and pending private backup/restore workflows remain in this build.
 
 ## Verification and release requirements
 
 - Exact-commit GitHub-hosted Chromium/WebKit verification is required for UI changes. The branch-only `Research Studio review` workflow runs core, private journal, Studio, tap and motion checks and saves synthetic screenshots together with their commit identifier. Results belong to their tested commit; consult its Actions run and the work log. No job publishes the app.
-- Real login and cloud sync remain unconfigured. The owner approved Supabase Free for a separate development-only project; its secure connection and verified Free organization/capacity are still pending. No paid services, production changes or uploads of existing guest records are authorized. Account work requires access isolation, sign-in/out/recovery and previewed, consented migration tests. Private Research Check-in remains device-local and excluded from account sync.
+- The existing `strikequests-auth-dev` project is in the verified Free organization. Validator permissions and typed provenance validation are applied. Synthetic transactional database tests verify owner CRUD, cross-user denial, tombstones and atomic stale-batch rejection; fixtures roll back. See [ACCOUNT-INTEGRATION.md](ACCOUNT-INTEGRATION.md) for local setup and current evidence. Browser SDK fixtures and real provider email delivery are separate verification gates.
 - Owner preview/approval followed by a separate, explicitly authorized production merge and deployment.
 
 ## Hosted integration evidence
 
-Tested source: `98287b4c9062556d4be7a191878d636604e2dd4d` on `feat/research-studio`. [Exact-commit Actions run](https://github.com/ASIEDU912/Strike-Quest/actions/runs/37816736175). All six jobs passed: source packaging, core, journal, Studio, interaction and motion. The subsequent results-documentation commit changes only Markdown; application and test source are identical to this verified commit.
+Tested source: `98287b4c9062556d4be7a191878d636604e2dd4d` on `feat/research-studio`. [Exact-commit Actions run](https://github.com/ASIEDU912/Strike-Quest/actions/runs/37816736175). All six jobs passed: source packaging, core, journal, Studio, interaction and motion. That run covers the earlier Studio source. Account integration changes application and test source and requires its own exact-commit verification.
 
 - **104 Studio browser checks** passed in Chromium and WebKit at 320, 390, 768 and 1440px. Navigation preserves exact inputs, private records and XP; source-aware charts and briefs do not invent Manual history; settings and updates retain their privacy and focus behavior.
 - Core checks passed, including **41 service-worker cache checks**, **21 browser UI/PWA flows**, **33 next-build**, **34 research-guidance** and **18 companion-placement** browser checks. Both shell paths restore all five destinations offline. Provider URLs, query strings and non-shell requests stay excluded from the app-shell cache.

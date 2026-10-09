@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [core, journal, studio, tap, motion]
+        suite: [core, journal, studio, account, tap, motion]
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
@@ -56,7 +56,9 @@ jobs:
       - name: Verify the tested commit
         run: test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
       - name: Install pinned test dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify pinned account browser bundle
+        run: npm run build:account && git diff --exit-code -- vendor/supabase.js
       - name: Install Chromium and WebKit
         run: npx --no-install playwright install --with-deps chromium webkit
       - name: Run Node regressions
@@ -78,6 +80,11 @@ jobs:
         env:
           STUDIO_LOG_EVIDENCE: '1'
         run: npm run test:studio
+      - name: Verify optional accounts and reviewed sync
+        if: matrix.suite == 'account'
+        env:
+          ACCOUNT_LOG_EVIDENCE: '1'
+        run: npm run test:account
       - name: Verify accessible Lumi interactions
         if: matrix.suite == 'tap'
         run: npm run test:tap

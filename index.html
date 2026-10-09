@@ -23,6 +23,7 @@
   <link rel="apple-touch-icon" href="./icon-180.png">
   <title>StrikeQuests — Strike Price Calculator</title>
   <link rel="stylesheet" href="./mascot.css">
+  <link rel="stylesheet" href="./account.css">
 <style>
     :root{
       --bg:#090C10;--bg2:#0D1218;--panel:#121820;--panel2:#17202A;--line:#27313D;
@@ -513,8 +514,10 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 </div>
 
 <div id="badgeToast" class="badge-toast" role="status" aria-live="polite"></div>
+<script src="./account-core.js"></script>
 <script src="./mascot.js"></script>
 <script>
+const sqLocalStorage=window.StrikeAccountCore?.store||localStorage;
 const $=id=>document.getElementById(id);
 const PERIODS={
   "3m":{label:"3-Month",months:3,divisor:2},
@@ -548,7 +551,7 @@ function localSymbolSearch(q){
 }
 async function barchartSymbolSearch(q){
   if(sqPrivate())return [];
-  const key=localStorage.getItem("splab_barchart_key");
+  const key=sqLocalStorage.getItem("splab_barchart_key");
   if(!key||q.trim().length<2)return [];
   if(searchAbort)searchAbort.abort();
   searchAbort=new AbortController();
@@ -600,7 +603,7 @@ async function runPredictiveSearch(){
     renderSuggestions(local,local.length?"":"Type at least 2 characters for full Barchart search.");
     return;
   }
-  const hasKey=!sqPrivate()&&!!localStorage.getItem("splab_barchart_key");
+  const hasKey=!sqPrivate()&&!!sqLocalStorage.getItem("splab_barchart_key");
   if(!hasKey){
     renderSuggestions(local,local.length?"":"Add a Barchart key in Settings for full symbol/company search.");
     return;
@@ -631,9 +634,9 @@ function seasonSignal(stat){
   if(stat.avgReturn<0&&stat.hitRate<50)return {label:"Historically weak",cls:"warn"};
   return {label:"Mixed history",cls:"mid"}
 }
-function seasonalityMode(){return localStorage.getItem("sq_seasonality_mode")||"range"}
-function selectedSeasonYears(){try{return JSON.parse(localStorage.getItem("sq_seasonality_years")||"[]").map(Number).filter(Number.isFinite)}catch(e){return []}}
-function saveSelectedSeasonYears(years){localStorage.setItem("sq_seasonality_years",JSON.stringify([...new Set(years.map(Number).filter(Number.isFinite))].sort((a,b)=>a-b)))}
+function seasonalityMode(){return sqLocalStorage.getItem("sq_seasonality_mode")||"range"}
+function selectedSeasonYears(){try{return JSON.parse(sqLocalStorage.getItem("sq_seasonality_years")||"[]").map(Number).filter(Number.isFinite)}catch(e){return []}}
+function saveSelectedSeasonYears(years){sqLocalStorage.setItem("sq_seasonality_years",JSON.stringify([...new Set(years.map(Number).filter(Number.isFinite))].sort((a,b)=>a-b)))}
 function availableSeasonYears(monthlyRecords){
   const years=[...new Set((monthlyRecords||[]).map(r=>Number(String(r.date||r.tradingDay||'').slice(0,4))).filter(Number.isFinite))].sort((a,b)=>a-b);
   return years.slice(-25)
@@ -641,7 +644,7 @@ function availableSeasonYears(monthlyRecords){
 function seasonalityOptions(monthlyRecords){
   const years=availableSeasonYears(monthlyRecords),latest=years[years.length-1]||new Date().getFullYear();
   const maxYears=Math.max(1,Math.min(25,years.length||25));
-  const requested=Math.max(1,Math.min(maxYears,Number($("seasonalityLookback")?.value||localStorage.getItem("sq_seasonality_lookback")||10)));
+  const requested=Math.max(1,Math.min(maxYears,Number($("seasonalityLookback")?.value||sqLocalStorage.getItem("sq_seasonality_lookback")||10)));
   const selected=selectedSeasonYears().filter(y=>years.includes(y));
   return {mode:seasonalityMode(),lookbackYears:requested,selectedYears:selected,availableYears:years,latestYear:latest,maxYears}
 }
@@ -666,7 +669,7 @@ function computeSeasonality(monthlyRecords,opts=10){
 function setSeasonalityMode(mode){
   const next=mode==='specific'?'specific':'range';
   if(next==='specific'&&!selectedSeasonYears().length){const raw=getAlphaRaw(($('ticker')?.value||'').trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){const latest=years[years.length-1],prev=years.includes(latest-1)?latest-1:years[Math.max(0,years.length-2)];saveSelectedSeasonYears([prev])}}
-  localStorage.setItem('sq_seasonality_mode',next);
+  sqLocalStorage.setItem('sq_seasonality_mode',next);
   document.querySelectorAll('.season-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.seasonMode===next));
   $("seasonRangePanel")?.classList.toggle('hide',next!=='range');$("seasonSpecificPanel")?.classList.toggle('show',next==='specific');
   renderSeasonality()
@@ -861,13 +864,13 @@ function trendFrom(records,spot,months){
 
 function eodCacheKey(){return `${($("ticker").value||"").trim().toUpperCase()}|${state.period}`;}
 function readEodCache(){
-  try{return JSON.parse(localStorage.getItem("strikequest_eod_cache")||"{}");}catch(e){return {}}
+  try{return JSON.parse(sqLocalStorage.getItem("strikequest_eod_cache")||"{}");}catch(e){return {}}
 }
 function writeEodCache(payload){
   const cache=readEodCache();
   cache[eodCacheKey()]=payload;
   const entries=Object.entries(cache).sort((a,b)=>(b[1]?.savedAt||0)-(a[1]?.savedAt||0)).slice(0,40);
-  localStorage.setItem("strikequest_eod_cache",JSON.stringify(Object.fromEntries(entries)));
+  sqLocalStorage.setItem("strikequest_eod_cache",JSON.stringify(Object.fromEntries(entries)));
 }
 function loadCachedEod(silent=false){
   const item=readEodCache()[eodCacheKey()];
@@ -881,13 +884,13 @@ function loadCachedEod(silent=false){
   render();renderSeasonality();
   return true;
 }
-function providerPreference(){return localStorage.getItem("sq_provider_pref")||"shared"}
+function providerPreference(){return sqLocalStorage.getItem("sq_provider_pref")||"shared"}
 function localFallbackProvider(){
-  const bk=localStorage.getItem("splab_barchart_key"),ak=localStorage.getItem("sq_alpha_key");
+  const bk=sqLocalStorage.getItem("splab_barchart_key"),ak=sqLocalStorage.getItem("sq_alpha_key");
   if(bk)return "barchart"; if(ak)return "alpha"; return null;
 }
 function activeProvider(){
-  const pref=providerPreference(),bk=localStorage.getItem("splab_barchart_key"),ak=localStorage.getItem("sq_alpha_key");
+  const pref=providerPreference(),bk=sqLocalStorage.getItem("splab_barchart_key"),ak=sqLocalStorage.getItem("sq_alpha_key");
   if(pref==="shared")return state.sharedApiReady?"shared":null;
   if(pref==="barchart")return bk?"barchart":null;
   if(pref==="alpha")return ak?"alpha":null;
@@ -919,9 +922,9 @@ async function loadPublicConfig(){
     if($("sharedApiStatus")){$("sharedApiStatus").textContent=`Shared service not connected yet: ${e.message||e}. Owner fallback keys and cached data remain available.`;$("sharedApiStatus").className="status warn"}
   }
 }
-function alphaCacheStore(){try{return JSON.parse(localStorage.getItem("sq_alpha_raw_cache")||"{}")}catch(e){return {}}}
+function alphaCacheStore(){try{return JSON.parse(sqLocalStorage.getItem("sq_alpha_raw_cache")||"{}")}catch(e){return {}}}
 function getAlphaRaw(symbol){return alphaCacheStore()[symbol]||null}
-function setAlphaRaw(symbol,payload){const cache=alphaCacheStore();cache[symbol]=payload;const trimmed=Object.entries(cache).sort((a,b)=>(b[1]?.savedAt||0)-(a[1]?.savedAt||0)).slice(0,20);localStorage.setItem("sq_alpha_raw_cache",JSON.stringify(Object.fromEntries(trimmed)))}
+function setAlphaRaw(symbol,payload){const cache=alphaCacheStore();cache[symbol]=payload;const trimmed=Object.entries(cache).sort((a,b)=>(b[1]?.savedAt||0)-(a[1]?.savedAt||0)).slice(0,20);sqLocalStorage.setItem("sq_alpha_raw_cache",JSON.stringify(Object.fromEntries(trimmed)))}
 function parseAlphaSeries(series){return Object.entries(series||{}).map(([date,v])=>({date,open:Number(v['1. open']),high:Number(v['2. high']),low:Number(v['3. low']),close:Number(v['5. adjusted close']??v['4. close']),volume:Number(v['6. volume']??v['5. volume'])})).sort((a,b)=>new Date(a.date)-new Date(b.date))}
 function alphaError(payload){return payload?.['Error Message']||payload?.Note||payload?.Information||null}
 function alphaOnOrBefore(records,target){const t=target.getTime();return records.filter(r=>new Date(`${r.date}T12:00:00`).getTime()<=t).sort((a,b)=>new Date(b.date)-new Date(a.date))[0]||null}
@@ -979,8 +982,8 @@ async function fetchData(force=false){
   const ticker=$("ticker").value.trim().toUpperCase();
   if(!ticker){status("Enter a ticker first.","warn");return}
   const alphaInput=$("alphaKey")?.value.trim()||"",barchartInput=$("apiKey")?.value.trim()||"";
-  if(alphaInput)localStorage.setItem("sq_alpha_key",alphaInput);
-  if(barchartInput)localStorage.setItem("splab_barchart_key",barchartInput);
+  if(alphaInput)sqLocalStorage.setItem("sq_alpha_key",alphaInput);
+  if(barchartInput)sqLocalStorage.setItem("splab_barchart_key",barchartInput);
   const provider=activeProvider();
   if(!provider){if(!loadCachedEod(false))status("Shared EOD is not connected yet. Manual inputs and saved data remain available.","warn");return}
   const requestId=++marketRequestSerial,period=state.period,pref=providerPreference(),apiBase=state.sharedApiBase;
@@ -989,7 +992,7 @@ async function fetchData(force=false){
     const wl=getWatchlist(),wi=wl.find(x=>x.symbol===ticker);
     if(wi){wi.snapshot=makeSnapshot(ticker);wi.updatedAt=new Date().toISOString();setWatchlist(wl)}
   };
-  const loadProvider=selected=>selected==="shared"?fetchSharedData(ticker,isCurrent):selected==="alpha"?fetchAlphaData(ticker,localStorage.getItem("sq_alpha_key"),force,isCurrent):fetchBarchartData(ticker,localStorage.getItem("splab_barchart_key"),isCurrent);
+  const loadProvider=selected=>selected==="shared"?fetchSharedData(ticker,isCurrent):selected==="alpha"?fetchAlphaData(ticker,sqLocalStorage.getItem("sq_alpha_key"),force,isCurrent):fetchBarchartData(ticker,sqLocalStorage.getItem("splab_barchart_key"),isCurrent);
   if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
   $("fetchBtn").disabled=true;
   try{
@@ -998,7 +1001,7 @@ async function fetchData(force=false){
   }catch(e){
     if(!isCurrent())return;
     let fallback=(provider==="shared"&&pref==="auto")?localFallbackProvider():null;
-    if(!fallback&&provider==="barchart"&&pref==="auto"&&localStorage.getItem("sq_alpha_key"))fallback="alpha";
+    if(!fallback&&provider==="barchart"&&pref==="auto"&&sqLocalStorage.getItem("sq_alpha_key"))fallback="alpha";
     if(fallback){
       try{
         status(`Primary data source unavailable. Falling back to your local ${fallback==="alpha"?"Alpha Vantage":"Barchart"} provider.`,"warn");
@@ -1049,17 +1052,17 @@ function saveCurrent(){
     low:r.low,mid:r.mid,high:r.high,
     at:new Date().toISOString()
   });
-  localStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));recordProgressEvent("saved");awardAchievement("saved","Saved Analysis",25);renderHistory();renderProgressScreens();status("Analysis saved.","good")
+  sqLocalStorage.setItem("splab_history",JSON.stringify(arr.slice(0,30)));recordProgressEvent("saved");awardAchievement("saved","Saved Analysis",25);renderHistory();renderProgressScreens();status("Analysis saved.","good")
 }
 function deleteSaved(id){
   if(sqHistoryRead().blocked){status("Saved research could not be read safely. Existing data was kept unchanged.","warn");return;}
   const arr=sqHistoryRecords();
-  localStorage.setItem("splab_history",JSON.stringify(arr.filter(x=>String(x.id)!==String(id))));
+  sqLocalStorage.setItem("splab_history",JSON.stringify(arr.filter(x=>String(x.id)!==String(id))));
   renderHistory();
 }
 function clearAllSaved(){
   if(!confirm("Delete all saved analyses?"))return;
-  localStorage.removeItem("splab_history");renderHistory();
+  sqLocalStorage.removeItem("splab_history");renderHistory();
 }
 function renderHistory(){
   const arr=sqHistoryRecords(),el=$("history");
@@ -1100,8 +1103,8 @@ function latestSavedSnapshot(symbol){
   const x=arr[0]; if(!x||!['price','perf','low','mid','high'].every(k=>sqFiniteSavedValue(x[k]))||!['price','low','mid','high'].every(k=>Number(x[k])>0))return null;
   return {inputMode:x.inputMode,savedOrigin:x.savedOrigin,sourceContext:x.sourceContext,symbol,price:Number(x.price),perf:Number(x.perf),low:Number(x.low),mid:Number(x.mid),high:Number(x.high),period:x.p||'1y',correction:Number(x.correction??x.c??10),score:60,updatedAt:x.at};
 }
-function getCompareSelection(){return JSON.parse(localStorage.getItem('sq_compare')||'[]')}
-function setCompareSelection(v){localStorage.setItem('sq_compare',JSON.stringify(v.slice(0,3)))}
+function getCompareSelection(){return JSON.parse(sqLocalStorage.getItem('sq_compare')||'[]')}
+function setCompareSelection(v){sqLocalStorage.setItem('sq_compare',JSON.stringify(v.slice(0,3)))}
 function toggleCompare(symbol){
   let selected=getCompareSelection();
   if(selected.includes(symbol))selected=selected.filter(x=>x!==symbol);
@@ -1122,7 +1125,7 @@ function renderComparePanel(){
   const selected=getCompareSelection(),list=getWatchlist();if(count)count.textContent=selected.length?`${selected.length} selected • choose up to 3`:'Select 2–3 watchlist items';
   const items=selected.map(s=>list.find(x=>x.symbol===s)).filter(Boolean);
   if(items.length<2){panel.innerHTML='<div class="compare-empty">Select at least two Watchlist items using the Compare button. Analysis snapshots are used for the side-by-side view.</div>';return}
-  panel.innerHTML=items.map(x=>{const s=sqWatchSnapshot(x);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${x.name||x.symbol}</div></div></div>${sqSnapshotSource(s)}<div class="compare-metrics"><div class="compare-metric"><span>Reference</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
+  panel.innerHTML=items.map(x=>{const s=sqWatchSnapshot(x);if(!s)return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${escapeHtml(x.name||x.symbol)}</div></div></div><div class="compare-empty" style="margin-top:10px">No snapshot yet. Analyze this ticker and tap Sync.</div></div>`;return `<div class="compare-card"><div class="compare-card-head"><div><h3>${x.symbol}</h3><div class="compare-name">${escapeHtml(x.name||x.symbol)}</div></div></div>${sqSnapshotSource(s)}<div class="compare-metrics"><div class="compare-metric"><span>Reference</span><b>${money(s.price)}</b></div><div class="compare-metric"><span>Performance</span><b>${money(s.perf)}</b></div><div class="compare-metric"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div></div><div class="compare-target-row"><div>LOW<b>${money(s.low,0)}</b></div><div>MID<b>${money(s.mid,0)}</b></div><div>HIGH<b>${money(s.high,0)}</b></div></div><div class="watch-meta"><span class="watch-chip">${s.correction}% correction</span><span class="watch-chip">Updated ${new Date(s.updatedAt).toLocaleDateString()}</span></div></div>`}).join('');
   recordProgressEvent('compare');awardAchievement('compare');
 }
 function recordProgressEvent(type){
@@ -1145,10 +1148,10 @@ const ACHIEVEMENTS={
   complete:{name:"Full Research Run",xp:100,icon:"🏆"}
 };
 function getProgress(){
-  const p=JSON.parse(localStorage.getItem("sq_progress")||'{"xp":0,"earned":{},"periods":[],"stats":{"analyses":0,"saved":0,"watch":0,"compare":0}}');
+  const p=JSON.parse(sqLocalStorage.getItem("sq_progress")||'{"xp":0,"earned":{},"periods":[],"stats":{"analyses":0,"saved":0,"watch":0,"compare":0}}');
   p.earned=p.earned||{};p.periods=p.periods||[];p.stats=p.stats||{analyses:0,saved:0,watch:0,compare:0};return p
 }
-function setProgress(p){localStorage.setItem("sq_progress",JSON.stringify(p))}
+function setProgress(p){sqLocalStorage.setItem("sq_progress",JSON.stringify(p))}
 function awardAchievement(key,name,xp){const p=getProgress();if(p.earned[key])return;p.earned[key]={name:name||ACHIEVEMENTS[key]?.name||key,at:new Date().toISOString()};p.xp=(p.xp||0)+(xp||ACHIEVEMENTS[key]?.xp||0);setProgress(p);renderProgressScreens()}
 function markPeriod(period){const prog=getProgress();prog.periods=Array.from(new Set([...(prog.periods||[]),period]));setProgress(prog);if(prog.periods.length>=2)awardAchievement("multi");renderProgressScreens()}
 function updateResearchProgress(checks){awardAchievement("first");if(checks[0])awardAchievement("trend");if(checks[1])awardAchievement("range");if(checks[3])awardAchievement("season");if(checks.every(Boolean))awardAchievement("complete");renderProgressScreens()}
@@ -1183,8 +1186,8 @@ function setAnalysisTab(tab){document.querySelectorAll('.analysis-tab').forEach(
 function symbolMeta(symbol){return LOCAL_SYMBOLS.find(x=>x.symbol===symbol)||{symbol,name:symbol,exchange:'',type:''}}
 function applySymbol(symbol){if($("ticker").value.trim().toUpperCase()!==symbol.toUpperCase())invalidateMarketRequest();const m=symbolMeta(symbol);$("ticker").value=symbol;$("selectedInstrument").textContent=`${m.name} • ${symbol}${m.exchange?` • ${m.exchange}`:''}`;render();if(state.mode==='auto_eod')maybeAutoLoadEod()}
 function renderQuickPick(symbol){applySymbol(symbol);setView('research')}
-function getWatchlist(){return JSON.parse(localStorage.getItem('sq_watchlist')||'[]')}
-function setWatchlist(v){localStorage.setItem('sq_watchlist',JSON.stringify(v))}
+function getWatchlist(){return JSON.parse(sqLocalStorage.getItem('sq_watchlist')||'[]')}
+function setWatchlist(v){sqLocalStorage.setItem('sq_watchlist',JSON.stringify(v))}
 function addToWatchlist(symbol){
   symbol=(symbol||$("ticker").value).trim().toUpperCase();if(!symbol)return;const list=getWatchlist();let item=list.find(x=>x.symbol===symbol);
   if(!item){const m=symbolMeta(symbol);item={symbol,name:m.name,exchange:m.exchange,at:new Date().toISOString(),snapshot:null};list.unshift(item);recordProgressEvent('watch');awardAchievement('watch')}
@@ -1193,7 +1196,7 @@ function addToWatchlist(symbol){
 function removeWatch(symbol){setWatchlist(getWatchlist().filter(x=>x.symbol!==symbol));setCompareSelection(getCompareSelection().filter(x=>x!==symbol));renderWatchlist();renderComparePanel()}
 function renderWatchlist(){
   const el=$("watchlist");if(!el)return;const list=getWatchlist(),selected=getCompareSelection();if(!list.length){el.innerHTML='<div class="watch-empty">No Watchlist tickers yet. Add the current ticker or use Quick Picks, then return here to compare research snapshots.</div>';renderComparePanel();return}
-  el.innerHTML=list.map(x=>{const s=sqWatchSnapshot(x);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Reference</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Correction</span><b>${Number.isFinite(s.correction)?s.correction+'%':'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${x.name||x.symbol}${x.exchange?` • ${x.exchange}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${s?sqSnapshotSource(s):''}${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
+  el.innerHTML=list.map(x=>{const s=sqWatchSnapshot(x);const isSelected=selected.includes(x.symbol);const stats=s?`<div class="watch-snapshot"><div class="watch-stat"><span>Reference</span><b>${money(s.price)}</b></div><div class="watch-stat"><span>Performance</span><b>${money(s.perf)}</b></div><div class="watch-stat"><span>Horizon</span><b>${PERIODS[s.period]?.label||s.period}</b></div><div class="watch-stat"><span>Correction</span><b>${Number.isFinite(s.correction)?s.correction+'%':'—'}</b></div></div><div class="watch-targets"><div class="watch-target low">LOW<b>${money(s.low,0)}</b></div><div class="watch-target mid">MID<b>${money(s.mid,0)}</b></div><div class="watch-target high">HIGH<b>${money(s.high,0)}</b></div></div>`:`<div class="watch-empty" style="margin-top:9px;padding:10px">No analysis snapshot yet.</div>`;return `<div class="watch-item ${isSelected?'compare-selected':''}"><div class="watch-head"><div><div class="watch-symbol">${x.symbol}</div><div class="watch-name">${escapeHtml(x.name||x.symbol)}${x.exchange?` • ${escapeHtml(x.exchange)}`:''}</div></div><span class="watch-chip">${s?`Updated ${new Date(s.updatedAt).toLocaleDateString()}`:'Needs analysis'}</span></div>${s?sqSnapshotSource(s):''}${stats}<div class="watch-actions"><button class="tiny-btn" onclick="applySymbol('${x.symbol}');setView('research')">Analyze</button><button class="tiny-btn" onclick="syncWatchSnapshot('${x.symbol}')">Sync</button><button class="tiny-btn ${isSelected?'compare-on':''}" onclick="toggleCompare('${x.symbol}')">${isSelected?'Selected':'Compare'}</button><button class="tiny-btn danger" onclick="removeWatch('${x.symbol}')">Remove</button></div></div>`}).join('');renderComparePanel()
 }
 function loadSaved(id){
   const arr=sqHistoryRecords();
@@ -1227,8 +1230,8 @@ const SQ_HINTS={
 const sqControllers=new Set();
 let sqRestoring=false,sqDataIssue='',sqToastTimer;
 function sqPrivate(){return state.mode!=='auto_eod'}
-function sqJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch{return fallback}}
-function sqPersist(){if(sqRestoring)return;localStorage.setItem('sq_next_session',JSON.stringify({mode:state.mode,ticker:$('ticker').value,period:state.period,correction:state.correction,price:$('price').value,perf:$('perf').value,divisor:$('divisor').value,increment:$('increment').value,reason:$('researchReason')?.value||'',savedOrigin:state.savedOrigin||null}));}
+function sqJSON(key,fallback){try{return JSON.parse(sqLocalStorage.getItem(key)||'null')??fallback}catch{return fallback}}
+function sqPersist(){if(sqRestoring)return;sqLocalStorage.setItem('sq_next_session',JSON.stringify({mode:state.mode,ticker:$('ticker').value,period:state.period,correction:state.correction,price:$('price').value,perf:$('perf').value,divisor:$('divisor').value,increment:$('increment').value,reason:$('researchReason')?.value||'',savedOrigin:state.savedOrigin||null}));}
 async function sqFetch(url,options={}){
  if(sqPrivate())throw new Error('Private mode: provider requests are disabled.');
  const controller=new AbortController();sqControllers.add(controller);
@@ -1438,7 +1441,7 @@ const SQ_BADGES=[
 const SQ_CORE=SQ_BADGES.filter(b=>b.id!=='review'),SQ_BADGE_KEY='sq_badges_v1011';
 // All placements share earned progress and user preferences; guides never perform research actions.
 const sqCompanions=new Map();
-let sqCompanionView='research',sqCompanionTab='overview',sqCompanionCollapsed=localStorage.getItem('sq_companion_collapsed')==='true';
+let sqCompanionView='research',sqCompanionTab='overview',sqCompanionCollapsed=sqLocalStorage.getItem('sq_companion_collapsed')==='true';
 const SQ_COMPANION_HOSTS=[
  ['research','companionPanel','companionSummary','companionHost'],
  ['quests','questsCompanionPanel','questsCompanionSummary','questsCompanionHost'],
@@ -1502,11 +1505,11 @@ function sqCompanionVisibility(){
  }
 }
 function sqCompanionPause(paused){
- localStorage.setItem('sq_companion_paused',String(paused));
+ sqLocalStorage.setItem('sq_companion_paused',String(paused));
  for(const record of sqCompanions.values())record.controller.setPaused?.(paused);
 }
 function sqCompanionCollapse(collapsed){
- sqCompanionCollapsed=collapsed;localStorage.setItem('sq_companion_collapsed',String(collapsed));
+ sqCompanionCollapsed=collapsed;sqLocalStorage.setItem('sq_companion_collapsed',String(collapsed));
  for(const record of sqCompanions.values())if(record.panel.open===collapsed)record.panel.open=!collapsed;
  sqCompanionVisibility();
 }
@@ -1521,7 +1524,7 @@ function sqRenderCompanion(celebrate=false){
   let record=sqCompanions.get(context);
   if(!record){
    panel.open=!sqCompanionCollapsed;
-   const controller=StrikeMascot.mount(host,xp,{idPrefix:'lumi-'+context,context,compact:context!=='quests',guide:sqCompanionGuide(context),static:localStorage.getItem('sq_companion_paused')==='true',announce:false,onPause:sqCompanionPause});
+   const controller=StrikeMascot.mount(host,xp,{idPrefix:'lumi-'+context,context,compact:context!=='quests',guide:sqCompanionGuide(context),static:sqLocalStorage.getItem('sq_companion_paused')==='true',announce:false,onPause:sqCompanionPause});
    record={panel,host,controller,greeted:false};sqCompanions.set(context,record);
    // Save synchronously on the native summary activation, before a rapid reload can discard its queued toggle event.
    $(summaryId).addEventListener('click',event=>{event.preventDefault();sqCompanionCollapse(panel.open);});
@@ -1558,7 +1561,7 @@ function sqBadges(){
  // Leave both older stores intact so existing history is not reset.
  sqBadgeSave(b);return b;
 }
-function sqBadgeSave(b){localStorage.setItem(SQ_BADGE_KEY,JSON.stringify(b))}
+function sqBadgeSave(b){sqLocalStorage.setItem(SQ_BADGE_KEY,JSON.stringify(b))}
 function sqEarn(id){
  const badge=SQ_BADGES.find(x=>x.id===id);if(!badge)return;
  const b=sqBadges();if(b.earned[id])return;const previousXp=sqResearchXp();
@@ -1631,7 +1634,7 @@ function sqRenderBadges(){
 awardAchievement=function(){};markPeriod=function(){};updateResearchProgress=function(){};recordProgressEvent=function(){};renderProgressScreens=function(){if($('nextBadgeTitle'))sqRenderBadges()};
 async function sqAnalyze(){const symbol=$('ticker').value,period=state.period,mode=state.mode;if(mode==='auto_eod')await fetchData();else render();if(symbol===$('ticker').value&&period===state.period&&mode===state.mode&&calc()&&(mode!=='auto_eod'||state.dataMeta?.symbol===symbol))sqEarn('first')}
 const sqOriginalSave=saveCurrent;
-saveCurrent=function(){if(sqHistoryRead().blocked){status('Saved research could not be read safely. Existing data was kept unchanged.','warn');return false}if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqHistoryRecords();if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,...sqProvenance(),researchContext:sqCheckinHistorical()});localStorage.setItem('splab_history',JSON.stringify(list));renderHistory();sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
+saveCurrent=function(){if(sqHistoryRead().blocked){status('Saved research could not be read safely. Existing data was kept unchanged.','warn');return false}if(!calc()){status('Valid inputs are required before saving.','warn');return false}sqOriginalSave();const list=sqHistoryRecords();if(!list.length)return false;const reason=($('researchReason').value||'').trim().slice(0,2000);Object.assign(list[0],{reason,...sqProvenance(),researchContext:sqCheckinHistorical()});sqLocalStorage.setItem('splab_history',JSON.stringify(list));renderHistory();sqEarn('saved');sqVisitHorizon();if(reason.length>=12&&sqBadges().horizons.length>=2)sqEarn('multi');sqPersist();return true};
 function sqSaveNote(){const valid=$('researchReason').value.trim().length>=12;$('researchReason').setAttribute('aria-invalid',String(!valid));$('noteValidation').textContent=valid?'':'Add a little more detail: use at least 12 characters to capture your reasoning.';if(valid&&saveCurrent())$('noteValidation').textContent='Research note saved on this device.'}
 const sqOriginalWatch=addToWatchlist;
 addToWatchlist=function(symbol){sqOriginalWatch(symbol);const current=(symbol||$('ticker').value).trim().toUpperCase(),item=getWatchlist().find(x=>x.symbol===current);if(sqUsableSnapshot(item?.snapshot))sqEarn('watch')};
@@ -1641,7 +1644,7 @@ toggleCompare=function(symbol){sqOriginalCompare(symbol);if(sqCompareSnapshots()
 // v10.1.5: immutable, local Research Check-ins. No requests, trade actions or rewards.
 let sqCheckinDraft=null;
 function sqHistoryRead(){
- let value;try{value=JSON.parse(localStorage.getItem('splab_history')||'[]')}catch{return {records:[],blocked:true}}
+ let value;try{value=JSON.parse(sqLocalStorage.getItem('splab_history')||'[]')}catch{return {records:[],blocked:true}}
  if(!Array.isArray(value))return {records:[],blocked:true};
  const object=x=>x&&typeof x==='object'&&!Array.isArray(x),stringOrNull=x=>x==null||typeof x==='string',numberOrNull=x=>x==null||typeof x==='string'||typeof x==='number'&&Number.isFinite(x);
  const valid=x=>object(x)&&(x.id==null||typeof x.id==='string'||typeof x.id==='number'&&Number.isFinite(x.id))&&['ticker','instrument','p','period','at','inputMode','savedOrigin'].every(k=>stringOrNull(x[k]))&&(x.reason==null||['string','number','boolean'].includes(typeof x.reason))&&['price','perf','low','mid','high','correction','c','divisor','increment'].every(k=>numberOrNull(x[k]))&&(x.sourceContext==null||object(x.sourceContext)&&['source','session','symbol'].every(k=>stringOrNull(x.sourceContext[k]))&&numberOrNull(x.sourceContext.fetchedAt))&&(x.researchContext==null||object(x.researchContext));
@@ -1687,7 +1690,7 @@ function sqCheckinColumns(original,current){
  return `<p class="checkin-summary">${esc(comparison.summary)}</p><div class="checkin-grid">${[['Original saved idea','original',original],['Current research snapshot','current',current]].map(([title,key,snapshot])=>`<section class="checkin-column"><h3>${title}</h3><p class="notice">${key==='original'?'Saved':'Captured'}: ${esc(sqCheckinDate(snapshot?.at))}</p><dl>${comparison.rows.map(row=>`<dt>${esc(row.label)}${row.changed?' · differs':''}</dt><dd class="${row.changed?'checkin-different':''}">${esc(row[key])}</dd>`).join('')}</dl></section>`).join('')}</div><p class="notice">${comparison.warnings.map(esc).join(' ')}</p>`;
 }
 function sqReadCheckins(){
- let value;try{value=JSON.parse(localStorage.getItem('sq_research_checkins_v1')||'{"version":1,"entries":[]}')}catch{return {version:1,entries:[],blocked:true}}
+ let value;try{value=JSON.parse(sqLocalStorage.getItem('sq_research_checkins_v1')||'{"version":1,"entries":[]}')}catch{return {version:1,entries:[],blocked:true}}
  if(!value||value.version!==1||!Array.isArray(value.entries))return {version:1,entries:[],blocked:true};
  const valid=x=>x&&typeof x==='object'&&typeof x.id==='string'&&typeof x.originalId==='string'&&typeof x.reason==='string'&&x.reason.trim().length>=12&&x.reason.length<=2000&&['changed','held','uncertain'].includes(x.thinking)&&['assumptions','source','observation'].includes(x.evidence)&&typeof x.createdAt==='string'&&Number.isFinite(Date.parse(x.createdAt))&&x.original&&x.current&&typeof x.original==='object'&&typeof x.current==='object'&&!!sqCheckinSnapshot(x.original).ticker&&sqCheckinSnapshot(x.original).ticker===sqCheckinSnapshot(x.current).ticker&&(x.evidence!=='observation'||typeof x.observation==='string'&&x.observation.trim().length>=12&&x.observation.length<=1000);
  const entries=value.entries.filter(valid),ids=entries.map(x=>x.id);
@@ -1743,7 +1746,7 @@ function sqCancelCheckin(focus=true){
 }
 function sqClearCheckins(){
  if(!confirm('Delete all research check-ins from this device? This removes the journal’s copied notes and snapshots. Original saved ideas and XP stay unchanged.'))return false;
- try{localStorage.removeItem('sq_research_checkins_v1')}catch{status('The journal could not be cleared. Existing check-ins remain on this device.','warn');return false;}
+ try{sqLocalStorage.removeItem('sq_research_checkins_v1')}catch{status('The journal could not be cleared. Existing check-ins remain on this device.','warn');return false;}
  sqCancelCheckinImport(false);sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();$('history').focus({preventScroll:true});status('Research check-in journal cleared. Original saved ideas and XP are unchanged.','good');return true;
 }
 function sqSaveCheckin(){
@@ -1756,7 +1759,7 @@ function sqSaveCheckin(){
  const store=sqReadCheckins();
  if(!store.entries.some(x=>x.id===sqCheckinDraft.id)){
   const entry={id:sqCheckinDraft.id,originalId:sqCheckinDraft.originalId,original:sqCheckinDraft.original,current:sqCheckinDraft.current,reason,thinking,evidence,observation:evidence==='observation'?observation:'',createdAt:new Date().toISOString()};
-  try{localStorage.setItem('sq_research_checkins_v1',JSON.stringify({version:1,entries:[...store.entries,entry]}));}
+  try{sqLocalStorage.setItem('sq_research_checkins_v1',JSON.stringify({version:1,entries:[...store.entries,entry]}));}
   catch{sqCheckinDraft.message='This device could not save the check-in. Your draft is still here; free storage or try again.';sqRenderCheckin();return false;}
  }
  sqCancelCheckin(false);sqRenderCheckin();sqRenderCompanion();status('Research check-in saved on this device. Your original idea is unchanged.','good');
@@ -1805,7 +1808,7 @@ function sqBackupEntry(value,strict=true){
 }
 function sqBackupSecretGuard(value){
  const text=JSON.stringify(value);
- const secrets=[localStorage.getItem('sq_alpha_key'),localStorage.getItem('splab_barchart_key'),$('alphaKey')?.value,$('apiKey')?.value].filter(x=>typeof x==='string'&&x.trim());
+ const secrets=[sqLocalStorage.getItem('sq_alpha_key'),sqLocalStorage.getItem('splab_barchart_key'),$('alphaKey')?.value,$('apiKey')?.value].filter(x=>typeof x==='string'&&x.trim());
  if(secrets.some(key=>[key,encodeURIComponent(key),JSON.stringify(key).slice(1,-1)].some(token=>text.includes(token)))||/(?:api[_-]?key|authorization|access[_-]?token|client[_-]?secret)[\s"'\\]*[=:][\s"'\\]*[a-z0-9%+./_-]{6,}/i.test(text))sqBackupError('Possible API credentials were found in journal text. Remove them from the affected notes before using backup. Existing data is unchanged.');
 }
 function sqCreateCheckinBackup(){
@@ -1874,7 +1877,7 @@ function sqCancelCheckinImport(focus=true){
 function sqStageCheckinImport(text,name='Journal backup'){
  sqCheckinImport=null;$('checkinImportPreview').hidden=true;$('confirmCheckinImportBtn').disabled=true;
  try{
-  const backup=sqParseCheckinBackup(text),raw=localStorage.getItem('sq_research_checkins_v1'),plan=sqPlanCheckinImport(backup);
+  const backup=sqParseCheckinBackup(text),raw=sqLocalStorage.getItem('sq_research_checkins_v1'),plan=sqPlanCheckinImport(backup);
   sqCheckinImport={backup,raw,plan};
   const blocked=plan.conflicts>0||plan.total>100;
   $('checkinImportSummary').textContent=String(name).slice(0,200)+' · '+plan.additions.length+' new · '+plan.duplicates+' duplicate(s) skipped · '+plan.conflicts+' conflicting ID(s) · '+plan.total+'/100 after import. Exported '+sqCheckinDate(backup.exportedAt)+'.';
@@ -1898,14 +1901,14 @@ function sqConfirmCheckinImport(){
  try{
   const pending=sqCheckinImport;
   // A preview is never permission to replace changes made since it was prepared.
-  if(localStorage.getItem('sq_research_checkins_v1')!==pending.raw){sqCancelCheckinImport(false);sqBackupStatus('The journal changed since the preview. Choose the backup again to review a fresh merge. Nothing was imported.');return false;}
+  if(sqLocalStorage.getItem('sq_research_checkins_v1')!==pending.raw){sqCancelCheckinImport(false);sqBackupStatus('The journal changed since the preview. Choose the backup again to review a fresh merge. Nothing was imported.');return false;}
   sqBackupSecretGuard(pending.backup);const plan=sqPlanCheckinImport(pending.backup);
   if(plan.conflicts||plan.total>100||!plan.additions.length)return false;
   const journal=sqReadCheckins();
   const next=JSON.stringify({version:1,entries:[...journal.entries,...plan.additions]});
   // No asynchronous work occurs between this last check and the one storage write.
-  if(localStorage.getItem('sq_research_checkins_v1')!==pending.raw)sqBackupError('The journal changed. Choose the file again; nothing was imported.');
-  localStorage.setItem('sq_research_checkins_v1',next);
+  if(sqLocalStorage.getItem('sq_research_checkins_v1')!==pending.raw)sqBackupError('The journal changed. Choose the file again; nothing was imported.');
+  sqLocalStorage.setItem('sq_research_checkins_v1',next);
   sqCancelCheckinImport(false);sqRenderCheckin();
   sqBackupStatus('Imported '+plan.additions.length+' check-in(s); skipped '+plan.duplicates+' duplicate(s). Existing entries, original ideas and progress are unchanged.');return true;
  }catch(error){sqBackupStatus('Import did not complete. '+(error.name==='QuotaExceededError'?'This device has insufficient storage.':error.message||'Storage is unavailable.')+' Your preview is kept for retry; no existing entries were replaced.');return false;}
@@ -1958,16 +1961,16 @@ $("ticker").addEventListener("input",()=>{state.loadedResearchId=null;invalidate
 $("correction").addEventListener("input",e=>sqSetCorrection(e.target.value));
 $("analyzeBtn").addEventListener("click",sqAnalyze);
 $("fetchBtn").addEventListener("click",()=>fetchData(true));
-$("forgetBtn").addEventListener("click",()=>{localStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device.")}); if($("forgetAlphaBtn"))$("forgetAlphaBtn").addEventListener("click",()=>{localStorage.removeItem("sq_alpha_key");$("alphaKey").value="";status("Alpha Vantage API key removed from this device.")});
-if($("providerSelect"))$("providerSelect").addEventListener("change",()=>{invalidateMarketRequest();localStorage.setItem("sq_provider_pref",$("providerSelect").value);if(state.mode==="auto_eod")maybeAutoLoadEod()});
+$("forgetBtn").addEventListener("click",()=>{sqLocalStorage.removeItem("splab_barchart_key");$("apiKey").value="";status("Barchart API key removed from this device.")}); if($("forgetAlphaBtn"))$("forgetAlphaBtn").addEventListener("click",()=>{sqLocalStorage.removeItem("sq_alpha_key");$("alphaKey").value="";status("Alpha Vantage API key removed from this device.")});
+if($("providerSelect"))$("providerSelect").addEventListener("change",()=>{invalidateMarketRequest();sqLocalStorage.setItem("sq_provider_pref",$("providerSelect").value);if(state.mode==="auto_eod")maybeAutoLoadEod()});
 if($("seasonModeSwitch"))$("seasonModeSwitch").addEventListener("click",e=>{const btn=e.target.closest('[data-season-mode]');if(btn)setSeasonalityMode(btn.dataset.seasonMode)});
-if($("seasonalityLookback"))$("seasonalityLookback").addEventListener("input",()=>{localStorage.setItem("sq_seasonality_lookback",$("seasonalityLookback").value);if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`;recomputeSeasonality()});
+if($("seasonalityLookback"))$("seasonalityLookback").addEventListener("input",()=>{sqLocalStorage.setItem("sq_seasonality_lookback",$("seasonalityLookback").value);if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`;recomputeSeasonality()});
 if($("seasonalityYearChips"))$("seasonalityYearChips").addEventListener("click",e=>{const btn=e.target.closest('[data-season-year]');if(!btn)return;const y=Number(btn.dataset.seasonYear),years=selectedSeasonYears();saveSelectedSeasonYears(years.includes(y)?years.filter(v=>v!==y):[...years,y]);recomputeSeasonality()});
 if($("seasonPrevYearBtn"))$("seasonPrevYearBtn").addEventListener("click",()=>{const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){const latest=years[years.length-1],prev=years.includes(latest-1)?latest-1:years[Math.max(0,years.length-2)];saveSelectedSeasonYears([prev]);setSeasonalityMode('specific')}});
 if($("seasonCurrentYearBtn"))$("seasonCurrentYearBtn").addEventListener("click",()=>{const raw=getAlphaRaw(($("ticker").value||"").trim().toUpperCase()),years=availableSeasonYears(raw?.monthly||[]);if(years.length){saveSelectedSeasonYears([years[years.length-1]]);setSeasonalityMode('specific')}});
 if($("seasonClearYearsBtn"))$("seasonClearYearsBtn").addEventListener("click",()=>{saveSelectedSeasonYears([]);renderSeasonality()});
 $("saveBtn").addEventListener("click",saveCurrent);$("clearAllBtn").addEventListener("click",clearAllSaved);$("settingsBtn").addEventListener("click",openSettings);$("closeSettings").addEventListener("click",closeSettings);$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings()});$("shareResultBtn").addEventListener("click",shareResult);$("copyResultBtn").addEventListener("click",copyResult);$("refreshBtn").addEventListener("click",()=>state.mode==="auto_eod"?fetchData(true):render());$("settingsIncrement").addEventListener("change",()=>{$("increment").value=$("settingsIncrement").value;sqInputChanged("increment")});
-$("dismissInstall").addEventListener("click",()=>{localStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
+$("dismissInstall").addEventListener("click",()=>{sqLocalStorage.setItem("splab_install_hint","1");$("installBanner").classList.remove("show")});
 function resultSummary(){
   const r=calc();if(!r)return "";
   const t=$("ticker").value.trim().toUpperCase()||"—";
@@ -1977,7 +1980,7 @@ async function shareResult(){const text=resultSummary();try{if(navigator.share){
 async function copyResult(){try{await navigator.clipboard.writeText(resultSummary());status("Result copied to clipboard.","good")}catch(e){status("Could not copy automatically.","warn")}}
 function openSettings(){$("settingsModal").classList.add("show");$("settingsIncrement").value=$("increment").value;if($("providerSelect"))$("providerSelect").value=providerPreference();if($("sharedApiState"))$("sharedApiState").textContent=state.sharedApiReady?"Online":"Setup needed";sqCompanionVisibility()}
 function closeSettings(){$("settingsModal").classList.remove("show");const activeView=document.querySelector('.app-view.active');const view=activeView?.id?.replace('view','').toLowerCase()||'research';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view));sqCompanionVisibility()}
-const key=localStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=localStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback")){$("seasonalityLookback").value=localStorage.getItem("sq_seasonality_lookback")||"10";if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`}
+const key=sqLocalStorage.getItem("splab_barchart_key");if(key)$("apiKey").value=key; const alphaStored=sqLocalStorage.getItem("sq_alpha_key");if(alphaStored&&$("alphaKey"))$("alphaKey").value=alphaStored; if($("providerSelect"))$("providerSelect").value=providerPreference(); if($("seasonalityLookback")){$("seasonalityLookback").value=sqLocalStorage.getItem("sq_seasonality_lookback")||"10";if($("seasonalityLookbackLabel"))$("seasonalityLookbackLabel").textContent=`${$("seasonalityLookback").value} ${Number($("seasonalityLookback").value)===1?'year':'years'}`}
 $("ticker").addEventListener("input",()=>{$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent($("ticker").value.trim().toUpperCase()||"XLK")}/performance`;});
 // Refresh companion copy after collection and selection changes, including empty states.
 const sqLumiHistory=renderHistory;renderHistory=function(){sqLumiHistory();sqRenderCheckin();if(state.loadedResearchId&&!sqHistoryRecords().some(x=>x.id===state.loadedResearchId)){state.loadedResearchId=null;$('reviewHypothesisBtn').disabled=true;}sqRenderCompanion();};
@@ -1998,10 +2001,11 @@ if(splash){
 
 const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
 const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;
-if(isiOS&&!standalone&&!localStorage.getItem("splab_install_hint"))setTimeout(()=>$("installBanner").classList.add("show"),900);
+if(isiOS&&!standalone&&!sqLocalStorage.getItem("splab_install_hint"))setTimeout(()=>$("installBanner").classList.add("show"),900);
 
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
 </script>
 <script src="./studio.js"></script>
+<script src="./account.js"></script>
 </body>
 </html>

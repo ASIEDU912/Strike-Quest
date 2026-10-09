@@ -25,7 +25,7 @@ function worker({ok=true,offline=false}={}){
   let w=worker();assert.equal((await w.request('https://strikequests.com/index.html')).intercepted,true);assert.equal(w.writes.length,1);count++;
   w=worker({ok:false});await w.request('https://strikequests.com/index.html');assert.equal(w.writes.length,0);count++;
   w=worker({offline:true});assert.equal((await w.request('https://strikequests.com/index.html')).result.cached,true);count++;
-  for(const url of ['https://strikequests.com/#research','https://strikequests.com/index.html#saved','https://strikequests.com/studio.js','https://strikequests.com/studio.css']){
+  for(const url of ['https://strikequests.com/#research','https://strikequests.com/index.html#saved','https://strikequests.com/studio.js','https://strikequests.com/studio.css','https://strikequests.com/account-core.js','https://strikequests.com/account.js','https://strikequests.com/account.css','https://strikequests.com/vendor/supabase.js']){
     w=worker({offline:true});const r=await w.request(url);assert.equal(r.intercepted,true);assert.equal(r.result.cached,true);count++;
   }
   w=worker();await w.request('https://strikequests.com/index.html#research');assert.equal(w.writes[0][0],'https://strikequests.com/index.html');count++;
@@ -41,7 +41,7 @@ function worker({ok=true,offline=false}={}){
     w=worker();assert.equal((await w.request(url)).intercepted,true);
     assert.equal(w.writes.length,1);assert.equal(w.writes[0][0],key);count++;
   }
-  for(const url of ['https://strikequests.com/index.html?apikey=TEST_ONLY#research','https://strikequests.com/config.json?ts=123#home','https://strikequests.com/private.json#saved','https://other.fixture.test/index.html#home','https://strikequests-market-data.strikequests.workers.dev/v1/market?symbol=AAPL#research']){
+  for(const url of ['https://strikequests.com/index.html?apikey=TEST_ONLY#research','https://strikequests.com/config.json?ts=123#home','https://strikequests.com/private.json#saved','https://other.fixture.test/index.html#home','https://strikequests-market-data.strikequests.workers.dev/v1/market?symbol=AAPL#research','https://strikequests.com/account-config.json','https://vjxroixeqhtswzgqfcpk.supabase.co/auth/v1/user','https://vjxroixeqhtswzgqfcpk.supabase.co/rest/v1/sq_sync_records','https://strikequests.com/?code=SYNTHETIC_AUTH_CODE']){
     w=worker({offline:true});assert.equal((await w.request(url)).intercepted,false);assert.deepEqual(w.writes,[]);assert.deepEqual(w.reads,[]);count++;
   }
   w=worker();assert.equal((await w.request('https://strikequests.com/#research','POST')).intercepted,false);count++;

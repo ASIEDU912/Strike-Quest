@@ -1,5 +1,14 @@
 # Research Studio development work log
 
+## 2026-10-08 optional development account integration
+- Continued on `feat/research-studio` in the existing verified Free development project. No merge, deployment, production change or automation restart.
+- Corrected authenticated-only internal validator permissions without definer privileges or weakened RLS. Preserved typed source/coverage/history fields; unsupported nested/private fields are rejected.
+- Actual database tests passed owner CRUD, cross-user isolation, atomic stale-batch rollback, ownership/revision guards, typed provenance, private-field/type/category rejection and tombstones. All synthetic fixtures rolled back. Security advisors returned no findings.
+- Added optional email/password/PKCE recovery UI, separate guest/account local workspaces, previewed selected guest copies, manually consented sync and explicit conflict choices. Journals, drafts, nickname, caches and provider credentials are excluded from uploads. No existing guest/account records were uploaded and no real Auth emails were sent.
+- Pinned and locked the SDK and reproducible browser bundle. Local development configuration uses an ignored publishable-key file. Real read-only provider checks confirmed email signup enabled, confirmation required and anonymous REST access denied (401/42501). No secret/service-role key was requested or used.
+- Retained local Node checks and 29 account cases passed. Browser SDK fixtures and retained UI/privacy/motion suites await exact-commit hosted verification. Real email round-trips and physical-device testing remain separate gates. See `ACCOUNT-INTEGRATION.md`.
+- Automatic review blocked the migration CLI's unsolicited telemetry egress. Migration creation succeeded with the documented `SUPABASE_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1` opt-out; the telemetry request was not retried.
+
 ## 2026-10-08 integration check
 - Review branch verified at `bd532021256505a3bae7c50c7bbd675d166a2075` (one documentation/artifact-workflow commit after private-journal-backup base `615485fa7c0e47fa6303230df025b882a5fe83fb`). The Research Studio interface has **not** been committed.
 - Existing v10.1.6 private backup PR #8 remains open; no merge or production deploy authorized.

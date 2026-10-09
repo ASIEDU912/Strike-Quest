@@ -30,7 +30,7 @@ async function fixture(width){
   },fixedNow);
   // A small explicit asset allowlist prevents an accidental fixture-origin API
   // request from being fulfilled with arbitrary repository files.
-  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/account-core.js','/account.js','/account.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());
     if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:JSON.stringify({marketDataApi:'https://blocked-provider.fixture.test'})});

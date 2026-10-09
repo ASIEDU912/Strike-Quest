@@ -1,0 +1,3 @@
+# Preserve meaningful whitespace inside the generated SDK's template strings.
+# CI verifies its bytes by rebuilding from the pinned lockfile.
+vendor/supabase.js -whitespace
