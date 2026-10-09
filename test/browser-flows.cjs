@@ -69,8 +69,8 @@ function data(symbol){
  await swPage.goto(base+'/#research');await swPage.evaluate(()=>navigator.serviceWorker.ready);
  await swPage.reload();await swPage.waitForFunction(()=>!!navigator.serviceWorker.controller);
  const keys=await swPage.evaluate(async()=>{const all=[];for(const name of await caches.keys()){const c=await caches.open(name);all.push(...(await c.keys()).map(r=>r.url))}return all});
- assert.deepEqual(keys.map(u=>new URL(u).pathname).sort(),['/','/config.json','/icon-180.png','/icon-192.png','/icon-512.png','/index.html','/manifest.webmanifest','/mascot.css','/mascot.js','/studio.css','/studio.js']);
- assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')),false);pass('real service worker caches only eleven app-shell URLs');
+ assert.deepEqual(keys.map(u=>new URL(u).pathname).sort(),['/','/account-core.js','/account.css','/account.js','/config.json','/icon-180.png','/icon-192.png','/icon-512.png','/index.html','/manifest.webmanifest','/mascot.css','/mascot.js','/studio.css','/studio.js','/vendor/supabase.js']);
+ assert.equal(keys.some(u=>u.includes('?')||u.includes('workers.dev')||u.includes('supabase.co')||u.includes('account-config.json')),false);pass('real service worker caches only fifteen static app-shell URLs');
  await offlineCtx.setOffline(true);await swPage.reload();await swPage.locator('#ticker').waitFor();
  assert.match(await swPage.title(),/StrikeQuests/);pass('installed shell opens offline');
  // A fragment-bearing reload must use the same allowlisted offline shell.
