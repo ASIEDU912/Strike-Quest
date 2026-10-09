@@ -34,5 +34,5 @@ for(const [name,fn] of Object.entries({
 test('explicit matching synthetic example can be drawn',()=>assert.equal(seriesFor({...raw,synthetic:true},meta,'AAPL','demo',200,'').length,2));
 test('Studio contains no provider or tracking network call',()=>{const code=fs.readFileSync(path.join(__dirname,'../studio.js'),'utf8');assert.doesNotMatch(code,/\bfetch\s*\(|XMLHttpRequest|sendBeacon|new WebSocket/);});
 test('accounts remain explicitly guest-only until provider configured',()=>{const code=fs.readFileSync(path.join(__dirname,'../studio.js'),'utf8');assert.match(code,/Account sign-in is not configured in this review/);assert.doesNotMatch(code,/accounts\.google\.com|supabase\.co\/auth\/v1/);});
-test('release is explicitly a review',()=>assert.match(VERSION,/review/));
+test('release is explicitly a preview',()=>assert.match(VERSION,/preview/));
 console.log(n+' Research Studio logic checks passed');

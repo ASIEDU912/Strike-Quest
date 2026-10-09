@@ -1,11 +1,11 @@
 name: Research Studio review
 on:
   push:
-    branches: [feat/research-studio]
+    branches: [feat/research-studio, release/research-studio-public-preview]
 permissions:
   contents: read
 concurrency:
-  group: research-studio-review
+  group: research-studio-review-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   source:

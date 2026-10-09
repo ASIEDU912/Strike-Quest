@@ -1,4 +1,4 @@
-const CACHE='strikequests-v10-2-review-account-1';
+const CACHE='strikequests-v10-2-public-preview-1';
 const CORE=['./','./index.html','./manifest.webmanifest','./config.json','./icon-180.png','./icon-192.png','./icon-512.png','./mascot.js','./mascot.css','./studio.js','./studio.css','./account-core.js','./account.js','./account.css','./vendor/supabase.js'];
 const CORE_URLS=new Set(CORE.map(path=>new URL(path,self.location.href).href));
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
