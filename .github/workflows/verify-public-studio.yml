@@ -1,0 +1,62 @@
+name: Verify public Studio deployment
+on:
+  push:
+    branches: [verify/studio-public-2026-10-09]
+permissions:
+  contents: read
+jobs:
+  public-assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out the exact deployed source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 48e3ebe99133c1acaae124642927a3bd08bc01cb
+          persist-credentials: false
+      - name: Compare public assets and confirm account configuration absent
+        shell: python
+        run: |
+          import hashlib, json, pathlib, urllib.request, urllib.error, datetime, time
+          expected_commit = "48e3ebe99133c1acaae124642927a3bd08bc01cb"
+          files = ["index.html", "manifest.webmanifest", "config.json", "icon-180.png", "icon-192.png", "icon-512.png", "mascot.js", "mascot.css", "studio.js", "studio.css", "account-core.js", "account.js", "account.css", "vendor/supabase.js", "sw.js"]
+          targets = [("", "index.html")] + [(p, p) for p in files]
+          report = {"expected_commit": expected_commit, "checked_at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "assets": [], "account_config": None}
+          failures = []
+          for route, path in targets:
+              expected = pathlib.Path(path).read_bytes()
+              url = "https://strikequests.com/" + route
+              try:
+                  req = urllib.request.Request(url, headers={"Cache-Control": "no-cache", "User-Agent": "StrikeQuests-release-verification"})
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      actual = response.read()
+                      status = response.status
+                      final_url = response.url
+                  entry = {"path": route or "/", "status": status, "bytes": len(actual), "expected_sha256": hashlib.sha256(expected).hexdigest(), "actual_sha256": hashlib.sha256(actual).hexdigest(), "match": actual == expected, "url": final_url}
+                  if not entry["match"] or status != 200: failures.append(route or "/")
+                  report["assets"].append(entry)
+                  print(json.dumps(entry))
+              except Exception as e:
+                  failures.append(route or "/")
+                  report["assets"].append({"path": route or "/", "error": str(e)})
+          try:
+              with urllib.request.urlopen("https://strikequests.com/account-config.json", timeout=30) as response:
+                  report["account_config"] = {"status": response.status, "absent": False}
+                  failures.append("account-config.json unexpectedly present")
+          except urllib.error.HTTPError as e:
+              report["account_config"] = {"status": e.code, "absent": e.code == 404}
+              if e.code != 404: failures.append("account-config.json unexpected status")
+          except Exception as e:
+              report["account_config"] = {"error": str(e), "absent": False}
+              failures.append("account-config.json not verified")
+          print(json.dumps(report["account_config"]))
+          pathlib.Path("public-verification.json").write_text(json.dumps(report, indent=2) + "\n")
+          if failures: raise SystemExit("Publication mismatch: " + ", ".join(failures))
+          print("PASS: all 16 public shell endpoints match the deployed source; account configuration returns 404.")
+      - name: Preserve public asset digest record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-public-asset-verification
+          path: public-verification.json
+          retention-days: 30
