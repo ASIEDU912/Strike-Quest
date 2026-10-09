@@ -19,6 +19,7 @@ const original = {
 const reports=[],allRequests=[];
 let browser;
 function pass(name){reports.push(name);console.log('SQ_CHECKIN_PASS '+name);}
+async function settleJournal(page){await page.evaluate(async()=>{if(navigator.locks?.request)await navigator.locks.request('strikequests-checkin-journal',()=>{});});}
 async function fixture(width,seed={},raw={}){
   const context=await browser.newContext({viewport:{width,height:844},hasTouch:true,isMobile:true,deviceScaleFactor:1,serviceWorkers:'block'});
   const errors=[],unexpected=[];
@@ -31,7 +32,7 @@ async function fixture(width,seed={},raw={}){
     }
     sessionStorage.setItem('strikequests_v9_splash_seen','1');
   },{fixedNow,seed,raw,original});
-  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/account-core.js','/account.js','/account.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());allRequests.push({origin:url.origin,path:url.pathname});
     if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:JSON.stringify({marketDataApi:'https://blocked-provider.fixture.test'})});
@@ -44,7 +45,7 @@ async function fixture(width,seed={},raw={}){
   });
   await context.routeWebSocket('**/*',socket=>{unexpected.push(socket.url());socket.close();});
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(base+'/before');await page.goto(base);
+  await page.goto(base+'/before');await page.goto(base+'/#research');
   await page.waitForFunction(()=>typeof sqStartCheckin==='function'&&document.getElementById('appSplash').classList.contains('hide'));
   return {page,context,check(){assert.deepEqual(errors,[],'No uncaught browser errors');assert.deepEqual(unexpected,[],'No unexpected or provider requests');}};
 }
@@ -91,7 +92,7 @@ async function controls(page){
 async function happy(width,engine){
   const f=await fixture(width),{page}=f;await prepare(page);const before=await protectedState(page);
   await open(page);assert.equal(await protectedState(page),before);
-  await page.locator('#saveCheckinBtn').click();assert.deepEqual(await saved(page),[]);
+  await page.locator('#saveCheckinBtn').click();await settleJournal(page);assert.deepEqual(await saved(page),[]);
   assert.match(await page.locator('#checkinStatus').textContent(),/12|choose|write/i);
   const text=await page.locator('#checkinComparison').textContent();
   for(const label of [/Original fixture provider/,/Manual/,/2026-09-30/,/1-Year/,/3-Month/,/30%/,/10%/,/Divisor/i,/Increment/i,/Reference/i,/Performance|historical change|dollar change/i,/Low/i,/Mid/i,/High/i])assert.match(text,label);
@@ -99,7 +100,7 @@ async function happy(width,engine){
   await noOverflow(page,`${engine}/${width} editor`);
   await page.locator('#researchCheckin').screenshot({path:path.join(evidence,`research-checkin-${engine}-${width}.png`),animations:'disabled'});
   // Two same-task calls emulate rapid/re-entrant activation; actual UI first save is keyboard-driven.
-  await page.locator('#saveCheckinBtn').focus();await page.keyboard.press('Enter');await page.evaluate(()=>{sqSaveCheckin();sqSaveCheckin();});
+  await page.locator('#saveCheckinBtn').focus();await page.keyboard.press('Enter');await settleJournal(page);await page.evaluate(()=>{sqSaveCheckin();sqSaveCheckin();});
   const entries=await saved(page);assert.equal(entries.length,1);assert.equal(entries[0].originalId,original.id);
   assert.equal(entries[0].original.price,100);assert.equal(entries[0].current.price,150);assert.equal(entries[0].current.high,155.5);
   assert.equal(await protectedState(page),before);assert.equal(await page.evaluate(()=>sqResearchXp()),50);
@@ -149,7 +150,7 @@ async function mismatchAndStale(engine){
   assert.equal(await page.locator('#saveCheckinBtn').isDisabled(),true,'Reverting values still requires explicit recapture');
   await page.evaluate(()=>{$('price').value='160';sqInputChanged('price');});
   await page.locator('#captureCheckinBtn').click();assert.equal(await page.evaluate(()=>sqCheckinDraft.current.price),160);
-  await reflect(page);await page.locator('#saveCheckinBtn').click();assert.equal((await saved(page)).length,1);
+  await reflect(page);await page.locator('#saveCheckinBtn').click();await settleJournal(page);assert.equal((await saved(page)).length,1);
   f.check();await f.context.close();pass(`${engine}: mismatch never loads or changes research; stale frozen comparisons require explicit recapture`);
 }
 async function storageFailures(engine){
@@ -161,7 +162,7 @@ async function storageFailures(engine){
   }
   const f=await fixture(320),{page}=f;await prepare(page);await open(page);await reflect(page);
   await page.evaluate(()=>{const write=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='sq_research_checkins_v1')throw new DOMException('Fixture full','QuotaExceededError');return write.call(this,key,value);};});
-  await page.locator('#saveCheckinBtn').click();assert.deepEqual(await saved(page),[]);assert.equal(await page.evaluate(()=>!!sqCheckinDraft),true);
+  await page.locator('#saveCheckinBtn').click();await settleJournal(page);assert.deepEqual(await saved(page),[]);assert.equal(await page.evaluate(()=>!!sqCheckinDraft),true);
   assert.match(await page.locator('#checkinReason').inputValue(),/CHECKIN_PRIVATE_REASON/);assert.match(await page.locator('#checkinStatus').textContent(),/could not|unable|failed|storage|not saved/i);
   await noOverflow(page,'quota error');f.check();await f.context.close();pass(`${engine}: corrupt/unsupported stores preserve exact bytes; quota failure preserves the reflection without a false success`);
 }
@@ -175,7 +176,7 @@ async function legacyAndHostile(engine){
   const captured=await page.evaluate(()=>sqCheckinDraft.original);for(const key of ['period','p','correction','divisor','increment','sourceContext','at'])assert.ok(captured[key]==null,key);
   await page.locator('#cancelCheckinBtn').click();await page.locator('[data-checkin-id="hostile"]').click();await reflect(page,attack);
   assert.equal(await page.locator('#checkinComparison img').count(),0);await noOverflow(page,'hostile original');
-  await page.locator('#saveCheckinBtn').click();assert.equal(await page.locator('#history img, #checkinJournal img').count(),0);
+  await page.locator('#saveCheckinBtn').click();await settleJournal(page);assert.equal(await page.locator('#history img, #checkinJournal img').count(),0);
   assert.equal(await page.evaluate(()=>window.__checkinInjection),undefined);assert.equal(await page.evaluate(()=>localStorage.getItem('splab_history')),before);
   await noOverflow(page,'hostile saved check-in');f.check();await f.context.close();
   for(const raw of ['{broken','{}','[null,17,"bad"]']){
@@ -189,10 +190,10 @@ async function observationsAndGuards(engine){
   await page.locator('#checkinThinking').selectOption('uncertain');await page.locator('#checkinEvidence').selectOption('observation');
   assert.equal(await page.locator('#checkinObservationField').isVisible(),true);
   assert.equal(await page.locator('label[for="checkinObservation"]').count(),1);
-  await page.locator('#saveCheckinBtn').click();assert.deepEqual(await saved(page),[]);
+  await page.locator('#saveCheckinBtn').click();await settleJournal(page);assert.deepEqual(await saved(page),[]);
   assert.match(await page.locator('#checkinStatus').textContent(),/source.*date|description/i);
   const observation='I saw the sample size change in a fixture report dated 6 October 2026.';
-  await page.locator('#checkinObservation').fill(observation);await page.locator('#saveCheckinBtn').click();
+  await page.locator('#checkinObservation').fill(observation);await page.locator('#saveCheckinBtn').click();await settleJournal(page);
   assert.equal((await saved(page))[0].observation,observation);assert.equal((await saved(page))[0].thinking,'uncertain');
   assert.match(await page.locator('#checkinJournal').textContent(),/Self-reported observation, not independently verified/);
   await open(page);await reflect(page);
@@ -205,17 +206,17 @@ async function observationsAndGuards(engine){
   f.check();await f.context.close();pass(`${engine}: uncertain self-reported evidence needs its description; changed/deleted originals block a stale draft`);
 }
 async function clearJournal(engine){
-  const f=await fixture(390),{page}=f;await prepare(page);await open(page);await reflect(page);await page.locator('#saveCheckinBtn').click();
+  const f=await fixture(390),{page}=f;await prepare(page);await open(page);await reflect(page);await page.locator('#saveCheckinBtn').click();await settleJournal(page);
   await open(page);await reflect(page);const before=await protectedState(page),journal=await saved(page),draft=await page.evaluate(()=>JSON.stringify(sqCheckinDraft));
   assert.match(await page.locator('#clearAllBtn').textContent(),/Clear saved ideas/i);
-  page.once('dialog',dialog=>dialog.dismiss());await page.locator('#clearCheckinsBtn').click();
+  page.once('dialog',dialog=>dialog.dismiss());await page.locator('#clearCheckinsBtn').click();await settleJournal(page);
   assert.deepEqual(await saved(page),journal);assert.equal(await page.evaluate(()=>JSON.stringify(sqCheckinDraft)),draft);
   assert.equal(await protectedState(page),before);
-  page.once('dialog',dialog=>dialog.accept());await page.locator('#clearCheckinsBtn').click();
+  page.once('dialog',dialog=>dialog.accept());await page.locator('#clearCheckinsBtn').click();await settleJournal(page);
   assert.deepEqual(await saved(page),[]);assert.equal(await page.evaluate(()=>!!sqCheckinDraft),false);assert.equal(await protectedState(page),before);
   assert.equal(await page.locator('#checkinJournalCard').isVisible(),false);assert.equal(await page.locator('#researchCheckin').isVisible(),false);
   assert.equal(await page.evaluate(()=>document.activeElement.id),'history');
-  await open(page);await reflect(page);await page.locator('#saveCheckinBtn').click();assert.equal((await saved(page)).length,1);
+  await open(page);await reflect(page);await page.locator('#saveCheckinBtn').click();await settleJournal(page);assert.equal((await saved(page)).length,1);
   f.check();await f.context.close();pass(`${engine}: Clear check-ins requires native confirmation, preserves original research/XP and permits a new journal`);
 }
 async function provenance(engine){
@@ -225,7 +226,7 @@ async function provenance(engine){
       setView('research');state.mode=mode;state.savedOrigin=null;
       state.dataMeta=mode==='auto_eod'?{symbol:'AAPL',source:'Local provider fixture',session:'2026-10-06',coverage:{fullRange:true}}:mode==='demo'?{symbol:'AAPL',source:'Synthetic example',session:'2026-09-30',synthetic:true}:null;render();
     },mode);
-    await open(page);await reflect(page);await page.locator('#saveCheckinBtn').click();
+    await open(page);await reflect(page);await page.locator('#saveCheckinBtn').click();await settleJournal(page);
     const entry=(await saved(page)).find(x=>x.current.inputMode===mode);assert.ok(entry,mode);
     assert.equal(await page.evaluate(current=>sqSourceInfo(current).kind,entry.current),expected);
   }

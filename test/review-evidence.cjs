@@ -15,6 +15,7 @@ async function emit(page,name,locator){
   for(let i=0;i<b64.length;i+=160)console.log('SQ_IMAGE_DATA '+b64.slice(i,i+160));
   console.log('SQ_IMAGE_END '+name);
 }
+async function settleJournal(page){await page.evaluate(async()=>{if(navigator.locks?.request)await navigator.locks.request('strikequests-checkin-journal',()=>{});});}
 (async()=>{
   browser=await chromium.launch({headless:true});
   const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
@@ -29,7 +30,7 @@ async function emit(page,name,locator){
     return route.fulfill({contentType:types[path.extname(file)]||'text/plain',body:fs.readFileSync(file)});
   });
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base);await page.waitForFunction(()=>state.period==='2y'&&state.correction===10&&!!window.StrikeMascot);
+  await page.goto(base+'/#research');await page.waitForFunction(()=>state.period==='2y'&&state.correction===10&&!!window.StrikeMascot);
   await page.emulateMedia({reducedMotion:'reduce'});
   await emit(page,'fresh-mobile-390.jpg');
   await page.locator('#companionHost').scrollIntoViewIfNeeded();
@@ -57,9 +58,13 @@ async function emit(page,name,locator){
   await page.locator('#checkinReason').fill('I changed only the correction assumption. These new hypothetical levels do not show a market move. I still need dated evidence.');
   await page.locator('#checkinThinking').scrollIntoViewIfNeeded();
   await emit(page,'research-checkin-reflection-mobile.jpg');
-  await page.locator('#saveCheckinBtn').click();
+  await page.locator('#saveCheckinBtn').click();await settleJournal(page);
   await emit(page,'research-checkin-journal-mobile.jpg');
+  await page.locator('.checkin-backup').scrollIntoViewIfNeeded();
+  await emit(page,'private-journal-backup-mobile.jpg',page.locator('.checkin-backup'));
+  await page.evaluate(()=>{const b=sqCreateCheckinBackup();b.entries[0].id='visual-import-fixture';sqStageCheckinImport(JSON.stringify(b),'Private NAS backup.json');});
+  await emit(page,'private-journal-import-preview-mobile.jpg',page.locator('#checkinImportPreview'));
   if(unexpected.length||errors.length)throw Error(JSON.stringify({unexpected,errors}));
-  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:11,bytes:total,liveProviderRequests:0,errors}));
+  console.log('SQ_EVIDENCE_COMPLETE '+JSON.stringify({images:13,bytes:total,liveProviderRequests:0,errors}));
   await context.close();
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close()});

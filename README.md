@@ -1,5 +1,9 @@
 # StrikeQuests - Strike Price Calculator
 
+## v10.1.6: Private journal backup (proposed)
+
+Export a private Research Check-in JSON file, keep it on your device or NAS, and preview a safe merge on another device. IDs, dates, original reasoning and source details survive restoration. Duplicates are skipped; conflicts, invalid data and capacity overflow block the import without replacing existing records. [Backup, restoration and NAS instructions](README-V10.1.6.md).
+
 ## v10.1.5: Research Check-in
 
 Revisit a saved idea beside a same-instrument current scenario, inspect its provenance and changed assumptions, and record your thinking in a private device-local journal. See [Research Check-in behavior and verification](README-V10.1.5.md).

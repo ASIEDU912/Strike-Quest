@@ -30,7 +30,7 @@ async function fixture(width){
   },fixedNow);
   // A small explicit asset allowlist prevents an accidental fixture-origin API
   // request from being fulfilled with arbitrary repository files.
-  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/account-core.js','/account.js','/account.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());
     if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:JSON.stringify({marketDataApi:'https://blocked-provider.fixture.test'})});
@@ -42,7 +42,7 @@ async function fixture(width){
   });
   await context.routeWebSocket('**/*',socket=>{unexpected.push(socket.url());socket.close();});
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(base);
+  await page.goto(base+'/#research');
   await page.waitForFunction(()=>document.querySelectorAll('.sq-companion').length===5);
   return {page,context,check(){assert.deepEqual(errors,[],'No page errors');assert.deepEqual(unexpected,[],'No unexpected/provider requests');}};
 }

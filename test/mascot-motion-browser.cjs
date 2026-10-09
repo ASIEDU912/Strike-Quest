@@ -66,7 +66,7 @@ async function app(engine,width=390) {
     return route.fulfill({contentType:types[path.extname(file)]||'text/plain',body:fs.readFileSync(file)});
   });
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base);await page.waitForFunction(()=>!!document.querySelector('#companionHost .sq-mascot'));
+  await page.goto(base+'/#research');await page.waitForFunction(()=>!!document.querySelector('#companionHost .sq-mascot'));
   return {page,context,check:()=>{assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);}};
 }
 async function stage(page,xp) {

@@ -73,7 +73,7 @@ async function fixture(width=390) {
       Storage.prototype[name]=function(...args){window.__tapStorageWrites.push({store:this===localStorage?'local':'session',name,args});return original.apply(this,args);};
     }
   },fixedNow);
-  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
+  const allowed=new Set(['/','/index.html','/mascot.js','/mascot.css','/studio.js','/studio.css','/account-core.js','/account.js','/account.css','/manifest.webmanifest','/icon-180.png','/icon-192.png','/icon-512.png','/favicon.ico']);
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());
     if(url.origin===base&&url.pathname==='/config.json')return route.fulfill({contentType:'application/json',body:JSON.stringify({marketDataApi:'https://blocked-provider.fixture.test'})});
@@ -87,7 +87,7 @@ async function fixture(width=390) {
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
   // The visually hidden legacy splash still writes a session flag after 280ms.
   // Let startup finish before attributing any storage write to artwork input.
-  await page.goto(base);await page.waitForFunction(()=>document.querySelectorAll('[data-mascot-tap]').length===5&&document.getElementById('appSplash').classList.contains('hide'));
+  await page.goto(base+'/#research');await page.waitForFunction(()=>document.querySelectorAll('[data-mascot-tap]').length===5&&document.getElementById('appSplash').classList.contains('hide'));
   const startup=await protectedState(page);
   assert.ok(startup.writes.some(write=>write.store==='session'&&write.name==='setItem'&&write.args[0]==='strikequests_v9_splash_seen'),'Startup session write completed before the interaction baseline');
   await page.waitForTimeout(1450);
