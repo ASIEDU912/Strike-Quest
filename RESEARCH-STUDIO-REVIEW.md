@@ -2,7 +2,7 @@
 
 **Status: guest-first development integration for review. NOT published or merged.** October 8, 2026.
 
-This review builds on the separate `feat/private-journal-backup` review (PR #8, commit `615485fa7c0e47fa6303230df025b882a5fe83fb`) and integrates the Research Studio UI on `feat/research-studio`. The private backup implementation is unchanged. Production remains at v10.1.5; this branch is not merged or deployed. The attached review bundle supplies the UI and navigation adaptations; the branch adds exact-commit CI and updates the offline-shell regression for the two new assets.
+This review builds on the separate `feat/private-journal-backup` review (PR #8, commit `615485fa7c0e47fa6303230df025b882a5fe83fb`) and integrates the Research Studio UI on `feat/research-studio`. Private backup/restore logic is retained; storage follows the active local workspace. Production remains at v10.1.5; this branch is not merged or deployed. The attached review bundle supplies the UI and navigation adaptations; the branch adds exact-commit UI, account, privacy and offline checks.
 
 ## Working features in this prototype
 
@@ -17,7 +17,7 @@ This review builds on the separate `feat/private-journal-backup` review (PR #8, 
 
 ## Verification and release requirements
 
-- Exact-commit GitHub-hosted Chromium/WebKit verification is required for UI changes. The branch-only `Research Studio review` workflow runs core, private journal, Studio, tap and motion checks and saves synthetic screenshots together with their commit identifier. Results belong to their tested commit; consult its Actions run and the work log. No job publishes the app.
+- Exact-commit GitHub-hosted Chromium/WebKit verification is required for UI changes. The branch-only `Research Studio review` workflow runs core, account, private journal, Studio, tap and motion checks and saves synthetic screenshots together with their commit identifier. Results belong to their tested commit; consult its Actions run and the work log. No job publishes the app.
 - The existing `strikequests-auth-dev` project is in the verified Free organization. Validator permissions and typed provenance validation are applied. Synthetic transactional database tests verify owner CRUD, cross-user denial, tombstones and atomic stale-batch rejection; fixtures roll back. See [ACCOUNT-INTEGRATION.md](ACCOUNT-INTEGRATION.md) for local setup and current evidence. Browser SDK fixtures and real provider email delivery are separate verification gates.
 - Owner preview/approval followed by a separate, explicitly authorized production merge and deployment.
 
@@ -41,7 +41,7 @@ During branch integration, `npm test` passed with all existing Node regressions,
 
 ## Preview without the live backend
 
-Extract the archive into its own folder. Run `python -m http.server 8765` in that folder and open `http://localhost:8765/` on your machine. The default Demo mode is synthetic. Do not put private API keys into this public review archive. To run Node tests, use `npm install --ignore-scripts --no-audit --no-fund --package-lock=false`, then `npm test` and the above fixture browser command (requires a local Chromium executable and Playwright installation). The test scripts do not need an actual provider account.
+Extract the archive into its own folder. Run `npm ci --ignore-scripts` and `npm run dev` in that folder, then open `http://localhost:3000/` on your machine. Account sign-in is unavailable without the ignored development environment file. The default Demo mode is synthetic. Do not put private API keys into this public review archive. To run Node tests, use `npm ci --ignore-scripts --no-audit --no-fund`, then `npm test` and the above fixture browser command (requires a local Chromium executable and Playwright installation). The test scripts do not need an actual provider account.
 
 ## Integration changes compared with PR #8 source
 
@@ -49,7 +49,11 @@ Extract the archive into its own folder. Run `python -m http.server 8765` in tha
 - `studio.css`, `studio.js` (new view/navigation, cards, data-context guidance, settings)
 - `sw.js` (review-only cache revision and new assets)
 - `package.json`, `test/studio.cjs`, `test/studio-browser.cjs` (test integration)
-- Existing browser suites (start legacy research workflows at `#research`, open grouped Settings explicitly, and allow the two new local assets). Existing behavior/privacy assertions remain; service-worker checks now require all eleven shell assets and continue excluding query strings and provider URLs.
+- Existing browser suites (start legacy research workflows at `#research`, open grouped Settings explicitly, and allow the new local Studio/account assets). Existing behavior/privacy assertions remain; service-worker checks now require all fifteen static shell assets and continue excluding query strings and provider URLs.
 - `.github/workflows/research-studio-review.yml` (branch-only exact-commit tests and evidence; no deployment), `RESEARCH-STUDIO-WORKLOG.md` (integration status)
 
 Do not treat the separate synthetic screenshots as market data, proof of correct prices or a real brokerage account.
+
+## Verified development accounts
+
+Application/test source `5e85ea88848fdbac493534f1d4471286529af7d2` passed all seven [review jobs](https://github.com/ASIEDU912/Strike-Quest/actions/runs/37863252510), including 48 Chromium/WebKit account cases and the retained Studio/journal/offline/interaction/motion suites. Actual development database isolation and typed validation tests passed with fixture rollback. See [ACCOUNT-INTEGRATION.md](ACCOUNT-INTEGRATION.md) for behavior, setup and evidence. Real email delivery/recovery and physical-device checks remain separate gates. This evidence update is documentation only; no merge or deployment.

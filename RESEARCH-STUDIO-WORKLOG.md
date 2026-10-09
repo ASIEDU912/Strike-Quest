@@ -1,5 +1,12 @@
 # Research Studio development work log
 
+## 2026-10-09 UTC final development account verification
+- Application/test source `5e85ea88848fdbac493534f1d4471286529af7d2` passed all seven [exact-commit review jobs](https://github.com/ASIEDU912/Strike-Quest/actions/runs/37863252510): source, core, account, Studio, journal, tap and motion.
+- Account coverage passed 48 synthetic Chromium/WebKit cases, including isolated guest/account workspaces, selected guest copies, consent, conflicts/revision races, sign-out/offline/expired sessions, PKCE recovery, two-device persistence and tombstones. Saved source fields and earned dates round-trip; private journals, nickname and credentials do not upload. Cloud labels render as escaped text.
+- Retained 104 Studio cases, core browser suites, 18 journal and 14 backup workflows, 78 tap checks and 24/22 temporal motion checks passed. Four account frames were verified against exact-commit metadata, byte counts and SHA-256, with mobile visual inspection.
+- Actual development database isolation/validation tests passed with rollback; final Auth-user and sync-row counts were both zero. Security advisors reported no findings. Provider reads confirmed email signup/confirmation and denied anonymous row access.
+- This final evidence commit is documentation only. Main and PR #8 are unchanged; no merge or app deployment. Real owner-controlled email delivery/recovery and physical-device verification remain unverified. Automatic sessions remain paused.
+
 ## 2026-10-08 optional development account integration
 - Continued on `feat/research-studio` in the existing verified Free development project. No merge, deployment, production change or automation restart.
 - Corrected authenticated-only internal validator permissions without definer privileges or weakened RLS. Preserved typed source/coverage/history fields; unsupported nested/private fields are rejected.
