@@ -26,7 +26,7 @@
     const account=user?.id||C.user;
     panel.querySelector('.studio-preview-tag').textContent=account?'ACCOUNT · DEV':'GUEST';
     body.querySelector('p').innerHTML=account?'<strong>Local account workspace.</strong> Guest research remains separate. Synchronization runs only when you review and confirm it.':'<strong>Continue as guest</strong> is active. Your Watchlist, saved analyses and appearance settings belong to this browser.';
-    const old=body.querySelector('.studio-account-status');if(old)old.hidden=!!client||!!account;
+    const old=body.querySelector('.studio-account-status');if(old){old.hidden=!!client||!!account;if(!client&&!account)old.textContent='Guest research stays on this device. Open optional sign-in to check account availability.';}
     shell.innerHTML=`<p class="sq-account-status" id="sqAccountStatus" role="status" aria-live="polite">${escape(message)}</p>`;
     if(recovery){
       shell.insertAdjacentHTML('beforeend','<form id="sqRecoveryForm" class="sq-account-form"><h4>Choose a new password</h4><label for="sqNewPassword">New password · at least 8 characters</label><input type="password" id="sqNewPassword" autocomplete="new-password" minlength="8" maxlength="128" required><button class="btn primary" type="submit">Save new password</button></form><button type="button" class="btn secondary" id="sqContinueGuest">Continue as guest</button>');
