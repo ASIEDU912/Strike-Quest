@@ -40,6 +40,7 @@ const server=http.createServer((req,res)=>{
    await page.locator('#checkinEvidence').selectOption('assumptions');
    await page.locator('#checkinReason').fill('Synthetic journal reflection must survive rollback unchanged.');
    await page.locator('#saveCheckinBtn').click();
+   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('sq_research_checkins_v1')||'{"entries":[]}').entries.length===1);
    const keys=['splab_history','sq_research_checkins_v1','sq_watchlist','sq_badges_v1011'];
    const before=await page.evaluate(keys=>Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)])),keys);
    assert.equal(JSON.parse(before.sq_research_checkins_v1).entries.length,1);

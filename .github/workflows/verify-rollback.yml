@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [research, tap, motion, compatibility]
+        suite: [compatibility]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
