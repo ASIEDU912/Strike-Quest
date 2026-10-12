@@ -1,0 +1,52 @@
+name: Verify public v10.1.5 rollback
+on:
+  push:
+    branches: [verify/rollback-public-2026-10-12]
+permissions:
+  contents: read
+jobs:
+  public-assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out exact deployed rollback
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 7966836b4a0460e4b9dd97907fa374e8c9018d8b
+          persist-credentials: false
+      - name: Verify public bytes and removed Studio endpoints
+        shell: python
+        run: |
+          import hashlib, json, pathlib, urllib.request, urllib.error, datetime
+          expected_commit = "7966836b4a0460e4b9dd97907fa374e8c9018d8b"
+          files = ["index.html","manifest.webmanifest","config.json","icon-180.png","icon-192.png","icon-512.png","mascot.js","mascot.css","sw.js"]
+          targets = [("", "index.html")] + [(p,p) for p in files]
+          removed = ["studio.js","studio.css","account-core.js","account.js","account.css","vendor/supabase.js","account-config.json"]
+          report = {"expected_commit":expected_commit,"expected_tree":"3ccf8e26881de6445700122af835f5a7ca6877d7","checked_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"assets":[],"removed":[]}
+          failures=[]
+          for route, path in targets:
+              expected=pathlib.Path(path).read_bytes()
+              try:
+                  request=urllib.request.Request("https://strikequests.com/"+route,headers={"Cache-Control":"no-cache","User-Agent":"StrikeQuests-rollback-verification"})
+                  with urllib.request.urlopen(request,timeout=30) as response:
+                      actual=response.read()
+                      entry={"path":route or "/","status":response.status,"bytes":len(actual),"expected_sha256":hashlib.sha256(expected).hexdigest(),"actual_sha256":hashlib.sha256(actual).hexdigest(),"match":actual==expected}
+                  report["assets"].append(entry)
+                  if not entry["match"] or entry["status"]!=200: failures.append(route or "/")
+              except Exception as e:
+                  report["assets"].append({"path":route or "/","error":str(e)});failures.append(route or "/")
+          for route in removed:
+              try:
+                  request=urllib.request.Request("https://strikequests.com/"+route,headers={"Cache-Control":"no-cache","User-Agent":"StrikeQuests-rollback-verification"})
+                  with urllib.request.urlopen(request,timeout=30) as response:
+                      report["removed"].append({"path":route,"status":response.status,"absent":False})
+                      failures.append(route)
+              except urllib.error.HTTPError as e:
+                  report["removed"].append({"path":route,"status":e.code,"absent":e.code==404})
+                  if e.code!=404: failures.append(route)
+              except Exception as e:
+                  report["removed"].append({"path":route,"error":str(e),"absent":False});failures.append(route)
+          print("ROLLBACK_PUBLIC_REPORT "+json.dumps(report))
+          if failures: raise SystemExit("Public verification failures: "+", ".join(failures))
+          print("PASS: 10 public app-shell endpoints match v10.1.5; 7 Studio/account endpoints return 404.")
+          
