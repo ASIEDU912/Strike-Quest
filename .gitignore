@@ -11,5 +11,3 @@ evidence/
 *.pem
 *.key
 .DS_Store
-
-supabase/.temp/
