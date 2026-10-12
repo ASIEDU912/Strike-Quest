@@ -1,0 +1,74 @@
+name: Verify exact v10.1.5 rollback
+on:
+  push:
+    branches: [verify/rollback-v10-1-5-2026-10-12]
+permissions:
+  contents: read
+jobs:
+  checks:
+    name: ${{ matrix.suite }} rollback checks
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [research, tap, motion, compatibility]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      REVIEW_HEAD_SHA: b4fe811515b33f1f8a3992cd21ca99f766b40e25
+      npm_config_update_notifier: 'false'
+    steps:
+      - name: Check out verification scripts
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: verifier
+          persist-credentials: false
+      - name: Check out exact rollback candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: b4fe811515b33f1f8a3992cd21ca99f766b40e25
+          path: candidate
+          persist-credentials: false
+      - name: Check out prior public Studio for transition fixture
+        if: matrix.suite == 'compatibility'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 48e3ebe99133c1acaae124642927a3bd08bc01cb
+          path: studio
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify exact commit and saved baseline tree
+        working-directory: candidate
+        run: |
+          test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
+          test "$(git rev-parse 'HEAD^{tree}')" = "3ccf8e26881de6445700122af835f5a7ca6877d7"
+      - name: Install pinned test dependency
+        working-directory: candidate
+        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - name: Install Chromium and WebKit
+        working-directory: candidate
+        run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Research regressions and browser workflows
+        if: matrix.suite == 'research'
+        working-directory: candidate
+        run: |
+          npm test
+          npm run test:browser
+          npm run test:checkin
+          node test/review-evidence.cjs
+      - name: Accessible Lumi tap checks
+        if: matrix.suite == 'tap'
+        working-directory: candidate
+        run: npm run test:tap
+      - name: Lumi motion checks
+        if: matrix.suite == 'motion'
+        working-directory: candidate
+        run: npm run test:motion
+      - name: Studio-to-rollback storage and service worker transition
+        if: matrix.suite == 'compatibility'
+        run: |
+          mkdir -p candidate/test-results
+          NODE_PATH="$GITHUB_WORKSPACE/candidate/node_modules" ROLLBACK_ROOT="$GITHUB_WORKSPACE/candidate" STUDIO_ROOT="$GITHUB_WORKSPACE/studio" EVIDENCE_DIR="$GITHUB_WORKSPACE/candidate/test-results" node verifier/test/rollback-compat.cjs
