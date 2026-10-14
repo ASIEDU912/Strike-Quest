@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [core, journal, studio, account, tap, motion, consolidation]
+        suite: [core, journal, studio, account, tap, motion, consolidation, evidence]
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
@@ -94,6 +94,14 @@ jobs:
       - name: Verify comparison and consolidation in Chromium and WebKit
         if: matrix.suite == 'consolidation'
         run: node test/consolidation.cjs && node test/consolidation-browser.cjs
+      - name: Verify source-isolated public visuals and original evidence tools
+        if: matrix.suite == 'evidence'
+        run: |
+          node test/research-evidence.cjs
+          node test/sec-research.cjs
+          node test/evidence-shell.cjs
+          node test/research-evidence-browser.cjs
+          node scripts/evidence-shell.cjs test-results/evidence-review
       - name: Record the evidence commit
         if: always()
         run: |
