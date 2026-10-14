@@ -1,0 +1,31 @@
+name: Prepare owner-approved release repairs
+on:
+  push:
+    branches: [feat/research-studio]
+    paths: [scripts/release-prepare.cjs, .github/workflows/release-prepare.yml]
+permissions:
+  contents: read
+jobs:
+  prepare:
+    if: github.repository == 'ASIEDU912/Strike-Quest' && github.ref == 'refs/heads/feat/research-studio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Prepare immutable code commit only; never update references or deploy
+        run: node scripts/release-prepare.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prepared-release-repairs
+          path: prepared-evidence/
+          retention-days: 1

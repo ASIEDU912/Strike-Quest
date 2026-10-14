@@ -1,0 +1,7 @@
+/* Exact executed core sources + bounded summary; full synthetic logs retained. */
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process');
+const root=path.resolve(__dirname,'..'),dir=path.join(root,'test-results/exact-core');fs.mkdirSync(dir,{recursive:true});
+const suites=['browser-regressions','browser-flows','next-build','research-guidance-browser','companion-roles-browser'];
+const results=[];for(const suite of suites){const file='test/'+suite+'.cjs',bytes=fs.readFileSync(path.join(root,file)),out=path.join(dir,suite+'.log');fs.copyFileSync(path.join(root,file),path.join(dir,suite+'.source.cjs'));const fd=fs.openSync(out,'w');const run=cp.spawnSync(process.execPath,[file],{cwd:root,env:process.env,stdio:['ignore',fd,fd],timeout:600000});fs.closeSync(fd);const r={file,sha256:crypto.createHash('sha256').update(bytes).digest('hex'),lines:bytes.toString('utf8').split('\n').length,exitCode:run.status,signal:run.signal,error:run.error?.code||null};results.push(r);console.log('EXACT_CORE_RESULT '+JSON.stringify(r));const last=fs.readFileSync(out,'utf8').split('\n').filter(l=>!l.startsWith('SQ_IMAGE_DATA')).slice(-24).join('\n');console.log(last);}
+const result={sourceCommit:process.env.REVIEW_HEAD_SHA||process.env.GITHUB_SHA||null,node:process.version,results,passed:results.every(r=>r.exitCode===0)};fs.writeFileSync(path.join(dir,'results.json'),JSON.stringify(result,null,2));console.log('EXACT_CORE_COMPLETE '+JSON.stringify(result));if(!result.passed)process.exitCode=1;
