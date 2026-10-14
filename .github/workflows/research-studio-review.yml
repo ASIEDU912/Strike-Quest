@@ -67,11 +67,7 @@ jobs:
       - name: Run existing browser regressions
         if: matrix.suite == 'core'
         run: |
-          result=0
-          for suite in browser-regressions browser-flows next-build research-guidance-browser companion-roles-browser; do
-            node "test/$suite.cjs" || result=1
-          done
-          exit "$result"
+          node scripts/ci-core.cjs
       - name: Verify private Research Check-in and backup workflows
         if: matrix.suite == 'journal'
         run: npm run test:checkin && npm run test:backup

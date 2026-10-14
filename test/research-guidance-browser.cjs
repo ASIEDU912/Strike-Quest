@@ -88,6 +88,9 @@ async function focused(page, id, requireVisibleControl=true) {
   }
 }
 async function clickMission(page, target, source='missionNextAction', visible=true) {
+  // The consolidated app has distinct destinations. Use the actual visible guide,
+  // without removing any focus, privacy, progress or protected-state assertion.
+  if(!await page.locator('#'+source).isVisible())await page.locator('[data-view="'+(source==='nextBadgeAction'?'quests':'research')+'"]').click();
   const before = await page.evaluate(() => ({mode:state.mode,earned:JSON.stringify(sqBadges().earned)}));
   await page.locator('#'+source).click();
   await focused(page,target,visible);

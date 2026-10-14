@@ -254,7 +254,7 @@
   const watch=$('viewWatchlist'),section=watch.querySelector('.compare-section'),queue=$('watchlist').closest('section');
   const toolbar=document.createElement('div');toolbar.className='sq-workspace-switch';toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label','Watchlist workspace');
   toolbar.innerHTML='<button type="button" id="sqQueueTab" aria-pressed="true">Watchlist</button><button type="button" id="sqCompareTab" aria-pressed="false">Compare</button>';watch.querySelector('.screen-title').after(toolbar);
-  section.querySelector('h2').textContent='Compare research';section.querySelector('.compare-context-note').textContent='Aligned metrics, with source and assumption differences kept visible. These snapshots do not rank investments.';
+  section.querySelector('h2').textContent='Compare research';section.querySelector('.compare-context-note').textContent='Compare sources, sessions, horizons and corrections alongside aligned metrics. These snapshots do not rank investments.';
   const controls=document.createElement('div');controls.innerHTML='<div class="sq-workspace-switch" role="group" aria-label="Comparison assumptions"><button type="button" id="sqRecordedMode" aria-pressed="true">Recorded snapshots</button><button type="button" id="sqSharedMode" aria-pressed="false">Shared assumptions</button></div><div id="sqSharedControls" class="sq-shared-controls" hidden><div class="sq-wide"><label for="sqCompareCorrection">Preview correction <output id="sqCompareCorrectionValue">10%</output></label><input type="range" id="sqCompareCorrection" min="0" max="30" step="1" value="10"></div><div><label for="sqCompareDivisor">Preview divisor</label><input type="number" id="sqCompareDivisor" min="0.1" step="0.1" value="1.5"></div><div><label for="sqCompareIncrement">Preview rounding</label><select id="sqCompareIncrement"><option value="0.5">$0.50</option><option value="1" selected>$1</option><option value="2.5">$2.50</option><option value="5">$5</option><option value="10">$10</option></select></div><p class="sq-wide sq-compare-caption">These explicit preview settings apply to every column. Recorded horizons do not change. Nothing is saved, refreshed or synchronized.</p></div>';
   section.querySelector('.compare-toolbar').after(controls);const back=document.createElement('button');back.type='button';back.className='btn secondary sq-compare-back';back.dataset.cmpQueue='';back.textContent='← Back to Watchlist';section.prepend(back);$('compareClearBtn').textContent='Clear selection';
   let mode='recorded',pane='queue';
@@ -293,3 +293,12 @@
   $('studioNews').querySelector('.studio-news-banner').after(article);
   showPane('queue');renderComparison();
 })(typeof globalThis==='object'?globalThis:this);
+
+/* Release repair: retain the existing control before the scenario results. */
+(function(){
+  if(typeof document==='undefined')return;
+  const section=document.getElementById('scenarioSection'),row=document.getElementById('targetsRow');
+  const controls=section?.querySelector('.correction-control');
+  if(section&&row&&controls){row.before(controls);controls.classList.add('sq-correction-before-results');}
+  const style=document.createElement('style');style.textContent='.sq-correction-before-results{margin-top:8px;margin-bottom:14px}#scenarioSection{scroll-margin-top:12px}.bottom-nav{padding-bottom:max(12px,env(safe-area-inset-bottom))}';document.head.append(style);
+})();
