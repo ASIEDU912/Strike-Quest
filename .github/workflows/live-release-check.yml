@@ -19,12 +19,12 @@ jobs:
           node-version: '24'
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npx --no-install playwright install --with-deps chromium
-      - name: Verify published bytes, browser rendering and one public widget
+      - name: Verify exact published bytes and actual XLK TradingView chart with storage isolation
         run: node test/live-release-check.cjs
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          EXPECTED_RELEASE_COMMIT: 4456c7cb4ec929da29657160f1ca036da0faa11a
-          EXPECTED_SOURCE_COMMIT: 51f9fefc14257ad92de6326a2d447328f45cfa0e
+          EXPECTED_RELEASE_COMMIT: c93002aeef7c352458ebce441bd630154fb33dd0
+          EXPECTED_SOURCE_COMMIT: 8ca926420c2cfb93fda31eecbe8556a576192b53
       - uses: actions/upload-artifact@v4
         if: always()
         with:
