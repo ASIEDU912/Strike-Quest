@@ -23,7 +23,9 @@ jobs:
           node-version: '24'
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npx --no-install playwright install --with-deps chromium webkit
-      - run: node scripts/widget-public-repair.cjs build
+      - run: |
+          mkdir -p test-results
+          node scripts/widget-public-repair.cjs build
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Retain all 66 composed-app checks and test real cross-origin storage isolation
