@@ -1,6 +1,6 @@
 {
-  "version": "10.2.0-preview.1",
-  "sourceCommit": "51f9fefc14257ad92de6326a2d447328f45cfa0e",
+  "version": "10.2.0-preview.2",
+  "sourceCommit": "8ca926420c2cfb93fda31eecbe8556a576192b53",
   "rollbackCommit": "7966836b4a0460e4b9dd97907fa374e8c9018d8b",
   "rollbackBranch": "rollback/pre-evidence-release-2026-10-14",
   "audience": "public guest preview",
@@ -75,7 +75,7 @@
     {
       "path": "public-preview.js",
       "bytes": 699,
-      "sha256": "5a31e172edf507e5d928706173053e5abb1628663dc5837e73d4d4b6628f3ce9"
+      "sha256": "a6613498f533719360c7c26f33b8eb515994c0869d9b1d238f637f496d7f50b6"
     },
     {
       "path": "research-data/sec/AAPL.json",
@@ -124,8 +124,8 @@
     },
     {
       "path": "research-evidence.js",
-      "bytes": 21565,
-      "sha256": "8448845c66ffdbf61af524e2136f45def358f4d0f0180c5ca7680f085a70860e"
+      "bytes": 21893,
+      "sha256": "44fa7835dd7805f69e25cfeae9052d30e4d527339321ae0ea0c62a4d540a9d26"
     },
     {
       "path": "studio.css",
@@ -135,17 +135,19 @@
     {
       "path": "studio.js",
       "bytes": 56820,
-      "sha256": "a35ccf2654c789e237dd9c73d894ffea36f46b194baa4ee56137a5af6ccac860"
+      "sha256": "77af38a8508b6f726d99b9fe195b561da0f29daefde1ab9fe4173aa43397fd8a"
     },
     {
       "path": "sw.js",
       "bytes": 1278,
-      "sha256": "eebb08fd1994ff388becd1db06e0deddae1bc71a3c3f98eb0de5cd910af55532"
+      "sha256": "0a7bca1d751d748c2f77879c0d7502ae399e72bf6c786ab56c228da14fca7eb9"
     },
     {
       "path": "vendor/supabase.js",
       "bytes": 222931,
       "sha256": "7d1f5517b32aeb8e4dfcffefdeb094ac18cc36f3b0fcc1f1ac351a7b25eadaf7"
     }
-  ]
+  ],
+  "previousPublicCommit": "4456c7cb4ec929da29657160f1ca036da0faa11a",
+  "widgetIsolation": "Fixed foreign TradingView HTTPS iframe; no srcdoc or parent-origin external script"
 }

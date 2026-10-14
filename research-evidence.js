@@ -24,7 +24,7 @@
     $('sqLoadTradingView').onclick=()=>{
       if(!$('sqEvidenceConsent').checked){$('sqTradingViewStatus').textContent='Please confirm the external request before loading the chart.';return;}
       const qualified=E.tradingSymbol(symbolAtOpen,$('sqEvidenceExchange').value);if(!qualified){$('sqTradingViewStatus').textContent='A valid symbol and confirmed supported exchange are required.';return;}
-      stopChart();const frame=document.createElement('iframe');frame.className='sqe-widget';frame.title=`TradingView public chart · ${qualified}`;frame.referrerPolicy='no-referrer';frame.setAttribute('sandbox','allow-scripts allow-popups allow-popups-to-escape-sandbox');frame.srcdoc=E.tradingDocument(qualified);$('sqTradingViewHost').append(frame);
+      stopChart();const frame=document.createElement('iframe');frame.className='sqe-widget';frame.title=`TradingView public chart · ${qualified}`;frame.referrerPolicy='no-referrer';frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');const widgetConfig={autosize:true,symbol:qualified,interval:'D',timezone:'Etc/UTC',theme:'dark',style:'1',locale:'en',allow_symbol_change:false,calendar:false,save_image:false,support_host:'https://www.tradingview.com'};frame.src='https://www.tradingview-widget.com/embed-widget/advanced-chart/?locale=en#'+encodeURIComponent(JSON.stringify(widgetConfig));$('sqTradingViewHost').append(frame);
       $('sqTradingViewStatus').textContent=`Requested ${qualified} from TradingView. A requested frame is not a verified quote; blocked or unsupported charts can be opened at the link below.`;
     };
     $('sqStopTradingView').onclick=()=>{stopChart();$('sqEvidenceConsent').checked=false;};
@@ -77,7 +77,7 @@
   }
   window.StrikeEvidence=Object.freeze({open(from,initialTab='visual'){
     build();trigger=from||document.activeElement;symbolAtOpen=$('ticker')?.value.trim().toUpperCase()||'';
-    $('sqEvidenceSymbol').textContent=`${symbolAtOpen||'No instrument selected'} · development review`;
+    $('sqEvidenceSymbol').textContent=`${symbolAtOpen||'No instrument selected'} · public preview`;
     const meta=typeof symbolMeta==='function'?symbolMeta(symbolAtOpen):{};const q=E.tradingSymbol(symbolAtOpen,meta.exchange);$('sqEvidenceExchange').value=q?q.split(':')[0]:'';listing();
     $('sqEvidenceConsent').checked=false;$('sqSecResults').replaceChildren();$('sqSecStatus').textContent='No facts loaded for this opening. Load explicitly to request SEC fundamentals.';tab(initialTab);dialog.showModal();$('sqEvidenceClose').focus();
   }});

@@ -8,7 +8,7 @@
   else { root.StrikeStudio=api; api.mount(); }
 })(typeof globalThis==='object'?globalThis:this, function(){
   'use strict';
-  const VERSION='10.2.0-preview.1';
+  const VERSION='10.2.0-preview.2';
   const finite=n=>typeof n==='number'&&Number.isFinite(n);
   const price=n=>finite(n)?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n):'unavailable';
   const percent=n=>finite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'unavailable';
