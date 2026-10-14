@@ -8,7 +8,17 @@ async function settle(p){await p.evaluate(()=>new Promise(r=>requestAnimationFra
 async function capture(p,name){await p.locator('#sqEvidenceDialog .sqe-metrics:visible').first().evaluate(e=>e.scrollIntoView({block:'center'}));const b=await p.locator('#sqEvidenceDialog').screenshot({path:path.join(out,name+'.png'),animations:'disabled'});console.log('EVIDENCE_SCREENSHOT',name,crypto.createHash('sha256').update(b).digest('hex'),process.env.REVIEW_HEAD_SHA||'LOCAL-VERIFIED-REVIEW-SOURCE');}
 async function state(p){return p.evaluate(()=>JSON.stringify({period:state.period,correction:state.correction,input:[$('ticker').value,$('price').value,$('perf').value,$('divisor').value,$('increment').value],saved:sqHistoryRecords(),watch:getWatchlist(),compare:getCompareSelection(),badges:sqBadges(),journal:localStorage.getItem('sq_research_checkins_v1'),share:resultSummary()}));}
 async function make(width){
- const ctx=await browser.newContext({viewport:{width,height:width<600?844:1100},reducedMotion:'reduce',serviceWorkers:'block'}),p=await ctx.newPage(),errors=[],network=[];p.on('pageerror',e=>errors.push(e.message));
+ const ctx=await browser.newContext({viewport:{width,height:width<600?844:1100},reducedMotion:'reduce'}),p=await ctx.newPage(),errors=[],network=[];p.on('pageerror',e=>errors.push(e.message));
+ // Playwright's context-wide serviceWorkers:'block' initializer reads
+ // navigator.serviceWorker in every frame, which throws in an opaque sandbox.
+ // Mock only this fixture's TOP-LEVEL registration. Keep the real iframe isolation
+ // and pageerror assertions; do not patch the provider frame or permit its storage.
+ await ctx.addInitScript(()=>{
+  if(window!==window.top||location.origin!=='https://evidence.fixture.test')return;
+  window.__swRegistrationRequests=[];
+  navigator.serviceWorker.register=async url=>{window.__swRegistrationRequests.push(String(url));};
+ });
+ ctx.on('serviceworker',()=>network.push('Unexpected service worker created'));
  const vendorScript="document.querySelector('.tradingview-widget-container__widget').innerHTML='<div style=\"padding:20px;color:#d6e9ff\">SYNTHETIC WIDGET TRANSPORT FIXTURE — not a live TradingView chart. Attribution and sandbox tested separately.</div>';";
  await ctx.route('**/*',route=>{const u=new URL(route.request().url());if(u.href==='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js')return route.fulfill({contentType:'application/javascript',body:vendorScript});if(u.origin!==base){network.push(u.href);return route.abort();}const file=u.pathname==='/'?'index.html':u.pathname.slice(1);if(!sourceAssets.includes(file)){network.push(u.pathname);return route.abort();}return route.fulfill({contentType:({'.html':'text/html','.js':'application/javascript','.css':'text/css','.png':'image/png','.json':'application/json','.webmanifest':'application/manifest+json'})[path.extname(file)]||'text/plain',body:file==='index.html'?reviewHtml(fs.readFileSync(path.join(root,file),'utf8')):fs.readFileSync(path.join(root,file))});});
  if(process.env.EVIDENCE_INLINE==='1'){
@@ -53,7 +63,7 @@ async function make(width){
    await p.locator('[data-evidence-tab="sources"]').click();assert.match(await p.locator('#sqEvidenceSources').textContent(),/issuer_fields/);assert.match(await p.locator('#sqEvidenceSources').textContent(),/No TickerInside requests/);assert.equal(await p.evaluate(()=>window.__fixtureRequests.length),requests);pass(label+' publisher evaluations preserve field exclusions without activating feeds');
    assert.ok(await p.locator('#sqEvidenceDialog').evaluate(e=>e.scrollWidth<=e.clientWidth+1));await p.keyboard.press('Escape');assert.equal(await p.evaluate(()=>document.activeElement.id),'sqOpenEvidence');assert.equal(await p.locator('#sqTradingViewHost iframe').count(),0);assert.equal(await state(p),before);pass(label+' dialog fits, Escape unloads external content and restores focus');
    await p.locator('#sqOpenEvidence').click();assert.equal(await p.locator('#sqEvidenceConsent').isChecked(),false);await p.evaluate(()=>applySymbol('NVDA'));await settle(p);assert.equal(await p.locator('#sqEvidenceDialog').evaluate(e=>e.open),false);pass(label+' symbol changes dismiss stale evidence and reset consent');
-   assert.deepEqual(errors,[]);assert.deepEqual(network,[]);pass(label+' no page errors or unmocked provider traffic');await ctx.close();
+   assert.deepEqual(errors,[]);assert.deepEqual(network,[]);assert.equal(ctx.serviceWorkers().length,0);if(process.env.EVIDENCE_INLINE!=='1')assert.deepEqual(await p.evaluate(()=>window.__swRegistrationRequests),['./sw.js']);pass(label+' no page errors, live service workers or unmocked provider traffic');await ctx.close();
   }
   await browser.close();browser=null;
  }

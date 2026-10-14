@@ -33,3 +33,8 @@ Owner approval: add TradingView public visuals, SEC fundamentals, evaluate only 
 4. Existing broader consolidation browser failures (settings persistence, narrow scenario positioning and progression/companion compatibility), live account email/recovery and physical-device checks remain separate unfinished gates.
 
 No production change, merge, deployment, paid subscription, new account, provider-key retrieval, real market-provider QA request, guest migration or private-journal upload occurred.
+
+### Hosted fixture-run correction
+- Committed the complete implementation as `661f2357776510a0cba8a7ca5bc6d3fdae7d1a9f`; guarded review-branch update succeeded. Run `38609109355` passed all 65 new Node checks, then the Chromium 320px browser pass reached its final error assertion and found a sandbox `navigator.serviceWorker` access exception.
+- Inspected Playwright's context-level `serviceWorkers: 'block'` initializer: it reads `navigator.serviceWorker` in every frame. That access is forbidden by the deliberately opaque widget sandbox. Corrected this test-only fixture to stub registration solely in the top-level fixture origin, avoiding injection into the provider frame. Added explicit checks that no real service workers are created. The iframe still lacks `allow-same-origin`; all page-error, network, state-preservation and parent-storage-denial assertions are retained. No application security boundary is relaxed.
+- Reran all 65 new Node checks and all 48 local inline Chromium cases successfully after this fixture correction. The resulting hosted Chromium/WebKit run remains to be inspected; the failed run is not treated as completed browser verification.
