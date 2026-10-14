@@ -1,0 +1,33 @@
+name: Verify live public release
+on:
+  push:
+    branches: [verify/evidence-release-2026-10-14]
+permissions:
+  contents: read
+  pages: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install playwright install --with-deps chromium
+      - name: Verify published bytes, browser rendering and one public widget
+        run: node test/live-release-check.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          EXPECTED_RELEASE_COMMIT: 4456c7cb4ec929da29657160f1ca036da0faa11a
+          EXPECTED_SOURCE_COMMIT: 51f9fefc14257ad92de6326a2d447328f45cfa0e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-release-verification
+          path: test-results/live-release/
+          retention-days: 7
