@@ -1,0 +1,30 @@
+name: Read-only release inspection
+on:
+  push:
+    branches: [feat/research-studio]
+    paths: [scripts/release-inspect.cjs, .github/workflows/release-inspect.yml]
+permissions:
+  contents: read
+  pages: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Read existing Pages configuration and bounded SEC public facts; no writes
+        run: node scripts/release-inspect.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-inspection
+          path: release-inspection/
+          retention-days: 1

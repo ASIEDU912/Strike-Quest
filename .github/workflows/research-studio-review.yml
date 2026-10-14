@@ -66,8 +66,7 @@ jobs:
         run: npm test
       - name: Run existing browser regressions
         if: matrix.suite == 'core'
-        run: |
-          node scripts/ci-core.cjs
+        run: node scripts/ci-core.cjs core
       - name: Verify private Research Check-in and backup workflows
         if: matrix.suite == 'journal'
         run: npm run test:checkin && npm run test:backup
@@ -83,10 +82,10 @@ jobs:
         run: npm run test:account
       - name: Verify accessible Lumi interactions
         if: matrix.suite == 'tap'
-        run: npm run test:tap
+        run: node scripts/ci-core.cjs tap
       - name: Verify Lumi motion
         if: matrix.suite == 'motion'
-        run: npm run test:motion
+        run: node scripts/ci-core.cjs motion
       - name: Verify comparison and consolidation in Chromium and WebKit
         if: matrix.suite == 'consolidation'
         run: node test/consolidation.cjs && node test/consolidation-browser.cjs
