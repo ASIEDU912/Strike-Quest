@@ -1,0 +1,43 @@
+name: Owner-approved public candidate
+on:
+  push:
+    branches: [release/evidence-preview-2026-10-14]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-and-prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    env:
+      REVIEW_HEAD_SHA: ${{ github.sha }}
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Compose public candidate with verified, dated SEC snapshots
+        run: node scripts/public-candidate.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Test the exact composed public app, privacy and offline shell
+        run: node test/public-candidate-browser.cjs
+      - name: Prepare immutable release commit only; never update main or deploy
+        run: node scripts/prepare-public-commit.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-release-candidate
+          path: test-results/
+          retention-days: 7
