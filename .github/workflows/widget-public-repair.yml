@@ -1,0 +1,42 @@
+name: Verify public widget isolation repair
+on:
+  push:
+    branches: [release/tradingview-isolation-2026-10-14]
+permissions:
+  contents: read
+jobs:
+  verify-and-prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    env:
+      REVIEW_HEAD_SHA: ${{ github.sha }}
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - run: node scripts/widget-public-repair.cjs build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Retain all 66 composed-app checks and test real cross-origin storage isolation
+        run: node test/public-candidate-browser.cjs
+      - name: Verify one actual TradingView chart without parent storage access
+        run: node test/widget-provider-browser.cjs
+      - name: Prepare tested immutable commit only; no reference update or deployment
+        run: node scripts/widget-public-repair.cjs prepare
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: widget-isolation-release
+          path: test-results/
+          retention-days: 7
