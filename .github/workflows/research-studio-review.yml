@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [core, journal, studio, account, tap, motion]
+        suite: [core, journal, studio, account, tap, motion, consolidation]
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
@@ -91,6 +91,9 @@ jobs:
       - name: Verify Lumi motion
         if: matrix.suite == 'motion'
         run: npm run test:motion
+      - name: Verify comparison and consolidation in Chromium and WebKit
+        if: matrix.suite == 'consolidation'
+        run: node test/consolidation.cjs && node test/consolidation-browser.cjs
       - name: Record the evidence commit
         if: always()
         run: |
