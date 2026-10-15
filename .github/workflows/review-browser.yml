@@ -86,3 +86,32 @@ jobs:
           node test/service-worker.cjs
       - name: Verify composed app in Chromium and WebKit
         run: node test/lumi-evolution-browser.cjs
+
+
+  reflection-reward:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feat/checkin-reflection-reward'
+    name: Research reflection reward verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Check reflection rules and preserved journal, XP and Lumi data
+        run: |
+          node test/reflection-reward.cjs
+          node test/research-checkin.cjs
+          node test/badge-migration.cjs
+          node test/mascot-assets.cjs
+          node test/mascot-controller.cjs
+          node test/service-worker.cjs
+      - name: Verify completed reflections in Chromium and WebKit
+        run: node test/reflection-reward-browser.cjs
+      - name: Verify original Lumi collection and next-only evolution
+        run: node test/lumi-evolution-browser.cjs
