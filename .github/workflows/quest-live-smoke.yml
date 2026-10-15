@@ -1,0 +1,37 @@
+name: Quest bounded EOD smoke
+on:
+  push:
+    branches: [feat/research-studio]
+    paths: ['scripts/quest-live-smoke.cjs', '.github/workflows/quest-live-smoke.yml']
+permissions:
+  contents: read
+jobs:
+  smoke:
+    if: github.repository == 'ASIEDU912/Strike-Quest' && github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      SMOKE_PHASE: candidate
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Read exact already-tested candidate
+        run: |
+          git fetch --depth=1 origin 332027278d989b18e2098f21d08d8416e6d8b4ca
+          mkdir smoke-candidate
+          git archive 332027278d989b18e2098f21d08d8416e6d8b4ca | tar -x -C smoke-candidate
+      - name: Install locked test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund > /tmp/npm-install.log 2>&1 || { tail -30 /tmp/npm-install.log; exit 1; }
+      - name: Install browser engine
+        run: npx --no-install playwright install --with-deps chromium > /tmp/browser-install.log 2>&1 || { tail -30 /tmp/browser-install.log; exit 1; }
+      - name: One ordinary default-instrument EOD load; no refresh or synthetic prices
+        run: node scripts/quest-live-smoke.cjs
+# The owner explicitly requested working current EOD before release. Exhaustive QA
+# remains synthetic. This bounded operational smoke uses the existing shared endpoint
+# once, no forced upstream refresh, no credentials, no other instruments or services.
+# No deployment, artifact/cache storage, billing or user profile access.
