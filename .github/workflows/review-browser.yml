@@ -62,3 +62,27 @@ jobs:
       - name: Emit bounded fixture screenshots to logs
         if: ${{ always() && matrix.suite == 'research' && steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success' }}
         run: node test/review-evidence.cjs
+
+  lumi-evolution:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/lumi-baby-evolution'
+    name: Lumi evolution verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Check original art, controller, earned badges and app-shell cache
+        run: |
+          node test/mascot-assets.cjs
+          node test/mascot-controller.cjs
+          node test/badge-migration.cjs
+          node test/service-worker.cjs
+      - name: Verify composed app in Chromium and WebKit
+        run: node test/lumi-evolution-browser.cjs
