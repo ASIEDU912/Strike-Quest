@@ -35,3 +35,22 @@ body[data-studio-theme=quiet]{background:#101925}body[data-studio-theme=quiet] .
 @media(max-width:700px){.target-card .title-row h2{margin:0;font-size:17px}.target-card .target{grid-template-columns:28px minmax(0,1fr);gap:4px 9px;padding:8px;min-height:110px}.target-card .target-price{grid-column:1/-1;text-align:center}.target-card .target .n{font-size:clamp(32px,9vw,44px);line-height:1.05;letter-spacing:-1px}.target-card .targets{gap:7px}}
 @media(max-width:350px){.target-card{padding:12px}.target-card .target{padding:8px 6px}}
 .target-card .target .n{white-space:nowrap}
+
+/* Research starts with its controls and scenarios; longer evidence follows. */
+#viewResearch .studio-history{grid-column:1/-1;min-width:0}
+.studio-history .studio-chart{margin:0 0 16px}
+.studio-research-lumi{display:flex;align-items:center;gap:10px;width:100%;min-height:64px;margin-top:12px;padding:4px 12px 4px 6px;border:1px solid #405b74;border-radius:14px;background:#11273a;color:#e6f2fc;font:inherit;text-align:left;cursor:pointer}
+#studioResearchLumiArt{display:block;flex:0 0 56px;width:56px;height:56px}
+#studioResearchLumiArt .sq-mascot{width:56px;height:56px}
+.studio-research-lumi>span:nth-child(2){min-width:0;flex:1}
+.studio-research-lumi b{display:block;font-size:13px;line-height:1.4}
+.studio-research-lumi small{display:block;font-size:11px;color:#b6ccdf;line-height:1.5}
+.studio-research-lumi>svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;flex:none}
+.studio-research-lumi:focus-visible{outline:3px solid #8ed9ff;outline-offset:3px}
+@media(max-width:600px){
+ #viewResearch .studio-search-row{margin-bottom:12px;padding-bottom:12px}
+ #viewResearch .mission-controls,#viewResearch .market-inputs{padding:16px}
+ #viewResearch .mission-controls .tabs{margin-top:12px;margin-bottom:10px}
+ #viewResearch .mission-controls .correction-control{margin-top:12px}
+ #viewResearch .mission-controls .horizon-prompt,#viewResearch .mission-controls .horizon-basis{margin:6px 0;line-height:1.5}
+}

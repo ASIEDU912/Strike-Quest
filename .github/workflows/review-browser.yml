@@ -115,3 +115,30 @@ jobs:
         run: node test/reflection-reward-browser.cjs
       - name: Verify original Lumi collection and next-only evolution
         run: node test/lumi-evolution-browser.cjs
+
+  research-layout:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/research-scenario-order'
+    name: Research layout verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Check existing calculation, storage, journal and companion rules
+        run: |
+          npm test
+          node test/reflection-reward.cjs
+      - name: Compare released and proposed Research layouts with synthetic fixtures
+        run: node test/research-layout-browser.cjs
+      - name: Verify completed reflections and original Lumi evolution
+        run: |
+          node test/reflection-reward-browser.cjs
+          node test/lumi-evolution-browser.cjs
