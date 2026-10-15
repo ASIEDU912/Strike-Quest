@@ -1,0 +1,29 @@
+{
+  "candidate": "332027278d989b18e2098f21d08d8416e6d8b4ca",
+  "run": 38724032215,
+  "job": 116385439205,
+  "synthetic": true,
+  "liveProviderRequests": 0,
+  "physicalIphone": false,
+  "productionUnchangedFrom": "c93002aeef7c352458ebce441bd630154fb33dd0",
+  "images": [
+    {
+      "name": "chromium-390-home",
+      "bytes": 24187,
+      "sha256": "ccce25be29f8e51828e2239aee7719604b071f85f3c2cdf9fde05648ec5519a5",
+      "candidate": "332027278d989b18e2098f21d08d8416e6d8b4ca"
+    },
+    {
+      "name": "webkit-390-research",
+      "bytes": 23161,
+      "sha256": "786b1ea4ab699bf0b8bb7a5b798e82fd13148e49270107d6daf0086294261b4b",
+      "candidate": "332027278d989b18e2098f21d08d8416e6d8b4ca"
+    },
+    {
+      "name": "chromium-390-quests",
+      "bytes": 24751,
+      "sha256": "df2cb75d90c2aaefac3cfec01323bd39e1c88d4e36e9392697d4a7a56aa45666",
+      "candidate": "332027278d989b18e2098f21d08d8416e6d8b4ca"
+    }
+  ]
+}
