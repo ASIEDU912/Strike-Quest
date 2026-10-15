@@ -134,8 +134,16 @@ jobs:
       - run: npx --no-install playwright install --with-deps chromium webkit
       - name: Check existing calculation, storage, journal and companion rules
         run: |
-          npm test
+          node test/regressions.cjs
+          node test/shared-regressions.cjs
+          node test/service-worker.cjs
+          node test/badge-migration.cjs
+          node test/mascot-assets.cjs
+          node test/mascot-controller.cjs
+          node test/research-checkin.cjs
           node test/reflection-reward.cjs
+      - name: Report unchanged legacy fixture failures against released source
+        run: node test/legacy-layout-baseline.cjs
       - name: Compare released and proposed Research layouts with synthetic fixtures
         run: node test/research-layout-browser.cjs
       - name: Verify completed reflections and original Lumi evolution
