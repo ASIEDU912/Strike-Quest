@@ -50,7 +50,7 @@ async function metrics(page){return page.evaluate(()=>{
     await baseline.finish();
     const f=await fixture(browser,width),p=f.page,initial=await state(p),after=await metrics(p);
     assert.equal(initial.xp,150);assert.equal(after.overflow,false);
-    const b=after.boxes;
+    const b=after.boxes;console.log('LAYOUT_MEASURE '+JSON.stringify({engine,width,before:before.boxes,after:b}));
     assert.ok(b.scenarioSection.top<b.companionPanel.top&&b.companionPanel.top<b.researchContext.top);
     assert.ok(b.studioHistory.top>b.companionPanel.top);
     assert.ok(b.studioResearchLumi.top<b.missionControls.top);
@@ -78,7 +78,8 @@ async function metrics(page){return page.evaluate(()=>{
     await p.locator('#resetScenario').click();assert.equal(await p.locator('#correction').inputValue(),'10');assert.equal(await p.locator('#targetCorrection').inputValue(),'10');
     assert.equal(await p.locator('[data-p="2y"]').getAttribute('aria-pressed'),'true');
     // Restore working input through its real control; the saved original remains 20%.
-    await p.locator('#targetCorrection').fill('20');await p.locator('#targetCorrection').dispatchEvent('input');
+    await p.locator('#targetCorrection').focus();for(let i=0;i<10;i++)await p.keyboard.press('ArrowRight');
+    assert.equal(await p.locator('#targetCorrection').inputValue(),'20');
     await p.emulateMedia({reducedMotion:'reduce'});await p.locator('#studioResearchLumi').click();
     assert.equal(await p.locator('#companionHost .sq-mascot__head').evaluate(e=>getComputedStyle(e).animationName),'none');
     assert.equal(await p.locator('#studioResearchLumiArt .sq-mascot__head').evaluate(e=>getComputedStyle(e).animationName),'none');
