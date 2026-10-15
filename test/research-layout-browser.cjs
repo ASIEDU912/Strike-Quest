@@ -32,6 +32,7 @@ async function fixture(browser,width,baseline=false,extra={}){
  await context.routeWebSocket('**/*',s=>{external.push(s.url());s.close();});
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(origin+'/#research');await page.waitForSelector('body[data-quest-renewal="'+(baseline?'10.3.2':'10.3.3')+'"]');
  await page.locator('#scenarioHeading').waitFor();await page.waitForFunction(()=>document.querySelector('#studioReference').textContent.includes('190.43'));
+ if(!baseline)await page.waitForFunction(()=>document.getElementById('studioResearchLumiName').textContent==='Lumi · Scout');
  return {page,context,async finish(){assert.deepEqual(errors,[]);assert.deepEqual(external,[]);await context.close();}};
 }
 async function state(page){return page.evaluate(keys=>({xp:sqResearchXp(),storage:Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)]))}),Object.keys(seed));}
@@ -54,6 +55,7 @@ async function metrics(page){return page.evaluate(()=>{
     assert.ok(b.scenarioSection.top<b.companionPanel.top&&b.companionPanel.top<b.researchContext.top);
     assert.ok(b.studioHistory.top>b.companionPanel.top);
     assert.ok(b.studioResearchLumi.top<b.missionControls.top);
+    assert.ok(b.studioResearchLumi.bottom<(await p.locator('.bottom-nav').boundingBox()).y,'Compact Lumi fully above navigation on first screen');
     assert.ok(b.scenarioSection.top<before.boxes.scenarioSection.top-250,'Scenarios materially higher');
     assert.ok(b.companionPanel.top<before.boxes.companionPanel.top-250,'Full guide materially higher');
     assert.deepEqual(after.targets.map(({text,font,background,icon})=>({text,font,background,icon})),before.targets.map(({text,font,background,icon})=>({text,font,background,icon})),'Prices, large type, colors and icons unchanged');

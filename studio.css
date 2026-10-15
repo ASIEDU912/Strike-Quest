@@ -54,3 +54,5 @@ body[data-studio-theme=quiet]{background:#101925}body[data-studio-theme=quiet] .
  #viewResearch .mission-controls .correction-control{margin-top:12px}
  #viewResearch .mission-controls .horizon-prompt,#viewResearch .mission-controls .horizon-basis{margin:6px 0;line-height:1.5}
 }
+
+#viewResearch>.quest-fastpath{grid-column:1/-1;margin-bottom:0}
