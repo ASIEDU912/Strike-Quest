@@ -1,0 +1,75 @@
+name: Quest reviewed screenshot gallery
+on:
+  push:
+    branches: [feat/research-studio]
+    paths: ['.github/workflows/quest-review-gallery.yml']
+permissions:
+  contents: read
+jobs:
+  screenshots:
+    if: github.repository == 'ASIEDU912/Strike-Quest' && github.event.repository.private == false && github.ref == 'refs/heads/feat/research-studio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Recover only hash-verified synthetic app screenshots
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node <<'NODE'
+          'use strict';
+          const assert=require('node:assert/strict'),crypto=require('node:crypto');
+          const repo='ASIEDU912/Strike-Quest',candidate='332027278d989b18e2098f21d08d8416e6d8b4ca',jobId=116385439205,runId=38724032215;
+          const prefix='review-previews/quest-renewal-10.3/';
+          const names=['chromium-390-home','webkit-390-research','chromium-390-quests'];
+          const heads='/git/ref/heads/';
+          async function request(p,body){
+            if(body&&!['/git/blobs','/git/trees','/git/commits'].includes(p))throw Error('No ref writes or deployments permitted');
+            const r=await fetch('https://api.github.com/repos/'+repo+p,{method:body?'POST':'GET',redirect:'error',headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+process.env.GH_TOKEN},...(body?{body:JSON.stringify(body)}:{})});
+            if(!r.ok)throw Error('GitHub request '+r.status);return r.json();
+          }
+          (async()=>{
+            assert.equal(process.env.GITHUB_REPOSITORY,repo);assert.equal(process.env.GITHUB_REF,'refs/heads/feat/research-studio');
+            assert.equal((await request('')).private,false);
+            const base=process.env.GITHUB_SHA,main=(await request(heads+'main')).object.sha;
+            assert.equal((await request(heads+'feat/research-studio')).object.sha,base,'Review changed; preserve concurrent work');
+            const job=await request('/actions/jobs/'+jobId);assert.equal(job.conclusion,'success');assert.equal(job.run_id,runId);
+            let r=await fetch('https://api.github.com/repos/'+repo+'/actions/jobs/'+jobId+'/logs',{redirect:'manual',headers:{Authorization:'Bearer '+process.env.GH_TOKEN}});
+            if([301,302,303,307,308].includes(r.status)){
+              const u=new URL(r.headers.get('location'));assert.equal(u.protocol,'https:');
+              assert.ok(/(?:\.blob\.core\.windows\.net|\.actions\.githubusercontent\.com)$/.test(u.hostname),'Only GitHub signed log storage');
+              r=await fetch(u.href,{redirect:'error'});
+            }
+            assert.equal(r.status,200);const text=await r.text();assert.ok(text.length<12000000);
+            const lines=text.split(/\r?\n/),metas=new Map(),images=new Map();let result;
+            for(const line of lines){
+              const mi=line.indexOf('PROD_SCREEN ');if(mi>=0){const m=JSON.parse(line.slice(mi+12));if(names.includes(m.name))metas.set(m.name,m);}
+              const im=line.match(/PROD_IMAGE (chromium-390-home|webkit-390-research|chromium-390-quests) ([A-Za-z0-9+/=]+)\s*$/);if(im)images.set(im[1],Buffer.from(im[2],'base64'));
+              const ri=line.indexOf('PRODUCTION_RESULT ');if(ri>=0)result=JSON.parse(line.slice(ri+18));
+            }
+            assert.equal(result.candidate,candidate);assert.equal(result.passed,73);assert.equal(result.syntheticOnly,true);assert.equal(result.liveProviderRequests,0);
+            const records=[],tree=[];
+            async function blob(p,content,encoding='utf-8'){const b=await request('/git/blobs',{content,encoding});tree.push({path:prefix+p,mode:'100644',type:'blob',sha:b.sha});}
+            for(const name of names){
+              const b=images.get(name),m=metas.get(name);assert.ok(b&&m);assert.ok(b.length<200000);assert.equal(b[0],255);assert.equal(b[1],216);
+              assert.equal(b.length,m.bytes);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),m.sha256);assert.equal(m.candidate,candidate);
+              await blob(name+'.jpg',b.toString('base64'),'base64');records.push({name,bytes:b.length,sha256:m.sha256,candidate});
+            }
+            const info={candidate,run:runId,job:jobId,synthetic:true,liveProviderRequests:0,physicalIphone:false,productionUnchangedFrom:main,images:records};
+            await blob('evidence.json',JSON.stringify(info,null,2)+'\n');
+            const readme='# StrikeQuests 10.3 — actual app preview\n\nThese are genuine screenshots of the implemented release candidate, not artwork or mockups. They were captured from the running app during the successful 73-check production-composition test. All prices and research data shown are **synthetic QA fixtures**.\n\n**Not yet published.** These screenshots do not establish working live EOD delivery. The existing shared EOD service failed its separate operational test; the working-data release condition remains unresolved. Public account sign-in/recovery and physical iPhone testing remain unverified. No backend or production changes are made by this gallery.\n\n## Home\nBlue-and-gold presentation, contextual Lumi, research status and quick actions. Chromium emulation, 390 × 844 pixels.\n\n![Home](chromium-390-home.jpg)\n\n## Research\nThe preferred 2-Year / 10% scenario path and more distinct Low/Mid/High presentation. WebKit emulation, 390 × 844 pixels; not a physical iPhone.\n\n![Research](webkit-390-research.jpg)\n\n## Quests\nExpanded research progression. The implemented journey has ten slower Lumi stages and 24 additional expedition badges; the phone screenshot captures only the visible portion of this screen. New expedition badges remain device-local, not cloud-synced.\n\n![Quests](chromium-390-quests.jpg)\n\n## Exact source and verification\nCandidate: `'+candidate+'`. [Successful synthetic verification run](https://github.com/'+repo+'/actions/runs/'+runId+'). Image bytes and SHA-256 hashes are checked against the original test log and recorded in [evidence.json](evidence.json). This extraction did not rerun the app, consume market-data quota, change any user records, deploy, or add a paid service.\n';
+            await blob('README.md',readme);
+            const b=await request('/git/commits/'+base),t=await request('/git/trees',{base_tree:b.tree.sha,tree});
+            const c=await request('/git/commits',{message:'Add actual tested Quest Renewal screenshot gallery [skip ci]',tree:t.sha,parents:[base]});
+            assert.equal((await request(heads+'main')).object.sha,main);
+            console.log('GALLERY_READY '+JSON.stringify({commit:c.sha,parent:base,main,gallery:'https://github.com/'+repo+'/tree/'+c.sha+'/'+prefix,images:records}));
+          })().catch(e=>{console.error('Gallery extraction failed: '+e.message);process.exitCode=1;});
+          NODE
+# Standard public runner only. Copies three already synthetic screenshots into Git
+# objects. No reference updates, deployments, market requests, secret logging,
+# paid services, Actions artifact storage, cache uploads or application changes.
