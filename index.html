@@ -526,7 +526,7 @@ const PERIODS={
   "2y":{label:"2-Year",months:24,divisor:1.5},
   "3y":{label:"3-Year",months:36,divisor:2}
 };
-let state={period:"2y",mode:"demo",correction:10,extra:{},sharedApiBase:"",sharedApiReady:false};
+let state={period:"2y",mode:"auto_eod",correction:10,extra:{},sharedApiBase:"",sharedApiReady:false};
 let marketRequestSerial=0;
 function invalidateMarketRequest(){
   marketRequestSerial++;
@@ -1405,7 +1405,7 @@ loadPreset=function(which){state.correction=10;sqOldPreset(which);sqSetCorrectio
 const sqOldSummary=resultSummary;
 resultSummary=function(){const r=calc();if(!r)return 'StrikeQuests: valid inputs are required.';return `${state.mode==='demo'||state.savedOrigin==='demo'?'SYNTHETIC EXAMPLE — NOT MARKET DATA':state.mode==='manual'?'MANUAL / UNVERIFIED INPUTS':'EOD SNAPSHOT — VERIFY SESSION'}\n${state.mode==='auto_eod'?sqSourceInfo(sqProvenance()).detail+'\n':''}${sqOldSummary()}\nHypothetical price levels only; not listed option strikes, Greeks or profit forecasts. Notes and saved history are not included.`};
 function sqInitNext(){
- const saved=sqJSON('sq_next_session',null);sqRestoring=true;state.mode=['demo','manual','auto_eod'].includes(saved?.mode)?saved.mode:'demo';state.correction=10;
+ const saved=sqJSON('sq_next_session',null);sqRestoring=true;state.mode=['demo','manual','auto_eod'].includes(saved?.mode)?saved.mode:'auto_eod';state.correction=10;
  setPeriod(typeof saved?.period==='string'&&Object.hasOwn(PERIODS,saved.period)?saved.period:'2y');
  if(saved){if(/^[A-Z0-9.^-]{1,15}$/.test(saved.ticker||''))$('ticker').value=saved.ticker;for(const id of ['price','perf','divisor','increment'])if(saved[id]!=null)$(id).value=String(saved[id]);$('researchReason').value=String(saved.reason||'').slice(0,2000);state.savedOrigin=saved.savedOrigin||null;}
  sqSetCorrection(saved?.correction??10,{persist:false});sqRestoring=false;

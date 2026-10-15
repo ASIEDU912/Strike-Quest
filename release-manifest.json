@@ -1,9 +1,9 @@
 {
-  "version": "10.2.0-preview.2",
-  "sourceCommit": "8ca926420c2cfb93fda31eecbe8556a576192b53",
-  "rollbackCommit": "7966836b4a0460e4b9dd97907fa374e8c9018d8b",
-  "rollbackBranch": "rollback/pre-evidence-release-2026-10-14",
-  "audience": "public guest preview",
+  "version": "10.3.0",
+  "sourceCommit": "f41e22927160ce53481b579fd9a53ea9af043593",
+  "rollbackCommit": "c93002aeef7c352458ebce441bd630154fb33dd0",
+  "rollbackBranch": "rollback/pre-quest-renewal-2026-10-15",
+  "audience": "public guest release",
   "accounts": "unavailable; real sign-in/recovery not verified",
   "sec": "dated six-company annual snapshots; retrieved 2026-10-14",
   "files": [
@@ -54,8 +54,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 257068,
-      "sha256": "0bf8fae3c00a3438cd0551c6724ee34fd6c21a027dca483009dee4ec95ba737b"
+      "bytes": 257076,
+      "sha256": "05035bf2bb2fc1ff7cb7a308c54921292c291a2a65f279da0c89cd6dfe2f262d"
     },
     {
       "path": "manifest.webmanifest",
@@ -69,13 +69,13 @@
     },
     {
       "path": "mascot.js",
-      "bytes": 26405,
-      "sha256": "4b24183a0b1f5aff1cc9041723b3d725e544cfb1e8e183a862fccc9dc1b4aa3f"
+      "bytes": 27398,
+      "sha256": "c6375137eb1c887311b6197e146a266bbcb5db632b5d71fbdc92aea6ba0507ed"
     },
     {
       "path": "public-preview.js",
-      "bytes": 699,
-      "sha256": "a6613498f533719360c7c26f33b8eb515994c0869d9b1d238f637f496d7f50b6"
+      "bytes": 663,
+      "sha256": "70d3b5129824cf76dcdc8954845789c37e492bf1ba9437c441e6042d8988f469"
     },
     {
       "path": "research-data/sec/AAPL.json",
@@ -134,13 +134,13 @@
     },
     {
       "path": "studio.js",
-      "bytes": 56820,
-      "sha256": "77af38a8508b6f726d99b9fe195b561da0f29daefde1ab9fe4173aa43397fd8a"
+      "bytes": 88714,
+      "sha256": "1a4344eb78af8f12332419cd77d8f1ece3611aa7112b0dc24e38bdcfe4c20bf1"
     },
     {
       "path": "sw.js",
-      "bytes": 1278,
-      "sha256": "0a7bca1d751d748c2f77879c0d7502ae399e72bf6c786ab56c228da14fca7eb9"
+      "bytes": 1277,
+      "sha256": "42babb6db5b72ae532bf200a8a830cda21e17f60dea0bc9ee69c12e7399e5a68"
     },
     {
       "path": "vendor/supabase.js",
@@ -148,6 +148,11 @@
       "sha256": "7d1f5517b32aeb8e4dfcffefdeb094ac18cc36f3b0fcc1f1ac351a7b25eadaf7"
     }
   ],
-  "previousPublicCommit": "4456c7cb4ec929da29657160f1ca036da0faa11a",
-  "widgetIsolation": "Fixed foreign TradingView HTTPS iframe; no srcdoc or parent-origin external script"
+  "previousPublicCommit": "c93002aeef7c352458ebce441bd630154fb33dd0",
+  "widgetIsolation": "Fixed foreign TradingView HTTPS iframe; no srcdoc or parent-origin external script",
+  "preparationCommit": "10481e64540431cd22d977d6f3e3a7abe055199a",
+  "defaultDataMode": "Automatic EOD on a new device; saved explicit Manual/Demo/EOD choices preserved",
+  "expeditionSync": "new expedition badges remain device-local; not cloud-synced",
+  "physicalIphoneVerified": false,
+  "realAccountVerified": false
 }
