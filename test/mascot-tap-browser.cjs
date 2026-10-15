@@ -18,7 +18,7 @@ const hosts = [
   {context:'saved',host:'savedCompanionHost',panel:'savedCompanionPanel',summary:'savedCompanionSummary'},
   {context:'watchlist',host:'watchlistCompanionHost',panel:'watchlistCompanionPanel',summary:'watchlistCompanionSummary'}
 ];
-const stages = [[0,'rookie'],[50,'scout'],[150,'ranger'],[375,'keeper'],[500,'voyager']];
+const stages = [0,100,240,430,680,1000,1400,1850,2400,3000].map((xp,i)=>[xp,'journey-'+i]);
 const reactions = ['wave','tilt','tail'];
 const parts = {wave:'.sq-mascot__paw',tilt:'.sq-mascot__head',tail:'.sq-mascot__tail'};
 const reports = [];
@@ -105,15 +105,7 @@ async function visit(page,h) {
   await page.waitForFunction(host=>!document.querySelector('#'+host+' .sq-companion').classList.contains('sq-companion--greeting'),h.host);
 }
 async function seedStage(page,xp) {
-  await page.evaluate(xp=>{
-    const mask=Array.from({length:1<<SQ_CORE.length},(_,i)=>i).find(mask=>SQ_CORE.reduce((sum,b,i)=>sum+((mask&(1<<i))?ACHIEVEMENTS[b.id].xp:0),0)===xp);
-    if(mask===undefined)throw Error('No synthetic badge fixture for '+xp);
-    // Change only earned milestones; keep the normal startup horizon record.
-    // Reload visits the active horizon independently of any artwork input.
-    sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T12:00:00Z',mode:'demo',origin:'tap-test'}])),horizons:sqBadges().horizons});
-    sqRenderBadges();
-  },xp);
-  assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
+  await page.evaluate(require('./quest-renewal-fixture.cjs').seed,xp);  assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
 }
 async function protectedState(page) {
   return page.evaluate(()=>{
@@ -260,7 +252,7 @@ async function matrix(page,engine) {
       await visit(page,h);assert.equal(await page.locator(select(h,'.sq-mascot--'+stage)).count(),1);
       await isolateParts(page,h);
       const results=[];
-      for(const input of ['pointer','touch','Enter'])results.push(await finitePaint(page,h,input,`${engine}-${h.context}-${stage}-${input.toLowerCase()}`,h.context==='quests'&&xp===500));
+      for(const input of ['pointer','touch','Enter'])results.push(await finitePaint(page,h,input,`${engine}-${h.context}-${stage}-${input.toLowerCase()}`,h.context==='quests'&&xp===3000));
       assert.deepEqual(results.map(r=>r.kind).sort(),[...reactions].sort(),'Three successive taps include wave, head tilt and tail response');
       const before=await protectedState(page);await activate(page,h,'Space');
       assert.deepEqual(await reaction(page,h),[results[0].kind],'The three-response cycle repeats');await feedback(page,h);
@@ -315,9 +307,9 @@ async function interruptionAndPreferences(page,engine) {
   await activate(page,h,'pointer');await page.locator('#'+h.summary).click();await clean(page,h);
   await page.locator('#'+h.summary).click();await visit(page,h);await clean(page,h);
   await activate(page,h,'pointer');await seedStage(page,0);await clean(page,h);
-  assert.equal(await page.locator(select(h,'.sq-mascot--rookie')).count(),1);
-  await activate(page,h,'pointer');await feedback(page,h);await seedStage(page,500);await clean(page,h);
-  assert.equal(await page.locator(select(h,'.sq-mascot--voyager')).count(),1);await page.waitForTimeout(1150);await clean(page,h);
+  assert.equal(await page.locator(select(h,'.sq-mascot--journey-0')).count(),1);
+  await activate(page,h,'pointer');await feedback(page,h);await seedStage(page,3000);await clean(page,h);
+  assert.equal(await page.locator(select(h,'.sq-mascot--journey-9')).count(),1);await page.waitForTimeout(1150);await clean(page,h);
   pass(`${engine}: navigation/collapse/evolution cancel reactions and discard stale feedback`);
 
   // None of the existing controls is a second hit area for the artwork response.
@@ -348,7 +340,7 @@ async function interruptionAndPreferences(page,engine) {
   pass(`${engine}: reduced-motion feedback works everywhere and animated input resumes`);
 }
 async function responsive(page,engine,width) {
-  await seedStage(page,500);
+  await seedStage(page,3000);
   for(const h of hosts) {
     await visit(page,h);await prepareInput(page,h,'Enter');const initial=await dimensions(page,h),before=await protectedState(page);
     await activate(page,h,'Enter',true);await feedback(page,h);await page.waitForTimeout(400);

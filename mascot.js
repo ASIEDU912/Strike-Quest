@@ -2,15 +2,18 @@
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.StrikeMascot = factory();
-})(typeof globalThis === 'object' ? globalThis : this, function () {
+})(typeof globalThis === 'object' ? globalThis : this, function createMascotModel(journey) {
   'use strict';
-  const STAGES = Object.freeze([
+  const LEGACY_STAGES = Object.freeze([
     { id: 'rookie', name: 'Rookie', minXp: 0, ability: 'Curiosity', form: 'Tiny round fox cub with short ears and one curled tail', outfit: 'Starter scarf and patched field satchel', detail: 'A tiny round cub, ready to explore.', color: '#8ce5e9', scale: .80 },
     { id: 'scout', name: 'Signal Scout', minXp: 50, ability: 'Signal scanner', form: 'Long-eared juvenile fox with longer legs and a long plume tail', outfit: 'Teal scout vest and wrist scanner', detail: 'Lumi grows longer ears, taller legs and a flowing tail.', color: '#75e4d9', scale: .86 },
     { id: 'ranger', name: 'Orbit Ranger', minXp: 150, ability: 'Orbital scout', form: 'Lean athletic fox with swept ear tufts and a forked tail', outfit: 'Violet flight harness and companion drone', detail: 'Lumi becomes a lean runner with ear tufts and a forked tail.', color: '#b8a4ff', scale: .92 },
     { id: 'keeper', name: 'Archive Keeper', minXp: 300, ability: 'Archive shield', form: 'Tall guardian fox with powerful paws, a broad mane and three tails', outfit: 'Indigo shoulder mantle, gold chest chain and holographic archive', detail: 'A broad mane, powerful paws and three tails mark a new form.', color: '#a9c9ff', scale: .98 },
     { id: 'voyager', name: 'Insight Voyager', minXp: 500, ability: 'Insight flare', form: 'Majestic celestial fox with feathered wings, crystalline ear crests and five comet tails', outfit: 'Pearl-and-gold mantle and a glowing gold-and-cyan aura', detail: 'Lumi transforms into a winged celestial fox with five comet tails.', color: '#ffe198', scale: 1.03 }
   ].map((s, index) => Object.freeze({ ...s, index, nextXp: index === 4 ? null : [0, 50, 150, 300, 500][index + 1] })));
+  const ranks=['Spark','Scout','Seeker','Navigator','Analyst','Strategist','Sage','Guardian','Ascendant','Mythic Lumi'];
+  const thresholds=[0,100,240,430,680,1000,1400,1850,2400,3000];
+  const STAGES=journey?Object.freeze(ranks.map((name,index)=>Object.freeze({...LEGACY_STAGES[Math.floor(index/2)],id:'journey-'+index,name,index,formIndex:Math.floor(index/2),minXp:thresholds[index],nextXp:thresholds[index+1]??null}))):LEGACY_STAGES;
   let serial = 0;
   function normalizeXp(value) {
     if (typeof value !== 'number' && typeof value !== 'string') return 0;
@@ -81,7 +84,7 @@
   }
 
   function renderSvg(value, options = {}) {
-    const s = stageForXp(value), n = s.index;
+    const s = stageForXp(value), n = s.formIndex ?? s.index;
     const prefix = 'sqm-' + (token(options.idPrefix) || ++serial);
     const state = ['idle','earn','levelup'].includes(options.state) ? options.state : 'idle';
     const size = typeof options.size === 'number' && Number.isFinite(options.size) ? Math.max(48, Math.min(400, options.size)) : 120;
@@ -90,18 +93,19 @@
     const suit = ['#425979','#167f8a','#6453a7','#343b83','#e4def6'][n];
     const cuff = ['#b7c9d7','#80e2d6','#baaff8','#d7b778','#f3c865'][n];
     // The fifth-stage aura sits behind the whole companion, within the 180px viewBox.
-    const auraDefs = n === 4 ? `<linearGradient id="${prefix}-aura-ring" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe7a1"/><stop offset=".42" stop-color="#f4c867"/><stop offset=".72" stop-color="#81edf0"/><stop offset="1" stop-color="#cdfcff"/></linearGradient><radialGradient id="${prefix}-aura-halo"><stop offset=".56" stop-color="#ffe29a" stop-opacity="0"/><stop offset=".80" stop-color="#ffd774" stop-opacity=".08"/><stop offset=".90" stop-color="#79edf3" stop-opacity=".16"/><stop offset="1" stop-color="#79edf3" stop-opacity="0"/></radialGradient><filter id="${prefix}-aura-soft" filterUnits="userSpaceOnUse" x="0" y="0" width="180" height="180"><feGaussianBlur stdDeviation="2.4"/></filter>` : '';
-    const aura = n === 4 ? `<g class="sq-mascot__aura" aria-hidden="true"><ellipse cx="90" cy="89" rx="87" ry="87" fill="url(#${prefix}-aura-halo)"/><ellipse cx="90" cy="89" rx="75" ry="79" fill="none" stroke="url(#${prefix}-aura-ring)" stroke-width="7" opacity=".38" filter="url(#${prefix}-aura-soft)"/><ellipse cx="90" cy="89" rx="75" ry="79" fill="none" stroke="url(#${prefix}-aura-ring)" stroke-width="1.5" opacity=".78"/><path d="M38 28a75 79 0 0 1 56-18M154 137a75 79 0 0 1-52 30" fill="none" stroke="#e9fdff" stroke-width="2" stroke-linecap="round" opacity=".58"/></g>` : '';
-    const background = n === 4 ? `<path d="M90 35 75 57 49 30 56 80 26 64 45 104 24 117 67 129 90 150 113 129 156 117 135 104 154 64 124 80 131 30 105 57Z" fill="#d5c3ff" opacity=".08"/>${star(36,48,7,'#ffe29a')}${star(145,64,5,'#c8b4ff')}` : '';
-    const creature = creatureArt(n, prefix);
+    const auraDefs = (n === 4 || journey&&s.index>=4) ? `<linearGradient id="${prefix}-aura-ring" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe7a1"/><stop offset=".42" stop-color="#f4c867"/><stop offset=".72" stop-color="#81edf0"/><stop offset="1" stop-color="#cdfcff"/></linearGradient><radialGradient id="${prefix}-aura-halo"><stop offset=".56" stop-color="#ffe29a" stop-opacity="0"/><stop offset=".80" stop-color="#ffd774" stop-opacity=".08"/><stop offset=".90" stop-color="#79edf3" stop-opacity=".16"/><stop offset="1" stop-color="#79edf3" stop-opacity="0"/></radialGradient><filter id="${prefix}-aura-soft" filterUnits="userSpaceOnUse" x="0" y="0" width="180" height="180"><feGaussianBlur stdDeviation="2.4"/></filter>` : '';
+    const aura = (n === 4 || journey&&s.index>=4) ? `<g class="sq-mascot__aura" aria-hidden="true"><ellipse cx="90" cy="89" rx="87" ry="87" fill="url(#${prefix}-aura-halo)"/><ellipse cx="90" cy="89" rx="75" ry="79" fill="none" stroke="url(#${prefix}-aura-ring)" stroke-width="7" opacity=".38" filter="url(#${prefix}-aura-soft)"/><ellipse cx="90" cy="89" rx="75" ry="79" fill="none" stroke="url(#${prefix}-aura-ring)" stroke-width="1.5" opacity=".78"/><path d="M38 28a75 79 0 0 1 56-18M154 137a75 79 0 0 1-52 30" fill="none" stroke="#e9fdff" stroke-width="2" stroke-linecap="round" opacity=".58"/></g>` : '';
+    const background = (n === 4 || journey&&s.index>=4) ? `<path d="M90 35 75 57 49 30 56 80 26 64 45 104 24 117 67 129 90 150 113 129 156 117 135 104 154 64 124 80 131 30 105 57Z" fill="#d5c3ff" opacity=".08"/>${star(36,48,7,'#ffe29a')}${star(145,64,5,'#c8b4ff')}` : '';
+    const crest=journey&&s.index%2===1?`<g class="sq-mascot__journey-crest" aria-hidden="true"><path d="M63 33 72 23 81 33 90 17 99 33 108 23 117 33 111 42H69Z" fill="none" stroke="${s.color}" stroke-width="2"/><circle cx="90" cy="23" r="3" fill="#ffe4a0"/></g>`:'';
+    const creature = creatureArt(n, prefix)+crest;
     const drone = n>=2?`<g class="sq-mascot__drone"><path d="M138 49v-6" stroke="#b8acff" stroke-width="2"/><circle cx="138" cy="41" r="2.5" fill="#f2d18b"/><ellipse cx="138" cy="56" rx="13" ry="10" fill="#dad7fa" stroke="${outline}" stroke-width="2"/><rect x="130" y="51" width="17" height="8" rx="4" fill="#253a56"/><circle cx="135" cy="55" r="2" fill="#87e8ed"/><circle cx="142" cy="55" r="2" fill="#87e8ed"/><path d="M122 61q16 10 33-1" stroke="#897dbd" stroke-width="2" fill="none" opacity=".7"/></g>`:'';
     const shield = n>=3?`<g class="sq-mascot__archive"><path d="m29 101 17-7 17 7v21q-2 11-17 18-15-7-17-18Z" fill="#8cbcff" fill-opacity=".13" stroke="#9acbfb" stroke-width="1.7"/><path d="M35 110q6-3 11 1 6-4 11-1v15q-6-3-11 1-6-4-11-1Zm11 1v15" fill="#a8ddfa" fill-opacity=".2" stroke="#b2e7fa" stroke-width="1.2"/><path d="M39 115h3m8 0h3m-14 5h3m8 0h3" stroke="#d0efff" stroke-width="1.2"/></g>`:'';
     const flare = n===4?`<g class="sq-mascot__flare">${star(131,107,13,'#ffdf90')}${star(131,107,7,'#fff8d9')}<circle cx="131" cy="107" r="20" fill="none" stroke="#f8d780" stroke-opacity=".38" stroke-width="1.5"/><path d="m131 80 0 5m0 44v5m-28-27h5m46 0h5" stroke="#ffe3a3" stroke-width="1.5"/></g>`:'';
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="sq-mascot sq-mascot--${s.id} sq-mascot--${state}${options.static?' sq-mascot--static':''}" width="${size}" height="${size}" viewBox="0 0 180 180" role="img" aria-labelledby="${prefix}-title ${prefix}-desc" focusable="false"><title id="${prefix}-title">${escape(label)}</title><desc id="${prefix}-desc">Research progress changes Lumi's appearance. These cosmetic abilities do not improve forecasts or unlock research tools.</desc><defs><linearGradient id="${prefix}-fur" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#ffd195"/><stop offset="1" stop-color="#e99562"/></linearGradient>${auraDefs}</defs><circle cx="90" cy="87" r="68" fill="${s.color}" opacity=".035"/>${aura}<path d="M36 152h108" stroke="#6081a6" stroke-opacity=".16" stroke-linecap="round" stroke-width="2"/>${background}<ellipse class="sq-mascot__shadow" cx="89" cy="159" rx="39" ry="5" fill="#030d1f" opacity=".45"/>${creature}${drone}${shield}${flare}<g class="sq-mascot__celebration" fill="none" opacity="0"><circle cx="90" cy="89" r="59" stroke="${s.color}" stroke-width="2"/>${star(43,43,6,s.color)}${star(136,37,5,'#ffdf90')}${star(152,133,6,s.color)}${star(33,125,4,'#ffdf90')}</g></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" data-journey-rank="${journey?s.index+1:0}" class="sq-mascot sq-mascot--${s.id} sq-mascot--${state}${options.static?' sq-mascot--static':''}" width="${size}" height="${size}" viewBox="0 0 180 180" role="img" aria-labelledby="${prefix}-title ${prefix}-desc" focusable="false"><title id="${prefix}-title">${escape(label)}</title><desc id="${prefix}-desc">Research progress changes Lumi's appearance. These cosmetic abilities do not improve forecasts or unlock research tools.</desc><defs><linearGradient id="${prefix}-fur" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#ffd195"/><stop offset="1" stop-color="#e99562"/></linearGradient>${auraDefs}</defs><circle cx="90" cy="87" r="68" fill="${s.color}" opacity=".035"/>${aura}<path d="M36 152h108" stroke="#6081a6" stroke-opacity=".16" stroke-linecap="round" stroke-width="2"/>${background}<ellipse class="sq-mascot__shadow" cx="89" cy="159" rx="39" ry="5" fill="#030d1f" opacity=".45"/>${creature}${drone}${shield}${flare}<g class="sq-mascot__celebration" fill="none" opacity="0"><circle cx="90" cy="89" r="59" stroke="${s.color}" stroke-width="2"/>${star(43,43,6,s.color)}${star(136,37,5,'#ffdf90')}${star(152,133,6,s.color)}${star(33,125,4,'#ffdf90')}</g></svg>`;
   }
   function renderCard(value, options = {}) {
     const p = progressForXp(value), s = p.stage, guide=options.guide||{};
-    const progress = p.next ? `${p.remaining} XP to ${p.next.name}` : 'All five looks discovered';
+    const progress = p.next ? `${p.remaining} XP to ${p.next.name}` : (journey?'All ten stages discovered':'All five looks discovered');
     const context=['research','quests','seasonality','saved','watchlist'].includes(options.context)?options.context:'research';
     options={...options,idPrefix:token(options.idPrefix)||`card-${++serial}`};
     const prefix='sqm-'+options.idPrefix;
@@ -196,7 +200,7 @@
         container.querySelector('.sq-companion__art').innerHTML=renderSvg(value,{...opts,state,static:paused});
         container.querySelector('h3').innerHTML=`Lumi <span>· ${p.stage.name}</span>`;
         container.querySelector('.sq-companion__ability').textContent=p.stage.ability;
-        container.querySelector('.sq-companion__progress-copy').innerHTML=`<span>${p.xp.toLocaleString('en-US')} XP</span><span>${p.next?`${p.remaining} XP to ${p.next.name}`:'All five looks discovered'}</span>`;
+        container.querySelector('.sq-companion__progress-copy').innerHTML=`<span>${p.xp.toLocaleString('en-US')} XP</span><span>${p.next?`${p.remaining} XP to ${p.next.name}`:(journey?'All ten stages discovered':'All five looks discovered')}</span>`;
         container.querySelector('progress').value=p.fraction;
         const status=container.querySelector('.sq-companion__status');
         status.textContent=opts.announce===false?'':state==='levelup'?`Lumi evolved into ${p.stage.name}. ${p.stage.ability} discovered.`:state==='earn'?`${value-xp} research XP earned.`:'';
@@ -206,5 +210,5 @@
       destroy() { destroyed=true;clearTimeout(timer);clearTimeout(greetingTimer);clearTap();container.removeEventListener('click',onClick); }
     });
   }
-  return Object.freeze({ STAGES, normalizeXp, stageForXp, progressForXp, renderSvg, renderCard, mount });
+  return Object.freeze({ STAGES, normalizeXp, stageForXp, progressForXp, renderSvg, renderCard, mount, createJourney:()=>createMascotModel(true) });
 });

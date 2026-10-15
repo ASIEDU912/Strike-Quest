@@ -112,7 +112,7 @@ async function sourceLabels(page, selector, expected) {
     assert.equal(await page.locator('[data-p="2y"]').getAttribute('aria-pressed'),'true');
     assert.equal(await page.locator('#targetCorrection').inputValue(),'10');
     assert.match(await page.locator('#coreScenarioLabel').textContent(),/2-Year.*10%/);
-    assert.equal(await page.locator('#companionHost .sq-mascot--rookie').count(),1);
+    assert.equal(await page.locator('#companionHost .sq-mascot--journey-0').count(),1);
     assert.equal(await page.locator('#companionHost [data-creature-form="round-cub"]').count(),1);
     assert.equal(await page.locator('#companionHost .sq-companion__status').textContent(),'');
     assert.equal(await page.locator('#companionHost .sq-mascot--levelup, #companionHost .sq-mascot--earn').count(),0);
@@ -157,9 +157,10 @@ async function sourceLabels(page, selector, expected) {
 
     await page.locator('#analyzeBtn').click();
     assert.equal(await page.evaluate(()=>sqResearchXp()),50);
-    assert.equal(await page.locator('#companionHost .sq-mascot--scout').count(),1);
-    assert.equal(await page.locator('#companionHost [data-creature-form="long-eared-juvenile"]').count(),1);
-    assert.match(await page.locator('#badgeToast').textContent(),/Lumi evolved into Signal Scout/);
+    assert.equal(await page.locator('#companionHost .sq-mascot--journey-0').count(),1);
+    assert.equal(await page.locator('#companionHost [data-creature-form="round-cub"]').count(),1);
+    assert.match(await page.locator('#badgeToast').textContent(),/Milestone unlocked:/);
+    assert.doesNotMatch(await page.locator('#badgeToast').textContent(),/Lumi evolved/);
     assert.equal(await page.locator('#companionHost .sq-companion__status').textContent(),'');
     const once=await page.evaluate(()=>JSON.stringify(sqBadges().earned.first));
     const repeat=await page.evaluate(async()=>{
@@ -171,7 +172,7 @@ async function sourceLabels(page, selector, expected) {
     });
     assert.deepEqual(repeat,{changes:0,xp:50,record:once});
     assert.deepEqual(await page.evaluate(()=>[$('missionNextProgress').value,$('missionNextProgress').max]),await page.evaluate(()=>[$('nextBadgeProgress').value,$('nextBadgeProgress').max]));
-    pass(`${suffix}: first explicit analysis evolves Lumi once; repeated analysis/render does not rebuild or reward`);
+    pass(`${suffix}: first explicit analysis rewards once without rushing an evolution; repeated analysis/render does not rebuild or reward`);
     for(const [target,evidenceId] of [['reviewTrendsBtn','reviewTrendEvidence'],['reviewRangeBtn','reviewRangeEvidence'],['reviewSampleBtn','sampleCount']]) {
       await clickMission(page,target);
       assert.equal(await page.locator('#qualityDetails').evaluate(el=>el.open),true);
@@ -207,11 +208,13 @@ async function sourceLabels(page, selector, expected) {
     await page.locator('#completeResearchBtn').click();
     assert.equal(await page.locator('#researchScore').textContent(),'9/9');
     assert.equal(await page.evaluate(()=>sqResearchXp()),500);
-    assert.equal(await page.locator('#companionHost [data-creature-form="celestial-winged-fox"]').count(),1);
-    assert.equal(await page.locator('#companionHost .sq-mascot__aura').count(),1);
-    assert.equal(await page.locator('#companionHost .sq-mascot__wings').count(),1);
-    assert.match(await page.locator('#companionHost .sq-mascot title').textContent(),/feathered wings.*five comet tails/);
-    assert.equal(await page.locator('#companionHost .sq-companion__progress').evaluate(el=>el.value),1);
+    assert.equal(await page.locator('#companionHost [data-creature-form="long-eared-juvenile"]').count(),1);
+    assert.equal(await page.locator('#companionHost .sq-mascot__aura').count(),0);
+    assert.equal(await page.locator('#companionHost .sq-mascot__wings').count(),0);
+    assert.equal(await page.locator('#companionHost .sq-mascot__journey-crest').count(),1);
+    assert.equal(await page.locator('#companionHost .sq-mascot--journey-3').count(),1);
+    assert.match(await page.locator('#companionHost .sq-mascot title').textContent(),/Long-eared juvenile fox/);
+    assert.ok(Math.abs(await page.locator('#companionHost .sq-companion__progress').evaluate(el=>el.value)-0.28)<0.00001);
     assert.deepEqual(await page.evaluate(()=>[$('missionNextProgress').value,$('missionNextProgress').max]),[9,9]);
     await clickMission(page,'history','nextBadgeAction',false);
     assert.equal(await page.locator('#viewSaved').evaluate(el=>el.classList.contains('active')),true);

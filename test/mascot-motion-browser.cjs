@@ -71,13 +71,7 @@ async function app(engine,width=390) {
 }
 async function stage(page,xp) {
   // Award records exist only inside this isolated test browser, never on a user device.
-  await page.evaluate(xp=>{
-    const mask=Array.from({length:1<<SQ_CORE.length},(_,i)=>i).find(mask=>SQ_CORE.reduce((sum,b,i)=>sum+((mask&(1<<i))?ACHIEVEMENTS[b.id].xp:0),0)===xp);
-    if(mask===undefined)throw Error('No badge fixture for '+xp);
-    sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T00:00:00Z',mode:'demo',origin:'motion-test'}])),horizons:[]});
-    sqRenderBadges();
-  },xp);
-  await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
+  await page.evaluate(require('./quest-renewal-fixture.cjs').seed,xp);  await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
   assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
 }
 async function artClip(page) {
@@ -156,8 +150,8 @@ async function still(page,label) {
     assert.ok(['chromium','webkit'].includes(engine));
     browser=await playwright[engine].launch({headless:true,...(engine==='chromium'&&process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
     const {page,context,check}=await app(engine);
-    for(const xp of [0,50,150,375,500]){await stage(page,xp);await motion(page,`${engine}-390-${xp}xp`,xp===375);}
-    await stage(page,375);
+    for(const xp of [0,100,240,430,680,1000,1400,1850,2400,3000]){await stage(page,xp);await motion(page,`${engine}-390-${xp}xp`,xp===1400);}
+    await stage(page,1400);
     const blink=await trace(page,5400);assert.ok(distanceRange(blink,'eyes')>3,`${engine}: eyes must blink over a complete cycle`);
     await page.locator('#companionHost [data-mascot-motion]').click();await still(page,`${engine}-paused`);
     await page.reload();await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
@@ -173,7 +167,7 @@ async function still(page,label) {
     assert.equal(await page.locator('#companionHost [data-mascot-motion]').isVisible(),false);
     await page.emulateMedia({reducedMotion:'no-preference'});await motion(page,`${engine}-motion-preference-restored`);
     // A level-up's finite hop must settle back into the infinite idle animation.
-    await page.evaluate(()=>{sqCompanions.get('research').controller.update(500);});
+    await page.evaluate(()=>{sqCompanions.get('research').controller.update(3000);});
     await page.waitForTimeout(1700);
     assert.equal(await page.locator('#companionHost .sq-mascot--idle').count(),1);
     await motion(page,`${engine}-post-levelup-idle`);
@@ -182,7 +176,7 @@ async function still(page,label) {
     await page.locator('#companionHost').scrollIntoViewIfNeeded();await page.waitForTimeout(1100);await motion(page,`${engine}-return-to-research`);
     check();await context.close();
     for(const width of [320,1440]) {
-      const x=await app(engine,width);await stage(x.page,375);await motion(x.page,`${engine}-${width}-375xp`);
+      const x=await app(engine,width);await stage(x.page,1400);await motion(x.page,`${engine}-${width}-1400xp`);
       assert.ok(await x.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
       x.check();await x.context.close();
     }

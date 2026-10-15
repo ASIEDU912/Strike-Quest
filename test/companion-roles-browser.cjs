@@ -16,7 +16,7 @@ const hosts = [
   {context:'saved',host:'savedCompanionHost',panel:'savedCompanionPanel',summary:'savedCompanionSummary'},
   {context:'watchlist',host:'watchlistCompanionHost',panel:'watchlistCompanionPanel',summary:'watchlistCompanionSummary'}
 ];
-const stages = [[0,'rookie'],[50,'scout'],[150,'ranger'],[375,'keeper'],[500,'voyager']];
+const stages = [0,100,240,430,680,1000,1400,1850,2400,3000].map((xp,i)=>[xp,'journey-'+i]);
 const reports=[];
 let browser;
 function pass(name){reports.push(name);console.log('SQ_COMPANION_PASS '+name);}
@@ -74,13 +74,7 @@ async function noOverflow(page,label){
   assert.ok(sizes.scroll<=sizes.width+1,label+': '+JSON.stringify(sizes));
 }
 async function seedStage(page,xp){
-  await page.evaluate(xp=>{
-    const mask=Array.from({length:1<<SQ_CORE.length},(_,i)=>i).find(mask=>SQ_CORE.reduce((sum,b,i)=>sum+((mask&(1<<i))?ACHIEVEMENTS[b.id].xp:0),0)===xp);
-    if(mask===undefined)throw Error('No dated core badge fixture for '+xp);
-    sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T12:00:00Z',mode:'demo',origin:'companion-test'}])),horizons:[]});
-    sqRenderBadges();
-  },xp);
-  assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
+  await page.evaluate(require('./quest-renewal-fixture.cjs').seed,xp);  assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
 }
 async function uniqueIds(page){
   const issues=await page.evaluate(()=>{
@@ -107,7 +101,7 @@ async function layoutAndPreferences(page,width,engine){
   const before=await protectedState(page);
   for(const h of hosts){
     await visit(page,h.context);
-    assert.equal(await page.locator('#'+h.host+' .sq-mascot--rookie').count(),1);
+    assert.equal(await page.locator('#'+h.host+' .sq-mascot--journey-0').count(),1);
     assert.equal(await page.locator('#'+h.host+' .sq-companion--compact').count(),h.context==='quests'?0:1);
     for(const part of ['title','text'])assert.ok((await page.locator('#'+h.host+' .sq-companion__guide-'+part).textContent()).trim().length>8);
     const button=await page.locator('#'+h.host+' [data-mascot-action]').boundingBox();assert.ok(button.height>=44,`${h.context} CTA touch target`);
@@ -182,7 +176,7 @@ async function stagesAndCelebrations(page,engine){
     for(const h of hosts){assert.equal(await page.locator('#'+h.host+' .sq-mascot--'+name).count(),1);assert.match(await page.locator('#'+h.summary).textContent(),new RegExp(xp+' XP'));assert.equal(await page.locator('#'+h.host+' .sq-companion__status').textContent(),'');}
     await uniqueIds(page);
   }
-  const max=await page.evaluate(()=>{const b=sqBadges();b.earned.review={at:'2026-10-07T12:00:00Z'};sqBadgeSave(b);sqRenderBadges();return sqResearchXp();});assert.equal(max,500);
+  const max=await page.evaluate(()=>{const b=sqBadges();b.earned.review={at:'2026-10-07T12:00:00Z'};sqBadgeSave(b);sqRenderBadges();return sqResearchXp();});assert.equal(max,3000);
   for(const h of hosts){
     await seedStage(page,0);await visit(page,h.context);await page.waitForTimeout(1100);
     const result=await page.evaluate(()=>{
@@ -192,15 +186,15 @@ async function stagesAndCelebrations(page,engine){
       sqEarn('first');sqRenderBadges();sqRenderCompanion();const repeat=observer.takeRecords().length;observer.disconnect();
       return {once,repeat,celebrants,xp:sqResearchXp(),toast:toast.textContent,statuses:[...document.querySelectorAll('.sq-companion__status')].map(el=>el.textContent)};
     });
-    assert.ok(result.once>0);assert.equal(result.repeat,0);assert.deepEqual(result.celebrants,[h.host]);assert.equal(result.xp,50);assert.match(result.toast,/Lumi evolved into Signal Scout/);assert.ok(result.statuses.every(x=>x===''));
+    assert.ok(result.once>0);assert.equal(result.repeat,0);assert.deepEqual(result.celebrants,[h.host]);assert.equal(result.xp,50);assert.match(result.toast,/Milestone unlocked:/);assert.doesNotMatch(result.toast,/Lumi evolved/);assert.ok(result.statuses.every(x=>x===''));
   }
   // An offscreen active-view host still synchronizes its stage, silently.
   await seedStage(page,0);await visit(page,'quests');await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
   await page.waitForFunction(()=>document.querySelector('#questsCompanionHost .sq-companion').classList.contains('sq-mascot--inactive'));
   await page.evaluate(()=>sqEarn('first'));
   assert.equal(await page.locator('.sq-mascot--levelup,.sq-mascot--earn').count(),0);
-  await seedStage(page,500);
-  pass(`${engine}: all five stages synchronize through final500; one visible celebration and one central announcement; repeated awards and offscreen hosts stay silent`);
+  await seedStage(page,3000);
+  pass(`${engine}: all ten stages synchronize through final3000; one visible celebration and one central announcement; repeated awards and offscreen hosts stay silent`);
 }
 (async()=>{
   const engines=(process.env.COMPANION_BROWSERS||'chromium,webkit').split(',').map(s=>s.trim());
@@ -213,7 +207,7 @@ async function stagesAndCelebrations(page,engine){
         await layoutAndPreferences(x.page,width,engine);
         if(width===390){
           await contextualData(x.page,engine);await stagesAndCelebrations(x.page,engine);
-          if(engine==='chromium'){await x.page.waitForTimeout(4000);for(const h of hosts){await visit(x.page,h.context);await emitImage(x.page,h,`lumi-${h.context}-390-final500.png`);}}
+          if(engine==='chromium'){await x.page.waitForTimeout(4000);for(const h of hosts){await visit(x.page,h.context);await emitImage(x.page,h,`lumi-${h.context}-390-final3000.png`);}}
         }
         x.check();
       }finally{await x.context.close();}

@@ -74,13 +74,7 @@ async function app(engine,width=390) {
 }
 async function stage(page,xp) {
   // Award records exist only inside this isolated test browser, never on a user device.
-  await page.evaluate(xp=>{
-    const mask=Array.from({length:1<<SQ_CORE.length},(_,i)=>i).find(mask=>SQ_CORE.reduce((sum,b,i)=>sum+((mask&(1<<i))?ACHIEVEMENTS[b.id].xp:0),0)===xp);
-    if(mask===undefined)throw Error('No badge fixture for '+xp);
-    sqBadgeSave({version:1,earned:Object.fromEntries(SQ_CORE.filter((_,i)=>mask&(1<<i)).map(b=>[b.id,{at:'2026-10-07T00:00:00Z',mode:'demo',origin:'motion-test'}])),horizons:[]});
-    sqRenderBadges();
-  },xp);
-  await page.locator('#'+activeHost).scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
+  await page.evaluate(require('./quest-renewal-fixture.cjs').seed,xp);  await page.locator('#'+activeHost).scrollIntoViewIfNeeded();await page.waitForTimeout(1100);
   assert.equal(await page.evaluate(()=>sqResearchXp()),xp);
 }
 async function artClip(page) {
@@ -172,14 +166,14 @@ async function still(page,label) {
     await openHost(page,'research');await openHost(page,'quests');
     assert.equal(await page.locator(selector('.sq-companion--greeting')).count(),0,'Returning to a greeted context must not replay');
     console.log('SQ_GREETING_PASS '+JSON.stringify({engine,visible:true,bounded:true,noXp:true}));
-    for(const xp of [0,50,150,375,500]){await stage(page,xp);await motion(page,`${engine}-quests-390-${xp}xp`,xp===500);}
-    await stage(page,375);
+    for(const xp of [0,100,240,430,680,1000,1400,1850,2400,3000]){await stage(page,xp);await motion(page,`${engine}-quests-390-${xp}xp`,xp===3000);}
+    await stage(page,1400);
     for(const name of ['seasonality','saved','watchlist']){
       await openHost(page,name);
       const part=name==='watchlist'?'.sq-mascot__drone':'.sq-mascot__head';
       const expected={seasonality:'sq-mascot-curious',saved:'sq-mascot-reflect',watchlist:'sq-mascot-scan'}[name];
       assert.equal(await page.locator(selector(part)).evaluate(el=>getComputedStyle(el).animationName),expected);
-      await motion(page,`${engine}-${name}-390-375xp`,name==='seasonality');
+      await motion(page,`${engine}-${name}-390-1400xp`,name==='seasonality');
     }
     const researchBefore=await page.evaluate(()=>JSON.stringify({xp:sqResearchXp(),earned:sqBadges().earned,history:sqJSON('splab_history',[]),watch:getWatchlist()}));
     await page.locator(selector('[data-mascot-motion]')).click();
