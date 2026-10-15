@@ -1,8 +1,7 @@
 {
-  "version": "10.3.1",
-  "sourceCommit": "332027278d989b18e2098f21d08d8416e6d8b4ca",
-  "rollbackCommit": "332027278d989b18e2098f21d08d8416e6d8b4ca",
-  "rollbackBranch": "rollback/pre-lumi-baby-2026-10-15",
+  "version": "10.3.2",
+  "sourceCommit": "b97b2054f8469468fee3fcfbbffb6263e5dfc572",
+  "rollbackCommit": "6987d86a380faade5ef050808be8e857de29fdf7",
   "audience": "public guest release",
   "accounts": "unavailable; real sign-in/recovery not verified",
   "sec": "dated six-company annual snapshots; retrieved 2026-10-14",
@@ -75,7 +74,7 @@
     {
       "path": "public-preview.js",
       "bytes": 665,
-      "sha256": "c0d7e4017359e4d88b9769b6ab843323d53bea742b3930c793f24065577288a0"
+      "sha256": "2ea1de4deeff621f786267654df44ea2a6cc387f8d72c4f79d75ae1766ef4bde"
     },
     {
       "path": "research-data/sec/AAPL.json",
@@ -134,13 +133,13 @@
     },
     {
       "path": "studio.js",
-      "bytes": 88876,
-      "sha256": "122bc44774aca68d89b5476f36ffbeeef5359bd8c4da2385199aa38d3232f14b"
+      "bytes": 92373,
+      "sha256": "3b9afef7e37289684dffd12990be4206c1b178ef96c8b0a5b35b06946f7d669a"
     },
     {
       "path": "sw.js",
-      "bytes": 1280,
-      "sha256": "f0743203c42aec50d614fbed7ce916c89fbaa6fa500cb060c3bbbe30e2a397e7"
+      "bytes": 1285,
+      "sha256": "fdab9e8f4716f02d1362b996b45faaad9a924c9217f5751f1e35f8d7d42c8644"
     },
     {
       "path": "vendor/supabase.js",
@@ -148,11 +147,12 @@
       "sha256": "7d1f5517b32aeb8e4dfcffefdeb094ac18cc36f3b0fcc1f1ac351a7b25eadaf7"
     }
   ],
-  "previousPublicCommit": "332027278d989b18e2098f21d08d8416e6d8b4ca",
+  "previousPublicCommit": "6987d86a380faade5ef050808be8e857de29fdf7",
   "widgetIsolation": "Fixed foreign TradingView HTTPS iframe; no srcdoc or parent-origin external script",
   "defaultDataMode": "Automatic EOD on a new device; saved explicit Manual/Demo/EOD choices preserved",
   "expeditionSync": "new expedition badges remain device-local; not cloud-synced",
   "physicalIphoneVerified": false,
   "realAccountVerified": false,
-  "lumiEvolution": "Baby Spark, toddler Scout, original Spark artwork at Seeker; discovered stages plus next only; original collection retained"
+  "lumiEvolution": "Baby Spark, toddler Scout, original Spark artwork at Seeker; discovered stages plus next only; original collection retained",
+  "researchReflection": "Thoughtful Return: one-time 100 XP after reviewing a complete saved Research Check-in; earlier check-ins qualify, existing awards retained, no automatic claim or repeated-save rewards."
 }

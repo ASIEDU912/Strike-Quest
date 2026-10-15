@@ -98,8 +98,11 @@ async function happy(browser,engine,width){
  assert.equal(await stored(page,rewardKey),reward,'Additional completed research gives no repeat award');
  const backup=await page.evaluate(()=>JSON.stringify(sqCreateCheckinBackup()));
  page.once('dialog',d=>d.accept());await page.locator('#clearCheckinsBtn').click();
+ await page.waitForFunction(()=>localStorage.getItem('sq_research_checkins_v1')===null);
  assert.equal(await stored(page,rewardKey),reward);assert.equal(await xp(page),initial+100);
  await page.locator('#importCheckinsFile').setInputFiles({name:'private-fixture.json',mimeType:'application/json',buffer:Buffer.from(backup)});
+ await page.waitForFunction(()=>document.getElementById('checkinImportPreview').hidden===false||!document.getElementById('checkinBackupStatus').textContent.includes('Reading'));
+ assert.equal(await page.locator('#confirmCheckinImportBtn').isEnabled(),true,await page.locator('#checkinBackupStatus').innerText());
  await page.locator('#confirmCheckinImportBtn').click();
  await page.waitForFunction(()=>sqReadCheckins().entries.length===2);
  assert.equal(await stored(page,rewardKey),reward);assert.equal(await xp(page),initial+100);

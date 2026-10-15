@@ -28,4 +28,7 @@ assert.deepEqual(plain(J.read(malformed).blocked),['revisit']);
 const account='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';assert.equal(J.read(store,account).earned.revisit,undefined);
 assert.equal(J.persist(store,account,'revisit',record),true);assert.equal(store.getItem(key),before);
 assert.match(badge.detail,/Changed, held and unsure count equally/);
+const root=require('node:path').resolve(__dirname,'..'),manifest=JSON.parse(fs.readFileSync(require('node:path').join(root,'release-manifest.json'),'utf8'));
+for(const file of manifest.files){const data=fs.readFileSync(require('node:path').join(root,file.path));assert.equal(data.length,file.bytes,file.path+' byte length');assert.equal(require('node:crypto').createHash('sha256').update(data).digest('hex'),file.sha256,file.path+' release hash');}
+console.log('RELEASE_MANIFEST_PASS: all '+manifest.files.length+' published assets match their byte lengths and SHA-256 hashes');
 console.log('REFLECTION_UNIT_PASS: completion gate, outcome independence, one fixed award, timestamp preservation, malformed storage, workspace isolation and private reward schema');
