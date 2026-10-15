@@ -6,10 +6,14 @@ on:
 permissions:
   contents: read
 jobs:
-  audit:
+  prepare:
     if: github.repository == 'ASIEDU912/Strike-Quest' && github.event.repository.private == false
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    outputs:
+      candidate: ${{ steps.compose.outputs.candidate }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -19,6 +23,34 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - run: node scripts/quest-production-audit.cjs
-# Read-only source and current-public health audit. No quote requests, provider
-# quota, stored artifacts, paid runners, deployment, credentials or ref writes.
+      - name: Compose immutable release candidate without publication
+        id: compose
+        run: node scripts/quest-production-prepare.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+  production-browser:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CANDIDATE_SHA: ${{ needs.prepare.outputs.candidate }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Materialize exact candidate locally
+        run: |
+          git fetch --depth=1 origin "$CANDIDATE_SHA"
+          mkdir production-candidate
+          git archive "$CANDIDATE_SHA" | tar -x -C production-candidate
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Verify public EOD default, data integrity, privacy and offline upgrade
+        run: node scripts/quest-production-browser.cjs
+# Standard public runners only. No ref updates, deployment, stored artifacts,
+# live market-provider quota, auth configuration or private user records.
