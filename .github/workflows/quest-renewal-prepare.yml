@@ -1,0 +1,88 @@
+name: Quest Renewal isolated review
+on:
+  push:
+    branches: [feat/research-studio]
+    paths: [scripts/quest-renewal-stage.cjs, .github/workflows/quest-renewal-prepare.yml]
+permissions:
+  contents: read
+concurrency:
+  group: quest-renewal-review
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.repository == 'ASIEDU912/Strike-Quest' && github.ref == 'refs/heads/feat/research-studio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    outputs:
+      commit: ${{ steps.source.outputs.commit }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Prepare immutable code only; no references or deployment
+        id: source
+        run: node scripts/quest-renewal-stage.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+  checks:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [renewal, core, studio, journal, account, tap, motion, consolidation, evidence]
+    env:
+      CI: 'true'
+      REVIEW_HEAD_SHA: ${{ needs.prepare.outputs.commit }}
+      npm_config_update_notifier: 'false'
+      QUEST_LOG_IMAGES: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.prepare.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify exact prepared source
+        run: test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
+      - name: Install locked test dependencies only
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install test engines
+        run: npx --no-install playwright install --with-deps chromium webkit
+      - name: New ten-stage and private milestone workflows
+        if: matrix.suite == 'renewal'
+        run: node test/quest-renewal.cjs && node test/quest-renewal-browser.cjs
+      - name: Existing Node and core browser checks
+        if: matrix.suite == 'core'
+        run: npm test && node scripts/ci-core.cjs core
+      - name: Existing Studio workflows
+        if: matrix.suite == 'studio'
+        run: npm run test:studio
+      - name: Check-in and backup privacy
+        if: matrix.suite == 'journal'
+        run: npm run test:checkin && npm run test:backup
+      - name: Existing account isolation and consent
+        if: matrix.suite == 'account'
+        run: npm run test:account
+      - name: Existing Lumi interactions
+        if: matrix.suite == 'tap'
+        run: node scripts/ci-core.cjs tap
+      - name: Existing motion and reduced-motion workflows
+        if: matrix.suite == 'motion'
+        run: node scripts/ci-core.cjs motion
+      - name: Existing comparison and consolidation
+        if: matrix.suite == 'consolidation'
+        run: node test/consolidation.cjs && node test/consolidation-browser.cjs
+      - name: Existing evidence and composed app
+        if: matrix.suite == 'evidence'
+        run: node test/research-evidence.cjs && node test/sec-research.cjs && node test/evidence-shell.cjs && node test/research-evidence-browser.cjs && node scripts/evidence-shell.cjs test-results/evidence-review
+# Standard public runners only. No artifact/cache uploads, providers, deployment,
+# live authentication, billing calls, refs writes or private input data.
