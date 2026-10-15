@@ -1,6 +1,6 @@
 {
   "version": "10.3.3",
-  "sourceCommit": "7279b3e56ce9dc718534ec6d9462b8e07132704f",
+  "sourceCommit": "8df3f0f5edcac6275b3e1654fdd3521ee8fc485b",
   "rollbackCommit": "086c82872db74373977b572aff7a48c64bc4dd59",
   "audience": "public guest release",
   "accounts": "unavailable; real sign-in/recovery not verified",
@@ -133,8 +133,8 @@
     },
     {
       "path": "studio.js",
-      "bytes": 93643,
-      "sha256": "25894b699ee7fbcabfd9d9d0974d60b0e660d5b352b749d1d49e992d9240d1b5"
+      "bytes": 93667,
+      "sha256": "e14de82f4b4c08dc281884d35ba987283c1e44fee208d794a5f4397c7f17b91b"
     },
     {
       "path": "sw.js",
