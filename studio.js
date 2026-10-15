@@ -91,7 +91,7 @@
     const mission=research.querySelector('.mission-controls'),inputs=research.querySelector('.market-inputs'),learning=research.querySelector('.quest-hero'),quick=research.querySelector('.quick-card');
     // Keep scenarios ahead of the long evidence overview. Move existing nodes, preserving their listeners.
     const historyCard=document.createElement('section');historyCard.id='studioHistory';historyCard.className='card studio-history';historyCard.setAttribute('aria-label','Price history and research shortcuts');
-    historyCard.append($('studioChart'),instrument.querySelector('.studio-instrument-actions'));
+    historyCard.append(instrument.querySelector('#studioChart'),instrument.querySelector('.studio-instrument-actions'));
     const lumiShortcut=document.createElement('button');lumiShortcut.type='button';lumiShortcut.id='studioResearchLumi';lumiShortcut.className='studio-research-lumi';lumiShortcut.dataset.studioAction='research-guide';lumiShortcut.setAttribute('aria-label','Open Lumi’s research guide');
     lumiShortcut.innerHTML='<span id="studioResearchLumiArt" aria-hidden="true"></span><span><b id="studioResearchLumiName">Lumi</b><small>Open research guide</small></span>'+icon('arrow');instrument.append(lumiShortcut);
     research.prepend(instrument);instrument.after(mission);mission.after(inputs);inputs.after($('scenarioSection'));$('scenarioSection').after(learning);learning.after(historyCard);historyCard.after(brief);brief.after($('researchContext'));$('researchContext').after($('dataQuality'));$('dataQuality').after(quick);
