@@ -83,14 +83,14 @@ async function main(){
     assets=old;
     const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'allow'});
     await seedContext(context);const bad=await protect(context,local,new Set(fresh.keys())),errors=[];
-    const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(local+'/');await ready(page,'10.3.1');await swReady(page);
+    const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(local+'/');await ready(page,'10.3.1');await swReady(page);await page.waitForLoadState('networkidle');
     await page.waitForFunction(async oldCache=>(await caches.keys()).includes(oldCache),oldCache);
     const before=await snapshot(page);assert.equal(await page.evaluate(()=>sqResearchXp()),150);
     assets=fresh;
-    await page.evaluate(async()=>{const registration=await navigator.serviceWorker.getRegistration();await registration.update();});
+    await page.evaluate(async()=>{const previous=navigator.serviceWorker.controller,registration=await navigator.serviceWorker.getRegistration();await registration.update();if(navigator.serviceWorker.controller===previous)await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Error('New worker did not take control')),30000);navigator.serviceWorker.addEventListener('controllerchange',()=>{clearTimeout(timeout);resolve();},{once:true});});});
     await page.waitForFunction(async({oldCache,newCache})=>{const names=await caches.keys();return names.includes(newCache)&&!names.includes(oldCache);},{oldCache,newCache});
     await page.reload();await ready(page,'10.3.2');assert.deepEqual(await snapshot(page),before);
-    const after=await cacheReport(page);assert.deepEqual(after.names,[newCache]);assert.equal(after.controlled,true);
+    const after=await cacheReport(page);console.log('UPGRADE_CACHE_OBSERVATION '+engine+' '+JSON.stringify(after));assert.deepEqual(after.names,[newCache]);assert.equal(after.controlled,true);
     const upgraded=await exactCache(page,newCache);
     for(const key of ['./studio.js','./public-preview.js','./'])assert.equal(upgraded[key],hash(fresh.get(key==='./'?'/':'/'+key.slice(2))),'Upgraded cached '+key);
     await context.setOffline(true);await page.reload();await ready(page,'10.3.2');assert.deepEqual(await snapshot(page),before);assert.equal(await page.evaluate(()=>sqResearchXp()),150);
