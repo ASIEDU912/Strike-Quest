@@ -9,6 +9,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   source:
+    if: github.event.repository.private == false
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
@@ -24,14 +25,9 @@ jobs:
         run: |
           git rev-parse HEAD > REVIEW-COMMIT.txt
           git archive --format=zip HEAD -o source.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: research-studio-source
-          path: |
-            source.zip
-            REVIEW-COMMIT.txt
-          retention-days: 7
+          sha256sum source.zip
   checks:
+    if: github.event.repository.private == false
     name: ${{ matrix.suite }} checks
     strategy:
       fail-fast: false
@@ -102,10 +98,6 @@ jobs:
         run: |
           mkdir -p test-results
           git rev-parse HEAD > test-results/REVIEW-COMMIT.txt
-      - name: Preserve fixture screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: research-studio-${{ matrix.suite }}-${{ github.sha }}
-          path: test-results/
-          retention-days: 7
+          cat test-results/REVIEW-COMMIT.txt
+# FREE-only review: standard public runners. Test files and screenshots stay on the
+# ephemeral runner. No artifact/cache uploads; no deployment or provider requests.

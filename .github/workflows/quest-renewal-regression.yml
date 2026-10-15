@@ -1,0 +1,39 @@
+name: Quest Renewal regression
+on:
+  push:
+    branches: [feat/research-studio]
+    paths:
+      - 'quest-src/**'
+      - 'test/quest-renewal*'
+      - 'mascot.js'
+      - 'studio.js'
+      - '.github/workflows/quest-renewal-regression.yml'
+permissions:
+  contents: read
+concurrency:
+  group: quest-renewal-regression
+  cancel-in-progress: false
+jobs:
+  renewal:
+    if: github.repository == 'ASIEDU912/Strike-Quest' && github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      REVIEW_HEAD_SHA: ${{ github.sha }}
+      QUEST_LOG_IMAGES: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify exact review commit
+        run: test "$(git rev-parse HEAD)" = "$REVIEW_HEAD_SHA"
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: New journey behavior and browser regression
+        run: node test/quest-renewal.cjs && node test/quest-renewal-browser.cjs
+# Retained contextual-motion checks run in Research Studio review on the same SHA.
+# No deployments, ref writes, stored artifacts/caches, provider usage or billing calls.

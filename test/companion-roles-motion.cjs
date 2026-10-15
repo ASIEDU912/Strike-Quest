@@ -156,6 +156,9 @@ async function still(page,label) {
     // First entry gives one bounded greeting, independent of XP celebrations.
     activeContext='quests';activeHost=hostIds.quests;
     await page.evaluate(()=>setView('quests'));await page.locator('#'+activeHost).scrollIntoViewIfNeeded();
+    // IntersectionObserver delivers visibility on a later rendering turn after scrolling.
+    // Wait for the real greeting; do not force visibility, replay it, or relax paint checks.
+    await page.waitForFunction(host=>{const el=document.querySelector('#'+host+' .sq-mascot__head');return el&&getComputedStyle(el).animationName==='sq-mascot-greet';},activeHost,{timeout:3000});
     assert.equal(await page.locator(selector('.sq-mascot__head')).evaluate(el=>getComputedStyle(el).animationName),'sq-mascot-greet');
     const greetingClip=await artClip(page),greetingA=await page.screenshot({clip:greetingClip,animations:'allow'});
     await page.waitForTimeout(350);const greetingB=await page.screenshot({clip:greetingClip,animations:'allow'});
