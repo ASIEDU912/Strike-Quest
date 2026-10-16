@@ -328,7 +328,8 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
       <div class="row">
         <div class="grow">
           <label for="ticker">Ticker or company</label>
-          <div class="ticker-search-wrap"><input id="ticker" value="AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ticker or company name"><div id="tickerSuggestions" class="search-suggestions" role="listbox" aria-label="Ticker search suggestions"></div></div>
+          <div class="ticker-search-wrap"><input id="ticker" value="AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ticker or company name" role="combobox" aria-autocomplete="list" aria-controls="tickerSuggestions" aria-expanded="false" aria-describedby="tickerSearchHelp"><div id="tickerSuggestions" class="search-suggestions" role="listbox" aria-label="Ticker search suggestions"></div></div>
+          <small id="tickerSearchHelp" class="ticker-search-help">Search common stocks and ETFs by ticker or name.</small><span id="tickerSearchStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
           <div id="selectedInstrument" class="selected-instrument">Apple Inc. • AAPL</div>
         </div>
         <button id="analyzeBtn" class="btn primary" style="align-self:end">Analyze</button>
@@ -533,7 +534,7 @@ function invalidateMarketRequest(){
   $("fetchBtn").disabled=false;
 }
 const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
-let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1;
+let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1, suggestionPress=null;
 
 function escapeHtml(v){
   return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
@@ -549,78 +550,46 @@ function localSymbolSearch(q){
       x.name.toLowerCase().includes(needle)?3:9}))
     .filter(x=>x.score<9).sort((a,b)=>a.score-b.score||a.symbol.localeCompare(b.symbol)).slice(0,8);
 }
-async function barchartSymbolSearch(q){
-  if(sqPrivate())return [];
-  const key=sqLocalStorage.getItem("splab_barchart_key");
-  if(!key||q.trim().length<2)return [];
+// Suggestions use the bundled catalog in every mode. Typing never contacts a provider.
+function closeTickerSuggestions(){
+  clearTimeout(searchTimer);
+  suggestionPress=null;
   if(searchAbort)searchAbort.abort();
-  searchAbort=new AbortController();
-  const url=`https://ondemand.websol.barchart.com/getSymbolLookUp.json?apikey=${encodeURIComponent(key)}&keyword=${encodeURIComponent(q)}&limit=10&moreBestMatches=true&moreBestMatchLimit=4&fields=type`;
-  const res=await sqFetch(url,{signal:searchAbort.signal});
-  if(!res.ok)throw new Error("Symbol lookup unavailable");
-  const data=await res.json();
-  if(data?.status?.code!==200)return [];
-  return (data.results||[]).map(x=>({symbol:x.symbol,name:x.name||x.symbol,exchange:x.exchange||"",type:x.type||""}));
-}
-function mergeSuggestions(remote,local){
-  const out=[],seen=new Set();
-  for(const x of [...remote,...local]){
-    const k=String(x.symbol||"").toUpperCase();
-    if(!k||seen.has(k))continue;
-    seen.add(k);out.push(x);
-    if(out.length>=10)break;
-  }
-  return out;
-}
-function renderSuggestions(items, note=""){
-  const box=$("tickerSuggestions");
   selectedSuggestionIndex=-1;
-  if(!items.length){
-    box.innerHTML=note?`<div class="search-hint">${escapeHtml(note)}</div>`:"";
-    box.classList.toggle("show",!!note);
-    return;
-  }
-  box.innerHTML=items.map((x,i)=>`<button type="button" class="suggest-row" data-i="${i}" data-symbol="${escapeHtml(x.symbol)}" data-name="${escapeHtml(x.name)}" data-exchange="${escapeHtml(x.exchange)}" data-type="${escapeHtml(x.type)}"><span class="suggest-symbol">${escapeHtml(x.symbol)}</span><span class="suggest-name">${escapeHtml(x.name)}</span><span class="suggest-meta">${escapeHtml(x.exchange||x.type)}</span></button>`).join("");
-  box.classList.add("show");
-}
-function chooseSuggestion(btn){
-  const symbol=btn.dataset.symbol||"";
-  const name=btn.dataset.name||symbol;
-  const exchange=btn.dataset.exchange||"";
-  $("ticker").value=symbol;
-  $("selectedInstrument").textContent=`${name} • ${symbol}${exchange?` • ${exchange}`:""}`;
+  $("ticker").setAttribute("aria-expanded","false");
+  $("ticker").removeAttribute("aria-activedescendant");
   $("tickerSuggestions").classList.remove("show");
   $("tickerSuggestions").innerHTML="";
-  if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/stocks/quotes/${encodeURIComponent(symbol)}/performance`;
-  render();
-  if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0);
+  $("tickerSearchStatus").textContent="";
+  $("tickerSearchHelp").textContent="Search common stocks and ETFs by ticker or name.";
 }
-async function runPredictiveSearch(){
+function renderSuggestions(items,note=""){
+  const box=$("tickerSuggestions"),input=$("ticker");
+  selectedSuggestionIndex=-1;input.removeAttribute("aria-activedescendant");
+  box.innerHTML=items.map((x,i)=>{
+    // Reuse the app's existing artwork; no logo service or external image request.
+    const mark=$("quickPicks").querySelector('[data-quick="'+x.symbol+'"] .company-icon');
+    const art=mark?mark.innerHTML:escapeHtml(x.symbol.slice(0,2));
+    return `<div role="option" id="tickerOption${i}" aria-selected="false" class="suggest-row" data-symbol="${escapeHtml(x.symbol)}"><span class="suggest-mark" aria-hidden="true">${art}</span><span class="suggest-copy"><b class="suggest-symbol">${escapeHtml(x.symbol)}</b><span class="suggest-name">${escapeHtml(x.name)}</span></span><span class="suggest-meta">${escapeHtml(x.exchange)}<br>${escapeHtml(x.type)}</span></div>`;
+  }).join("");
+  box.classList.toggle("show",items.length>0);
+  input.setAttribute("aria-expanded",String(items.length>0));
+  $("tickerSearchStatus").textContent=items.length?items.length+" local "+(items.length===1?"match":"matches")+". Use arrow keys and Enter to select.":note;
+  $("tickerSearchHelp").textContent=note||"Search common stocks and ETFs by ticker or name.";
+}
+function chooseSuggestion(option){
+  if(!option||!$("tickerSuggestions").contains(option))return;
+  const symbol=option.dataset.symbol;
+  closeTickerSuggestions();
+  applySymbol(symbol);
+}
+function runPredictiveSearch(){
   const q=$("ticker").value.trim();
-  if(!q){renderSuggestions([]);$("selectedInstrument").textContent="";return;}
-  const local=localSymbolSearch(q);
-  if(q.length<2){
-    renderSuggestions(local,local.length?"":"Type at least 2 characters for full Barchart search.");
-    return;
-  }
-  const hasKey=!sqPrivate()&&!!sqLocalStorage.getItem("splab_barchart_key");
-  if(!hasKey){
-    renderSuggestions(local,local.length?"":"Add a Barchart key in Settings for full symbol/company search.");
-    return;
-  }
-  renderSuggestions(local,"Searching Barchart…");
-  try{
-    const remote=await barchartSymbolSearch(q);
-    renderSuggestions(mergeSuggestions(remote,local),remote.length||local.length?"":"No matching instruments found.");
-  }catch(e){
-    if(e?.name==="AbortError")return;
-    renderSuggestions(local,local.length?"":"Barchart lookup unavailable; try the ticker symbol directly.");
-  }
+  if(!q){closeTickerSuggestions();$("selectedInstrument").textContent="";$("tickerSearchHelp").textContent="Search common stocks and ETFs by ticker or name.";return;}
+  const matches=localSymbolSearch(q);
+  renderSuggestions(matches,matches.length?"":"No local match. Enter a ticker directly and choose Analyze.");
 }
-function schedulePredictiveSearch(){
-  clearTimeout(searchTimer);
-  searchTimer=setTimeout(runPredictiveSearch,260);
-}
+function schedulePredictiveSearch(){clearTimeout(searchTimer);runPredictiveSearch();}
 
 
 function money(n,d=2){return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
@@ -1352,9 +1321,7 @@ setMode=function(mode){
 const sqOldPeriod=setPeriod;
 setPeriod=function(period){if(typeof period!=='string'||!Object.hasOwn(PERIODS,period))return;if(period!==state.period&&!sqRestoring)state.loadedResearchId=null;if(period!==state.period&&!sqRestoring&&state.mode!=='demo'){state.extra={};state.dataMeta=null;$('perf').value='';}sqOldPeriod(period);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqVisitHorizon();renderSeasonality();sqPersist();};
 const sqOldSymbol=applySymbol;
-applySymbol=function(symbol){const changed=$('ticker').value.trim().toUpperCase()!==symbol.toUpperCase();if(changed){state.loadedResearchId=null;state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$('price').value='';$('perf').value='';sqDataIssue='';}sqOldSymbol(symbol);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqPersist();};
-const sqOldSuggestion=chooseSuggestion;
-chooseSuggestion=function(button){applySymbol(button.dataset.symbol||'');$('tickerSuggestions').classList.remove('show');$('tickerSuggestions').innerHTML='';};
+applySymbol=function(symbol){closeTickerSuggestions();const changed=$('ticker').value.trim().toUpperCase()!==symbol.toUpperCase();if(changed){state.loadedResearchId=null;state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$('price').value='';$('perf').value='';sqDataIssue='';}sqOldSymbol(symbol);if(state.mode==='demo'&&!sqRestoring)sqApplyDemo();sqPersist();};
 const sqOldTab=setAnalysisTab;
 setAnalysisTab=function(tab){if(tab!=='targets')sqCompanionTab=tab;if(tab==='targets'){$('scenarioSection').scrollIntoView({behavior:'auto',block:'start'});return}sqOldTab(tab);$('researchContext').style.display=calc()||tab==='seasonality'?'':'none';sqRenderCompanion();};
 const sqOldCacheLoad=loadCachedEod;
@@ -1930,19 +1897,38 @@ if(typeof window.addEventListener==='function'){
  window.addEventListener('storage',event=>{if(['splab_history','sq_research_checkins_v1'].includes(event.key)||event.key===null){if(sqCheckinImport){sqCancelCheckinImport(false);sqBackupStatus('Storage changed in another tab. Choose the backup again to review a fresh merge.');}sqRenderCheckin();}});
 }
 
-$("tickerSuggestions").addEventListener("click",e=>{const btn=e.target.closest(".suggest-row");if(btn)chooseSuggestion(btn)});
+$("tickerSuggestions").addEventListener("pointerdown",e=>{
+  const option=e.target.closest(".suggest-row");
+  if(option&&e.button===0){suggestionPress={option,id:e.pointerId,x:e.clientX,y:e.clientY};e.preventDefault();}
+});
+// Commit on release while keeping focus in the combobox; retain click for assistive activation.
+// Cancelled pans and drags never choose an option on release.
+$("tickerSuggestions").addEventListener("pointerup",e=>{
+  const press=suggestionPress;suggestionPress=null;
+  if(press&&press.id===e.pointerId&&press.option===e.target.closest(".suggest-row")&&Math.hypot(e.clientX-press.x,e.clientY-press.y)<=10){e.preventDefault();chooseSuggestion(press.option);}
+});
+$("tickerSuggestions").addEventListener("pointercancel",()=>{suggestionPress=null;});
+$("tickerSuggestions").addEventListener("click",e=>{const option=e.target.closest(".suggest-row");if(option)chooseSuggestion(option)});
+$("ticker").addEventListener("focus",runPredictiveSearch);
+$("ticker").addEventListener("blur",closeTickerSuggestions);
 $("ticker").addEventListener("keydown",e=>{
+  if(e.isComposing)return;
+  if(e.key==="Escape"||e.key==="Tab"){closeTickerSuggestions();return;}
+  if(e.key!=="ArrowDown"&&e.key!=="ArrowUp"&&e.key!=="Enter")return;
+  if(!$("tickerSuggestions").classList.contains("show")){
+    if(e.key==="Enter")return;
+    runPredictiveSearch();
+  }
   const rows=[...document.querySelectorAll("#tickerSuggestions .suggest-row")];
   if(!rows.length)return;
-  if(e.key==="ArrowDown"){e.preventDefault();selectedSuggestionIndex=Math.min(selectedSuggestionIndex+1,rows.length-1)}
-  else if(e.key==="ArrowUp"){e.preventDefault();selectedSuggestionIndex=Math.max(selectedSuggestionIndex-1,0)}
-  else if(e.key==="Enter"&&selectedSuggestionIndex>=0){e.preventDefault();chooseSuggestion(rows[selectedSuggestionIndex]);return}
-  else if(e.key==="Escape"){$("tickerSuggestions").classList.remove("show");return}
-  else return;
-  rows.forEach((r,i)=>r.classList.toggle("active",i===selectedSuggestionIndex));
-  rows[selectedSuggestionIndex]?.scrollIntoView({block:"nearest"});
+  if(e.key==="Enter"){if(selectedSuggestionIndex>=0){e.preventDefault();chooseSuggestion(rows[selectedSuggestionIndex]);}return;}
+  e.preventDefault();
+  selectedSuggestionIndex=e.key==="ArrowDown"?Math.min(selectedSuggestionIndex+1,rows.length-1):selectedSuggestionIndex<0?rows.length-1:Math.max(selectedSuggestionIndex-1,0);
+  rows.forEach((row,i)=>{row.classList.toggle("active",i===selectedSuggestionIndex);row.setAttribute("aria-selected",String(i===selectedSuggestionIndex));});
+  $("ticker").setAttribute("aria-activedescendant",rows[selectedSuggestionIndex].id);
+  rows[selectedSuggestionIndex].scrollIntoView({block:"nearest",behavior:"instant"});
 });
-document.addEventListener("click",e=>{if(!e.target.closest(".ticker-search-wrap"))$("tickerSuggestions").classList.remove("show")});
+document.addEventListener("click",e=>{if(!e.target.closest(".ticker-search-wrap"))closeTickerSuggestions()});
 // v6: wire all interactive game/navigation controls.
 const bottomNav=document.querySelector('.bottom-nav');
 if(bottomNav)bottomNav.addEventListener('click',e=>{const btn=e.target.closest('.nav-btn');if(btn)setView(btn.dataset.view)});
@@ -1957,7 +1943,8 @@ if($("compareClearBtn"))$("compareClearBtn").addEventListener("click",clearCompa
 $("periodTabs").addEventListener("click",e=>{const button=e.target.closest("[data-p]");if(button){setPeriod(button.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
 $("dataSeg").addEventListener("click",async e=>{if(e.target.dataset.mode){setMode(e.target.dataset.mode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}}});
 ["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",()=>sqInputChanged(id)));
-$("ticker").addEventListener("input",()=>{state.loadedResearchId=null;invalidateMarketRequest();state.extra={};state.dataMeta=null;state.demoRaw=null;$("price").value="";$("perf").value="";render();schedulePredictiveSearch();sqPersist();});
+$("ticker").addEventListener("input",e=>{closeTickerSuggestions();$("selectedInstrument").textContent="";state.loadedResearchId=null;invalidateMarketRequest();state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$("price").value="";$("perf").value="";render();if(!e.isComposing)schedulePredictiveSearch();sqPersist();});
+$("ticker").addEventListener("compositionend",runPredictiveSearch);
 $("correction").addEventListener("input",e=>sqSetCorrection(e.target.value));
 $("analyzeBtn").addEventListener("click",sqAnalyze);
 $("fetchBtn").addEventListener("click",()=>fetchData(true));
@@ -2013,3 +2000,4 @@ if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigato
 <script src="./public-preview.js"></script>
 </body>
 </html>
+
