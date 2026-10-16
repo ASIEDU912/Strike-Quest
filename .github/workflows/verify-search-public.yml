@@ -1,0 +1,25 @@
+name: Verify public symbol discovery release
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  deployed-search:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'verify/search-public-2026-10-16'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Verify public bytes, real search and preserved cache upgrades
+        run: node test/symbol-search-deployed.cjs
