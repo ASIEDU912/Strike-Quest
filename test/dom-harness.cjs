@@ -7,7 +7,7 @@ function element(value='',tagName='DIV') {
   return {value,tagName,textContent:'',innerHTML:'',disabled:false,style:{},dataset:{},
     classList:{add:x=>classes.add(x),remove:x=>classes.delete(x),contains:x=>classes.has(x),toggle:(x,force)=>{const on=force??!classes.has(x);on?classes.add(x):classes.delete(x);return on;}},
     addEventListener:(name,handler)=>{(handlers[name]??=[]).push(handler)},dispatch:(name,event)=>Promise.all((handlers[name]||[]).map(fn=>fn(event))),
-    querySelector:()=>element(),querySelectorAll:()=>[],setAttribute:(name,value)=>attributes.set(name,String(value)),getAttribute:name=>attributes.get(name)??null,scrollIntoView:()=>{},focus:()=>{}};
+    querySelector:()=>element(),querySelectorAll:()=>[],setAttribute:(name,value)=>attributes.set(name,String(value)),getAttribute:name=>attributes.get(name)??null,removeAttribute:name=>attributes.delete(name),scrollIntoView:()=>{},focus:()=>{}};
 }
 module.exports = html => {
   const elements=new Map();
@@ -26,3 +26,4 @@ module.exports = html => {
   for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))vm.runInContext(match[1],context);
   return {evaluate:async(fn,arg)=>{context.__arg=arg;return await vm.runInContext(`(${fn.toString()})(__arg)`,context);}};
 };
+

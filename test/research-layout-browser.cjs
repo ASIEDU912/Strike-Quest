@@ -30,7 +30,7 @@ async function fixture(browser,width,baseline=false,extra={}){
   return route.fulfill({body:baseline&&beforeFiles.has(relative)?beforeFiles.get(relative):fs.readFileSync(file),contentType:({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webmanifest':'application/manifest+json'})[path.extname(file)]||'text/plain'});
  });
  await context.routeWebSocket('**/*',s=>{external.push(s.url());s.close();});
- const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(origin+'/#research');await page.waitForSelector('body[data-quest-renewal="'+(baseline?'10.3.2':'10.3.3')+'"]');
+ const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(origin+'/#research');await page.waitForSelector('body[data-quest-renewal="'+(baseline?'10.3.2':'10.3.4')+'"]');
  await page.locator('#scenarioHeading').waitFor();await page.waitForFunction(()=>document.querySelector('#studioReference').textContent.includes('190.43'));
  if(!baseline)await page.waitForFunction(()=>document.getElementById('studioResearchLumiName').textContent==='Lumi · Scout');
  return {page,context,async finish(){assert.deepEqual(errors,[]);assert.deepEqual(external,[]);await context.close();}};
@@ -67,9 +67,9 @@ async function metrics(page){return page.evaluate(()=>{
     assert.equal(await p.locator('#studioResearchLumiArt [data-creature-form]').getAttribute('data-creature-form'),'toddler-scout');
     assert.match(await p.locator('#studioResearchLumiName').innerText(),/Scout/);
     assert.equal(await p.locator('#studioResearchLumiArt .sq-mascot__head').evaluate(e=>getComputedStyle(e).animationName),'none');
-    // Native keyboard traversal from the compact shortcut leads to the horizon controls.
+    // Quick Picks now follows the compact shortcut in the opening instrument card.
     await p.locator('#studioResearchLumi').focus();await p.keyboard.press('Tab');
-    assert.equal(await p.evaluate(()=>document.activeElement.dataset.p),'3m');
+    assert.equal(await p.evaluate(()=>document.activeElement.id),'quickPicks');
     await p.locator('#studioResearchLumi').focus();await p.keyboard.press('Enter');
     assert.equal(await p.evaluate(()=>document.activeElement.id),'companionSummary');
     const focused=await p.locator('#companionSummary').boundingBox(),nav=await p.locator('.bottom-nav').boundingBox();
@@ -86,7 +86,7 @@ async function metrics(page){return page.evaluate(()=>{
     assert.equal(await p.locator('#companionHost .sq-mascot__head').evaluate(e=>getComputedStyle(e).animationName),'none');
     assert.equal(await p.locator('#studioResearchLumiArt .sq-mascot__head').evaluate(e=>getComputedStyle(e).animationName),'none');
     await p.keyboard.press('Enter');assert.equal(await p.locator('#companionPanel').getAttribute('open'),null);
-    await p.reload();await p.waitForSelector('body[data-quest-renewal="10.3.3"]');assert.equal(await p.locator('#companionPanel').getAttribute('open'),null,'Collapse preference retained');
+    await p.reload();await p.waitForSelector('body[data-quest-renewal="10.3.4"]');assert.equal(await p.locator('#companionPanel').getAttribute('open'),null,'Collapse preference retained');
     await p.locator('#studioResearchLumi').click();assert.equal(await p.evaluate(()=>document.activeElement.id),'companionSummary');
     await p.keyboard.press('Enter');assert.equal(await p.locator('#companionPanel').getAttribute('open'),'');
     const end=await state(p);assert.equal(end.xp,initial.xp);
@@ -103,3 +103,4 @@ async function metrics(page){return page.evaluate(()=>{
   }finally{await browser.close();}
  }
 })().catch(e=>{console.error(e);process.exitCode=1;});
+

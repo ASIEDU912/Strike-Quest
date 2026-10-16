@@ -8,7 +8,7 @@
   else { root.StrikeStudio=api; api.mount(); }
 })(typeof globalThis==='object'?globalThis:this, function(){
   'use strict';
-  const VERSION='10.3.3';
+  const VERSION='10.3.4';
   const finite=n=>typeof n==='number'&&Number.isFinite(n);
   const price=n=>finite(n)?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n):'unavailable';
   const percent=n=>finite(n)?`${n>0?'+':''}${n.toFixed(1)}%`:'unavailable';
@@ -82,7 +82,7 @@
     const header=document.querySelector('.top'),actions=document.createElement('div');actions.className='studio-header-actions';
     actions.innerHTML=`<button type="button" class="settings-btn studio-news-button" id="studioNewsBtn" aria-label="What’s new">${icon('news')}<span class="studio-unread" hidden></span></button>`;
     header.append(actions);actions.append($('settingsBtn'));$('settingsBtn').innerHTML=icon('gear');
-    const review=document.createElement('span');review.className='studio-review-label';review.textContent='Quest Renewal · 10.3.3';header.querySelector('.brand p').replaceWith(review);
+    const review=document.createElement('span');review.className='studio-review-label';review.textContent='Quest Renewal · 10.3.4';header.querySelector('.brand p').replaceWith(review);
     // Give the real research tools a more useful reading order. IDs and listeners are preserved.
     const research=$('viewResearch'),instrument=document.createElement('section');instrument.className='card studio-instrument';instrument.id='studioInstrument';
     instrument.innerHTML=`<div class="studio-instrument-top"><div class="studio-instrument-identity"><span id="studioCompanyMark" class="studio-company-mark" aria-hidden="true">A</span><div><div class="studio-eyebrow" id="studioInstrumentMode"></div><h2 id="studioInstrumentName"></h2><p id="studioInstrumentMeta"></p></div></div><div class="studio-reference"><span>Reference</span><b id="studioReference"></b><small id="studioPriceSession"></small></div></div><div id="studioChart" class="studio-chart"></div><div class="studio-instrument-actions"><button type="button" class="btn primary" data-studio-action="targets">Explore scenarios ${icon('arrow')}</button><button type="button" class="btn secondary" data-studio-action="watch">${icon('watch')} Watchlist</button><button type="button" class="btn secondary" data-studio-action="notes">${icon('journal')} Keep a thought</button></div>`;
@@ -94,7 +94,9 @@
     historyCard.append(instrument.querySelector('#studioChart'),instrument.querySelector('.studio-instrument-actions'));
     const lumiShortcut=document.createElement('button');lumiShortcut.type='button';lumiShortcut.id='studioResearchLumi';lumiShortcut.className='studio-research-lumi';lumiShortcut.dataset.studioAction='research-guide';lumiShortcut.setAttribute('aria-label','Open Lumi’s research guide');
     lumiShortcut.innerHTML='<span id="studioResearchLumiArt" aria-hidden="true"></span><span><b id="studioResearchLumiName">Lumi</b><small>Open research guide</small></span>'+icon('arrow');instrument.append(lumiShortcut);
-    research.prepend(instrument);instrument.after(mission);mission.after(inputs);inputs.after($('scenarioSection'));$('scenarioSection').after(learning);learning.after(historyCard);historyCard.after(brief);brief.after($('researchContext'));$('researchContext').after($('dataQuality'));$('dataQuality').after(quick);
+    research.prepend(instrument);instrument.after(mission);mission.after(inputs);inputs.after($('scenarioSection'));$('scenarioSection').after(learning);learning.after(historyCard);historyCard.after(brief);brief.after($('researchContext'));$('researchContext').after($('dataQuality'));
+    // Keep the original logo buttons and provider labels beside the opening ticker tools.
+    quick.classList.add('studio-quick-picks');instrument.append(quick);
     mission.querySelector('.section-title')?.replaceChildren(document.createTextNode('Choose your perspective'));
     const searchRow=mission.querySelector(':scope > .row');if(searchRow){searchRow.classList.add('studio-search-row');instrument.prepend(searchRow);}
     const signal=research.querySelector('.analysis-card .hero');if(signal)signal.classList.add('studio-secondary-price');
@@ -317,7 +319,7 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   else {root.StrikeJourney=factory();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>root.StrikeJourney.mount(),{once:true});else root.StrikeJourney.mount();}
 })(typeof globalThis==='object'?globalThis:this,function(){
   'use strict';
-  const VERSION='10.3.3';
+  const VERSION='10.3.4';
   const RANKS=Object.freeze(['Spark','Scout','Seeker','Navigator','Analyst','Strategist','Sage','Guardian','Ascendant','Mythic Lumi'].map((name,i)=>Object.freeze({name,index:i,minXp:[0,100,240,430,680,1000,1400,1850,2400,3000][i],formIndex:[5,6,0,1,2,2,3,3,4,4][i]})));
   const rows=[
     ['focus2y','2-Year Pathfinder','Scenarios',40,'Review a valid 2-Year scenario with a 10% correction.',f=>f.valid&&f.period==='2y'&&f.correction===10],
@@ -456,3 +458,4 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
 });
 
 }
+

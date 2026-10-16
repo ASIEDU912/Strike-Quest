@@ -56,3 +56,16 @@ body[data-studio-theme=quiet]{background:#101925}body[data-studio-theme=quiet] .
 }
 
 #viewResearch>.quest-fastpath{grid-column:1/-1;margin-bottom:0}
+
+/* Local symbol discovery stays with the ticker; the existing Lumi shortcut remains above it. */
+.studio-instrument .studio-quick-picks{margin:16px 0 0;padding:16px 0 0;border:0;border-top:1px solid #2e455d;border-radius:0;background:none;box-shadow:none}
+.studio-quick-picks .quick-note{font-size:11px}
+.ticker-search-help{display:block;font-size:11px;line-height:1.5;color:#b6ccdf;margin-top:6px}
+.search-suggestions{z-index:35;max-height:min(320px,45dvh);overscroll-behavior:contain}
+.suggest-row{grid-template-columns:32px minmax(0,1fr) auto;min-height:52px;cursor:pointer}
+.suggest-row:hover,.suggest-row.active{background:#203650;outline:2px solid #8ed9ff;outline-offset:-2px}
+.suggest-mark{display:grid;place-items:center;width:30px;height:30px;font-size:11px;font-weight:800;border-radius:8px;background:#203b57}
+.suggest-mark svg{width:28px;height:28px}
+.suggest-copy{min-width:0}.suggest-copy .suggest-symbol,.suggest-copy .suggest-name{display:block}
+.suggest-name{white-space:normal;overflow-wrap:anywhere}.suggest-meta{text-align:right;line-height:1.6}
+

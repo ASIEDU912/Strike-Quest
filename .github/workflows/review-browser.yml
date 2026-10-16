@@ -150,3 +150,40 @@ jobs:
         run: |
           node test/reflection-reward-browser.cjs
           node test/lumi-evolution-browser.cjs
+
+  symbol-discovery:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/research-symbol-discovery'
+    name: Symbol discovery verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Check calculation, data requests, journal and companion rules
+        run: |
+          node test/regressions.cjs
+          node test/shared-regressions.cjs
+          node test/service-worker.cjs
+          node test/badge-migration.cjs
+          node test/mascot-assets.cjs
+          node test/mascot-controller.cjs
+          node test/research-checkin.cjs
+          node test/reflection-reward.cjs
+      - name: Compare existing legacy fixture failures with released source
+        run: node test/legacy-layout-baseline.cjs
+      - name: Diagnose released search and verify local combobox, Quick Picks and cache upgrade
+        run: node test/symbol-search-browser.cjs
+      - name: Verify scenario appearance, reflections and Lumi evolution remain intact
+        run: |
+          node test/research-layout-browser.cjs
+          node test/reflection-reward-browser.cjs
+          node test/lumi-evolution-browser.cjs
+
