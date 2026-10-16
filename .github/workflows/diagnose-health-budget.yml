@@ -1,0 +1,44 @@
+name: Read existing EOD health budget once
+on:
+  pull_request:
+    branches: [main]
+    types: [opened]
+permissions: {}
+jobs:
+  health-only:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'diagnose/health-budget-2026-10-16' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: One public health read without market calls or retries
+        shell: bash
+        run: |
+          node <<'NODE'
+          (async () => {
+            const startedAt = new Date().toISOString();
+            try {
+              const response = await fetch('https://strikequests-market-data.strikequests.workers.dev/health', {
+                method: 'GET', redirect: 'error',
+                headers: { Accept: 'application/json', Origin: 'https://strikequests.com' },
+                signal: AbortSignal.timeout(15000)
+              });
+              let data = {};
+              try { data = await response.json(); } catch {}
+              const budget = data.dailyProviderBudget;
+              const usableBudget = Number.isFinite(budget?.used) && Number.isFinite(budget?.max);
+              console.log('HEALTH_ONLY ' + JSON.stringify({
+                startedAt, receivedAt: new Date().toISOString(), status: response.status,
+                ok: data.ok === true, version: typeof data.version === 'string' ? data.version.slice(0,100) : null,
+                cacheConfigured: data.cacheConfigured === true, providerConfigured: data.providerConfigured === true,
+                dailyProviderBudget: usableBudget ? { used: budget.used, max: budget.max } : null,
+                wouldBlockThreeCallReservation: usableBudget ? budget.used + 3 > budget.max : null,
+                serverNow: Number.isFinite(data.now) ? new Date(data.now).toISOString() : null,
+                healthRequests: 1, marketRequests: 0
+              }));
+              if (response.status !== 200 || !usableBudget) process.exitCode = 1;
+            } catch (error) {
+              console.log('HEALTH_ONLY_UNAVAILABLE ' + JSON.stringify({ startedAt, error: error.name, healthAttempts: 1, marketRequests: 0 }));
+              process.exitCode = 1;
+            }
+          })();
+          NODE
