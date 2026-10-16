@@ -344,7 +344,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
       <div class="row" style="align-items:center;justify-content:space-between"><h2 class="section-title" style="margin:0">Scenario inputs</h2><span class="source-badge" id="sourceBadge">Auto EOD</span></div>
       <p class="mode-label" id="modeLabel">Synthetic values</p><div class="grid2" style="margin-top:10px"><div><label for="price">Reference price</label><input id="price" type="number" step="0.01" value="192.75"></div><div><label for="perf">Historical dollar change</label><input id="perf" type="number" step="0.01" value="39.57"></div></div>
       <p class="input-provenance-help">Editing a provider price or historical change switches to private Manual inputs. Correction and divisor remain scenario assumptions.</p><div class="row" style="margin-top:10px"><button class="btn secondary grow" id="refreshBtn">Refresh EOD data</button><button class="btn secondary" id="watchCurrentBtn">☆ Watch</button></div>
-      <div class="status" id="status">Ready.</div>
+      <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true">Ready.</div>
     </section>
 
     <section class="card data-quality research-jump" id="dataQuality"><div class="quality-row"><strong>Know what is behind the numbers</strong><span class="quality-badge" id="qualityBadge">Synthetic</span></div><p id="qualitySummary" role="status"></p><details id="qualityDetails"><summary>Sample size, coverage & limitations</summary><p id="coverageSummary"></p><p id="sampleCount"></p><p class="review-evidence" id="reviewTrendEvidence"></p><p class="review-evidence" id="reviewRangeEvidence"></p><div class="review-context-actions"><button type="button" class="btn secondary" id="reviewTrendsBtn" aria-describedby="reviewTrendEvidence">I reviewed the trend context</button><button type="button" class="btn secondary" id="reviewRangeBtn" aria-describedby="reviewRangeEvidence">I reviewed the 52-week range</button></div><button type="button" class="btn secondary" id="reviewSampleBtn" aria-describedby="coverageSummary sampleCount">I reviewed the sample and its limits</button><p class="notice">A small or large historical sample is never a guarantee of an outcome.</p></details></section>
@@ -477,7 +477,7 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
     <div id="apiBox" style="margin-top:12px">
       <div class="provider-card shared-data-card">
         <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><b>StrikeQuests Shared Market Data</b><p>Public end-of-day market data is fetched through the StrikeQuests backend. Visitors do not need an API key, and provider credentials are never shipped in the website code.</p></div><span class="source-badge" id="sharedApiState">Checking…</span></div>
-        <div class="status" id="sharedApiStatus">Connecting to the shared EOD service…</div>
+        <div class="status" id="sharedApiStatus" role="status" aria-live="polite">Connection is checked in Automatic mode.</div>
       </div>
       <label style="margin-top:12px">Automatic provider</label>
       <select id="providerSelect"><option value="shared">StrikeQuests Shared EOD (recommended)</option><option value="auto">Advanced — shared first, then my local provider</option><option value="alpha">My Alpha Vantage key</option><option value="barchart">My Barchart OnDemand key</option></select>
@@ -529,9 +529,16 @@ const PERIODS={
 };
 let state={period:"2y",mode:"auto_eod",correction:10,extra:{},sharedApiBase:"",sharedApiReady:false};
 let marketRequestSerial=0;
+let sharedConnectionSerial=0,sharedConnectionPending=null;
 function invalidateMarketRequest(){
   marketRequestSerial++;
-  $("fetchBtn").disabled=false;
+  setMarketBusy(false);
+}
+function setMarketBusy(busy){for(const id of ["fetchBtn","refreshBtn"]){const button=$(id);if(button){button.disabled=busy;button.setAttribute("aria-busy",String(busy));}}}
+function invalidateSharedConnection(){
+  sharedConnectionSerial++;sharedConnectionPending=null;state.sharedApiReady=false;state.sharedApiError="";
+  if($("sharedApiState"))$("sharedApiState").textContent="Not checked";
+  if($("sharedApiStatus")){$("sharedApiStatus").textContent="Connection is checked in Automatic mode.";$("sharedApiStatus").className="status";}
 }
 const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
 let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1, suggestionPress=null;
@@ -868,28 +875,48 @@ function activeProvider(){
 }
 function normalizeApiBase(v){return String(v||"").trim().replace(/\/+$/,'')}
 async function loadPublicConfig(){
-  if(sqPrivate())return;
-  const epoch=marketRequestSerial;
-  try{
-    const r=await sqFetch(`./config.json?ts=${Date.now()}`,{cache:"no-store"});
-    if(!r.ok)throw new Error(`config ${r.status}`);
-    const cfg=await r.json(),base=normalizeApiBase(cfg.marketDataApi);
-    if(!base||base.includes("REPLACE-WITH-YOUR-WORKER"))throw new Error("Shared backend URL has not been configured yet.");
-    state.sharedApiBase=base;
-    const h=await sqFetch(`${base}/health`,{cache:"no-store"});
-    if(!h.ok)throw new Error(`health ${h.status}`);
-    const health=await h.json();
-    if(!health.ok||!health.cacheConfigured||!health.providerConfigured)throw new Error("Shared backend setup is incomplete.");
-    if(sqPrivate()||epoch!==marketRequestSerial)return;
-    state.sharedApiReady=true;
-    if($("sharedApiState"))$("sharedApiState").textContent="Online";
-    if($("sharedApiStatus")){$("sharedApiStatus").textContent="Shared backend is connected. Market-data availability is checked when loading a ticker. No visitor API key is required.";$("sharedApiStatus").className="status good"}
-  }catch(e){
-    if(sqPrivate()||epoch!==marketRequestSerial)return;
-    state.sharedApiReady=false;
-    if($("sharedApiState"))$("sharedApiState").textContent="Setup needed";
-    if($("sharedApiStatus")){$("sharedApiStatus").textContent=`Shared service not connected yet: ${e.message||e}. Owner fallback keys and cached data remain available.`;$("sharedApiStatus").className="status warn"}
-  }
+  if(sqPrivate())return false;
+  if(sharedConnectionPending)return sharedConnectionPending.promise;
+  const attempt={id:++sharedConnectionSerial,promise:null};
+  sharedConnectionPending=attempt;
+  const isCurrent=()=>!sqPrivate()&&attempt.id===sharedConnectionSerial;
+  state.sharedApiReady=false;state.sharedApiError="";
+  if($("sharedApiState"))$("sharedApiState").textContent="Checking";
+  if($("sharedApiStatus")){$("sharedApiStatus").textContent="Checking the shared service connection. This does not verify market data."; $("sharedApiStatus").className="status";}
+  attempt.promise=(async()=>{
+    let failure="Shared EOD connection check failed. Try Refresh when your connection is available.";
+    try{
+      const r=await sqFetch(`./config.json?ts=${Date.now()}`,{cache:"no-store"});
+      if(!r.ok){failure="Shared EOD configuration could not be loaded (HTTP "+r.status+").";throw new Error("config");}
+      const cfg=await r.json(),base=normalizeApiBase(cfg.marketDataApi);
+      if(!isCurrent())return false;
+      if(!base||base.includes("REPLACE-WITH-YOUR-WORKER")){failure="Shared EOD service address is not configured.";throw new Error("configuration");}
+      state.sharedApiBase=base;
+      const h=await sqFetch(base+"/health",{cache:"no-store"});
+      if(!h.ok){failure="Shared EOD service did not pass its connection check (HTTP "+h.status+").";throw new Error("health");}
+      const health=await h.json();
+      if(!health.ok||!health.cacheConfigured||!health.providerConfigured){failure="Shared EOD service setup is incomplete.";throw new Error("setup");}
+      if(!isCurrent())return false;
+      state.sharedApiReady=true;
+      if($("status").textContent==="Checking the shared EOD connection...")status("Shared service is connected. EOD data is checked when you choose a ticker or use Refresh.");
+      if($("sharedApiState"))$("sharedApiState").textContent="Connected";
+      if($("sharedApiStatus")){$("sharedApiStatus").textContent="Shared service is reachable. EOD data is checked separately when loading a ticker."; $("sharedApiStatus").className="status good";}
+      return true;
+    }catch(_){
+      if(!isCurrent())return false;
+      state.sharedApiReady=false;state.sharedApiError=failure;
+      if($("status").textContent==="Checking the shared EOD connection...")status(failure+" Manual inputs and saved research remain available.","warn");
+      if($("sharedApiState"))$("sharedApiState").textContent="Unavailable";
+      if($("sharedApiStatus")){$("sharedApiStatus").textContent=failure+" Manual inputs and saved research remain available."; $("sharedApiStatus").className="status warn";}
+      return false;
+    }finally{if(sharedConnectionPending===attempt)sharedConnectionPending=null;}
+  })();
+  return attempt.promise;
+}
+function sharedMarketError(message){const error=new Error(message);error.sqMarketMessage=message;return error;}
+function showMarketUnavailable(message){
+  if(loadCachedEod(true))status(message+" Showing the last cached EOD snapshot instead. Verify its session and age before using it.","warn");
+  else status(message+" Manual inputs and saved research remain available.","warn");
 }
 function alphaCacheStore(){try{return JSON.parse(sqLocalStorage.getItem("sq_alpha_raw_cache")||"{}")}catch(e){return {}}}
 function getAlphaRaw(symbol){return alphaCacheStore()[symbol]||null}
@@ -917,22 +944,34 @@ async function fetchAlphaData(ticker,key,force=false,isCurrent=()=>true){
 }
 async function fetchSharedData(ticker,isCurrent=()=>true){
   if(sqPrivate())return;
-  if(!state.sharedApiReady||!state.sharedApiBase)throw new Error("StrikeQuests shared market data is not configured yet.");
-  status(`Loading shared EOD + history for ${ticker}…`);
-  const r=await sqFetch(`${state.sharedApiBase}/v1/market?symbol=${encodeURIComponent(ticker)}`,{headers:{"Accept":"application/json"}});
-  let payload=null;try{payload=await r.json()}catch(_){ }
-  if(!r.ok||!payload?.ok)throw new Error(payload?.error||`Shared market data request failed (${r.status}).`);
-  if(payload.symbol!==ticker)throw new Error("Response ticker does not match the requested ticker.");
-  const raw={symbol:payload.symbol,daily:payload.daily||[],weekly:payload.weekly||[],monthly:payload.monthly||[],savedAt:Number(payload.fetchedAt)||null,stale:payload.cache==="stale",source:payload.source};
-  sqValidateRaw(raw,ticker);
-  if(!raw.daily.length||!raw.weekly.length||!raw.monthly.length)throw new Error("Shared market data returned incomplete history.");
-  if(!isCurrent())return;
-  setAlphaRaw(ticker,raw);
-  const label=payload.source?`StrikeQuests · ${payload.source}`:"StrikeQuests Shared";
-  const out=applyAlphaRaw(ticker,raw,label);
-  const cacheText=payload.cache==="hit"?"shared cache":payload.cache==="stale"?"stale-safe cache":"fresh provider refresh";
-  status(`StrikeQuests shared EOD loaded for ${ticker}: ${money(out.spot)} on ${out.quoteDate} (${cacheText}).`,payload.cache==="stale"?"warn":"good");
-  return out;
+  if(!state.sharedApiReady||!state.sharedApiBase)throw sharedMarketError("Shared EOD connection is unavailable. Use Refresh to check it again.");
+  status("Loading shared EOD + history for "+ticker+".");
+  let r;
+  try{r=await sqFetch(state.sharedApiBase+"/v1/market?symbol="+encodeURIComponent(ticker),{headers:{"Accept":"application/json"}});}
+  catch(_){if(isCurrent())state.sharedApiReady=false;throw sharedMarketError("Shared EOD service could not be reached for this data request. Use Refresh to check the connection again.");}
+  let payload=null;try{payload=await r.json()}catch(_){}
+  if(!r.ok||!payload?.ok){
+    if(r.status===429)throw sharedMarketError("Shared EOD request limit reached. Try later; repeated Refresh attempts will not help.");
+    if(payload?.code==="PROVIDER"){
+      const part=["daily","weekly","monthly"].includes(payload.providerStage)?payload.providerStage+" history":"usable EOD data";
+      throw sharedMarketError("Shared service is connected, but its data provider could not supply "+part+". No new EOD data was loaded.");
+    }
+    if(r.status===401||r.status===403)throw sharedMarketError("Shared EOD service refused this data request.");
+    throw sharedMarketError("Shared EOD service responded, but did not return usable market data (HTTP "+r.status+").");
+  }
+  try{
+    if(payload.symbol!==ticker)throw new Error("ticker");
+    const raw={symbol:payload.symbol,daily:payload.daily||[],weekly:payload.weekly||[],monthly:payload.monthly||[],savedAt:Number(payload.fetchedAt)||null,stale:payload.cache==="stale",source:payload.source};
+    sqValidateRaw(raw,ticker);
+    if(!raw.daily.length||!raw.weekly.length||!raw.monthly.length)throw new Error("history");
+    if(!isCurrent())return;
+    const label=payload.source?"StrikeQuests · "+payload.source:"StrikeQuests Shared";
+    const out=applyAlphaRaw(ticker,raw,label);
+    setAlphaRaw(ticker,raw);
+    const cacheText=payload.cache==="hit"?"shared cache":payload.cache==="stale"?"stale-safe cache":"fresh provider refresh";
+    status("StrikeQuests shared EOD loaded for "+ticker+": "+money(out.spot)+" on "+out.quoteDate+" ("+cacheText+").",payload.cache==="stale"?"warn":"good");
+    return out;
+  }catch(_){throw sharedMarketError("Shared EOD returned data that could not be verified for this ticker and horizon. No new quote was used.");}
 }
 async function fetchBarchartData(ticker,key,isCurrent=()=>true){
   if(sqPrivate())return;
@@ -944,7 +983,7 @@ async function fetchBarchartData(ticker,key,isCurrent=()=>true){
   const alphaRaw=getAlphaRaw(ticker),seasonality=alphaRaw?.monthly?.length?computeSeasonality(alphaRaw.monthly,seasonalityOptions(alphaRaw.monthly)):null;state.extra={baselineDate:baseline.tradingDay,baselineClose,returnPct:baselineClose?(perf/baselineClose)*100:NaN,periodHigh:highs.length?Math.max(...highs):NaN,periodLow:lows.length?Math.min(...lows):NaN,high52:highs52.length?Math.max(...highs52):NaN,low52:lows52.length?Math.min(...lows52):NaN,trend1m:trendAt(1),trend3m:trendAt(3),marketMode:"EOD",dataProvider:"Barchart",tradeTimestamp:quoteDate,seasonality};sqBarchartMeta(ticker,records,quoteDate);writeEodCache({price:spot,perf,extra:state.extra,instrument,eodDate:quoteDate,savedAt:Date.now()});$("sourceBadge").textContent="Barchart EOD";status(`Barchart EOD loaded for ${ticker}: ${money(spot)} on ${quoteDate||"latest session"}. Historical performance: ${money(perf)}.`,"good");render();renderSeasonality()
 }
 function maybeAutoLoadEod(){
-  if(state.mode!=="auto_eod")return;const provider=activeProvider();if(provider){fetchData(false);return}if(!loadCachedEod(false))status("Shared EOD is waiting for backend setup. Cached data, Manual mode, or an Advanced owner fallback can still be used.","warn")
+  if(state.mode==="auto_eod")return fetchData(false);
 }
 async function fetchData(force=false){
   if(state.mode!=="auto_eod")return;
@@ -953,18 +992,28 @@ async function fetchData(force=false){
   const alphaInput=$("alphaKey")?.value.trim()||"",barchartInput=$("apiKey")?.value.trim()||"";
   if(alphaInput)sqLocalStorage.setItem("sq_alpha_key",alphaInput);
   if(barchartInput)sqLocalStorage.setItem("splab_barchart_key",barchartInput);
-  const provider=activeProvider();
-  if(!provider){if(!loadCachedEod(false))status("Shared EOD is not connected yet. Manual inputs and saved data remain available.","warn");return}
-  const requestId=++marketRequestSerial,period=state.period,pref=providerPreference(),apiBase=state.sharedApiBase;
-  const isCurrent=()=>requestId===marketRequestSerial&&state.mode==="auto_eod"&&state.period===period&&providerPreference()===pref&&state.sharedApiBase===apiBase&&$("ticker").value.trim().toUpperCase()===ticker;
+  let provider=activeProvider(),apiBase=state.sharedApiBase;
+  const requestId=++marketRequestSerial,period=state.period,pref=providerPreference();
+  const isSelectionCurrent=()=>requestId===marketRequestSerial&&state.mode==="auto_eod"&&state.period===period&&providerPreference()===pref&&$("ticker").value.trim().toUpperCase()===ticker;
+  const isCurrent=()=>isSelectionCurrent()&&state.sharedApiBase===apiBase;
   const updateWatchlist=()=>{
     const wl=getWatchlist(),wi=wl.find(x=>x.symbol===ticker);
     if(wi){wi.snapshot=makeSnapshot(ticker);wi.updatedAt=new Date().toISOString();setWatchlist(wl)}
   };
   const loadProvider=selected=>selected==="shared"?fetchSharedData(ticker,isCurrent):selected==="alpha"?fetchAlphaData(ticker,sqLocalStorage.getItem("sq_alpha_key"),force,isCurrent):fetchBarchartData(ticker,sqLocalStorage.getItem("splab_barchart_key"),isCurrent);
   if($("barchartLink"))$("barchartLink").href=`https://www.barchart.com/etfs-funds/quotes/${encodeURIComponent(ticker)}/performance`;
-  $("fetchBtn").disabled=true;
+  setMarketBusy(true);
   try{
+    if(!provider&&(pref==="shared"||pref==="auto")){
+      status("Checking the shared EOD connection...");
+      await loadPublicConfig();
+      if(!isSelectionCurrent())return;
+      provider=activeProvider();apiBase=state.sharedApiBase;
+    }
+    if(!provider){
+      showMarketUnavailable(pref==="shared"||pref==="auto"?(state.sharedApiError||"Shared EOD connection is unavailable. Use Refresh to check it again."):"The selected owner data source is not configured. Choose a configured source in Settings.");
+      return;
+    }
     await loadProvider(provider);
     if(isCurrent()){sqVisitHorizon();sqRenderBadges();updateWatchlist();}
   }catch(e){
@@ -977,14 +1026,12 @@ async function fetchData(force=false){
         await loadProvider(fallback);
         if(isCurrent()){sqVisitHorizon();sqRenderBadges();updateWatchlist();}
         return;
-      }catch(e2){e=new Error(`${e?.message||"Primary source failed"} Fallback: ${e2?.message||"failed"}`)}
+      }catch(_){e=sharedMarketError("Neither configured data source returned verified market data.");}
     }
     if(!isCurrent())return;
-    const msg="Market data could not be verified or loaded. Check source availability and use valid data.";
-    if(loadCachedEod(true))status(`${msg} Showing the last cached EOD snapshot instead.`,"warn");
-    else status(`${msg} Manual inputs are still available.`,"warn");
+    showMarketUnavailable(e?.sqMarketMessage||"Market data could not be verified or loaded. Check source availability and use valid data.");
   }finally{
-    if(requestId===marketRequestSerial)$("fetchBtn").disabled=false;
+    if(requestId===marketRequestSerial)setMarketBusy(false);
   }
 }
 function loadPreset(which){
@@ -1311,7 +1358,7 @@ computeSeasonality=function(rows,opts=10){
 const sqOldMode=setMode;
 setMode=function(mode){
  const next=['demo','manual','auto_eod'].includes(mode)?mode:'demo';const changed=state.mode!==next;
- state.mode=next;sqCancel();invalidateMarketRequest();
+ invalidateSharedConnection();state.mode=next;sqCancel();invalidateMarketRequest();
  if(changed){state.loadedResearchId=null;state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;sqDataIssue='';if(next!=='demo'){$('price').value='';$('perf').value='';}}
  sqOldMode(next);
  if(next==='demo'&&!sqRestoring)sqApplyDemo();
@@ -1379,7 +1426,7 @@ function sqInitNext(){
  $('targetCorrection').addEventListener('input',e=>sqSetCorrection(e.target.value));
  for(const id of ['nextBadgeAction','missionNextAction'])$(id).addEventListener('click',sqGoToMission);
  $('openTargetsBtn').addEventListener('click',()=>sqOpenResearchTool('targets'));$('openSeasonalityBtn').addEventListener('click',()=>sqOpenResearchTool('seasonality'));
- for(const b of document.querySelectorAll('[data-private-mode]'))b.addEventListener('click',async()=>{setMode(b.dataset.privateMode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}});
+ for(const b of document.querySelectorAll('[data-private-mode]'))b.addEventListener('click',()=>{setMode(b.dataset.privateMode);if(!sqPrivate())maybeAutoLoadEod()});
  $('resetScenario').addEventListener('click',()=>sqSetCorrection(10));
  $('researchReason').addEventListener('input',()=>{state.loadedResearchId=null;$('researchReason').setAttribute('aria-invalid','false');$('noteValidation').textContent='';sqPersist();sqRenderBadges()});
  $('saveReasonBtn').addEventListener('click',sqSaveNote);
@@ -1388,7 +1435,7 @@ function sqInitNext(){
  $('reviewTrendsBtn').addEventListener('click',()=>{if(sqHasTrend())sqEarn('trend')});
  $('reviewRangeBtn').addEventListener('click',()=>{if(sqHasRange())sqEarn('range')});
  $('completeResearchBtn').addEventListener('click',()=>{if(sqBadgeProgress('complete',sqBadges())===8)sqEarn('complete')});
- if(state.mode==='demo')sqApplyDemo();else if(state.mode==='manual'){state.extra={};state.dataMeta=null;render();status('Restored private Manual mode. Values remain unverified.','warn')}else{$('price').value='';$('perf').value='';render();loadPublicConfig().then(maybeAutoLoadEod)}
+ if(state.mode==='demo')sqApplyDemo();else if(state.mode==='manual'){state.extra={};state.dataMeta=null;render();status('Restored private Manual mode. Values remain unverified.','warn')}else{$('price').value='';$('perf').value='';render();maybeAutoLoadEod()}
  sqVisitHorizon();render();sqPersist();
 }
 
@@ -1941,7 +1988,7 @@ if($("watchAddBtn"))$("watchAddBtn").addEventListener('click',()=>addToWatchlist
 if($("compareClearBtn"))$("compareClearBtn").addEventListener("click",clearCompare);
 
 $("periodTabs").addEventListener("click",e=>{const button=e.target.closest("[data-p]");if(button){setPeriod(button.dataset.p);if(state.mode==="auto_eod")setTimeout(maybeAutoLoadEod,0)}});
-$("dataSeg").addEventListener("click",async e=>{if(e.target.dataset.mode){setMode(e.target.dataset.mode);if(!sqPrivate()){await loadPublicConfig();maybeAutoLoadEod()}}});
+$("dataSeg").addEventListener("click",e=>{if(e.target.dataset.mode){setMode(e.target.dataset.mode);if(!sqPrivate())maybeAutoLoadEod()}});
 ["price","perf","divisor","increment"].forEach(id=>$(id).addEventListener("input",()=>sqInputChanged(id)));
 $("ticker").addEventListener("input",e=>{closeTickerSuggestions();$("selectedInstrument").textContent="";state.loadedResearchId=null;invalidateMarketRequest();state.extra={};state.dataMeta=null;state.savedOrigin=null;state.demoRaw=null;$("price").value="";$("perf").value="";render();if(!e.isComposing)schedulePredictiveSearch();sqPersist();});
 $("ticker").addEventListener("compositionend",runPredictiveSearch);
@@ -2000,4 +2047,3 @@ if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigato
 <script src="./public-preview.js"></script>
 </body>
 </html>
-

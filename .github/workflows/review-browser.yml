@@ -187,3 +187,40 @@ jobs:
           node test/reflection-reward-browser.cjs
           node test/lumi-evolution-browser.cjs
 
+
+  eod-connection:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/eod-readiness-reconnect'
+    name: EOD frontend connection verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - run: npx --no-install playwright install --with-deps chromium webkit
+      - name: Reproduce released race and verify connection lifetime and failures
+        run: |
+          node test/eod-connection-baseline.cjs
+          node test/eod-connection.cjs
+      - name: Verify calculations, cache, journal, rewards and Lumi
+        run: |
+          node test/regressions.cjs
+          node test/shared-regressions.cjs
+          node test/service-worker.cjs
+          node test/badge-migration.cjs
+          node test/research-checkin.cjs
+          node test/reflection-reward.cjs
+          node test/mascot-assets.cjs
+          node test/mascot-controller.cjs
+      - name: Verify connection races, error UI and cache upgrade in both engines
+        run: node test/eod-connection-browser.cjs
+      - name: Verify reflection and Lumi behavior remains intact
+        run: |
+          node test/reflection-reward-browser.cjs
+          node test/lumi-evolution-browser.cjs
