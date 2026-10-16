@@ -16,7 +16,7 @@ const entry={id:'search-checkin',originalId:idea.id,original:{...idea,period:'2y
 const seed={sq_next_session:JSON.stringify({mode:'manual',ticker:'XLK',period:'2y',correction:10,price:'190.43',perf:'76.93',divisor:'1.5',increment:'1'}),splab_history:JSON.stringify([idea]),sq_research_checkins_v1:JSON.stringify({version:1,entries:[entry]}),sq_badges_v1011:JSON.stringify({version:1,earned:{first:{at,mode:'manual',origin:'fixture'}},horizons:[]}),sq_progress:JSON.stringify({earned:{first:{at}}}),'sq_journey_v1:guest:revisit':JSON.stringify({version:1,at,mode:'manual'})};
 async function retained(page){return page.evaluate(keys=>({xp:sqResearchXp(),storage:Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)]))}),Object.keys(seed).filter(k=>k!=='sq_next_session'));}
 async function seedContext(context){await context.addInitScript(seed=>{if(!sessionStorage.getItem('search-seeded')){for(const [k,v]of Object.entries(seed))localStorage.setItem(k,v);sessionStorage.setItem('search-seeded','1');}sessionStorage.setItem('strikequests_v9_splash_seen','1');},seed);}
-async function ready(p,v=version){await p.waitForSelector('body[data-quest-renewal="'+v+'"]');await p.waitForFunction(()=>document.getElementById('studioResearchLumiName').textContent==='Lumi · Scout');}
+async function ready(p,v=version){await p.waitForSelector('body[data-quest-renewal="'+v+'"]');await p.waitForFunction(()=>document.getElementById('studioResearchLumiName').textContent==='Lumi � Scout');}
 async function fixture(browser,width,baseline=false){
  const context=await browser.newContext({viewport:{width,height:844},hasTouch:true,serviceWorkers:'block'}),errors=[],external=[];
  await seedContext(context);await context.route('**/*',r=>{const u=new URL(r.request().url()),map=baseline?prior:current;if(u.origin!==origin){external.push(u.href);return r.abort();}const b=map.get(u.pathname);return r.fulfill({status:b?200:404,body:b||'',contentType:mime(u.pathname)});});
@@ -98,7 +98,7 @@ async function cacheUpgrade(browser,engine){
     await p.keyboard.press('ArrowDown');const active=await p.locator('#ticker').getAttribute('aria-activedescendant');assert.equal(await p.locator('#'+active).getAttribute('aria-selected'),'true');
     await p.keyboard.press('Enter');assert.equal(await p.locator('#ticker').inputValue(),'AAPL');assert.match(await p.locator('#selectedInstrument').innerText(),/Apple/);assert.equal(await p.locator('[role="option"]').count(),0);assert.equal(await p.locator('#ticker').getAttribute('aria-expanded'),'false');
     await p.locator('#ticker').fill('micro');await p.keyboard.press('ArrowDown');await p.keyboard.press('Escape');await p.keyboard.press('Enter');assert.equal(await p.locator('#ticker').inputValue(),'micro');assert.equal(await p.locator('[role="option"]').count(),0);assert.equal(await p.locator('#ticker').getAttribute('aria-activedescendant'),null);
-    await p.keyboard.press('ArrowUp');await p.keyboard.press('Enter');assert.equal(await p.locator('#ticker').inputValue(),'MSFT');
+    await p.keyboard.press('ArrowUp');await p.keyboard.press('Enter');assert.equal(await p.locator('#ticker').inputValue(),'AMD','Arrow Up reopens at the last matching option');
     await p.locator('#ticker').fill('sp');await p.keyboard.press('Tab');assert.equal(await p.locator('[role="option"]').count(),0);
     await p.locator('#ticker').fill('no-company-xyz');assert.match(await p.locator('#tickerSearchHelp').innerText(),/No local match/);assert.doesNotMatch(await p.locator('#tickerSearchHelp').innerText(),/key|Barchart/);assert.equal(await p.locator('#ticker').getAttribute('aria-expanded'),'false');
     await p.locator('#ticker').fill('');assert.equal(await p.locator('#selectedInstrument').innerText(),'');assert.equal(await p.locator('[role="option"]').count(),0);assert.equal(await p.locator('#price').inputValue(),'');
@@ -115,3 +115,4 @@ async function cacheUpgrade(browser,engine){
  }
  console.log('SEARCH_VERIFIED: local catalog only; no new provider/backend/account/credential/data schema changes.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
