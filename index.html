@@ -534,7 +534,7 @@ function invalidateMarketRequest(){
   $("fetchBtn").disabled=false;
 }
 const LOCAL_SYMBOLS=[{"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOGL","name":"Alphabet Inc. Class A","exchange":"NASDAQ","type":"Stock"},{"symbol":"GOOG","name":"Alphabet Inc. Class C","exchange":"NASDAQ","type":"Stock"},{"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AMD","name":"Advanced Micro Devices Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"COST","name":"Costco Wholesale Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"PLTR","name":"Palantir Technologies Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"Stock"},{"symbol":"QCOM","name":"QUALCOMM Incorporated","exchange":"NASDAQ","type":"Stock"},{"symbol":"MU","name":"Micron Technology Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"ADBE","name":"Adobe Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"IBM","name":"International Business Machines Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"Stock"},{"symbol":"BAC","name":"Bank of America Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"Stock"},{"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"Stock"},{"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"Stock"},{"symbol":"KO","name":"The Coca-Cola Company","exchange":"NYSE","type":"Stock"},{"symbol":"PEP","name":"PepsiCo Inc.","exchange":"NASDAQ","type":"Stock"},{"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"CVX","name":"Chevron Corporation","exchange":"NYSE","type":"Stock"},{"symbol":"SPY","name":"SPDR S&P 500 ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"QQQ","name":"Invesco QQQ Trust","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLK","name":"Technology Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"VTI","name":"Vanguard Total Stock Market ETF","exchange":"AMEX","type":"ETF"},{"symbol":"VOO","name":"Vanguard S&P 500 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"IWM","name":"iShares Russell 2000 ETF","exchange":"AMEX","type":"ETF"},{"symbol":"DIA","name":"SPDR Dow Jones Industrial Average ETF Trust","exchange":"AMEX","type":"ETF"},{"symbol":"SMH","name":"VanEck Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"SOXX","name":"iShares Semiconductor ETF","exchange":"NASDAQ","type":"ETF"},{"symbol":"XLF","name":"Financial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLE","name":"Energy Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLV","name":"Health Care Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLY","name":"Consumer Discretionary Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLP","name":"Consumer Staples Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLU","name":"Utilities Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLI","name":"Industrial Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLB","name":"Materials Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"XLRE","name":"Real Estate Select Sector SPDR Fund","exchange":"AMEX","type":"ETF"},{"symbol":"ARKK","name":"ARK Innovation ETF","exchange":"AMEX","type":"ETF"}];
-let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1;
+let searchTimer=null, searchAbort=null, selectedSuggestionIndex=-1, suggestionPress=null;
 
 function escapeHtml(v){
   return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
@@ -553,6 +553,7 @@ function localSymbolSearch(q){
 // Suggestions use the bundled catalog in every mode. Typing never contacts a provider.
 function closeTickerSuggestions(){
   clearTimeout(searchTimer);
+  suggestionPress=null;
   if(searchAbort)searchAbort.abort();
   selectedSuggestionIndex=-1;
   $("ticker").setAttribute("aria-expanded","false");
@@ -1896,7 +1897,17 @@ if(typeof window.addEventListener==='function'){
  window.addEventListener('storage',event=>{if(['splab_history','sq_research_checkins_v1'].includes(event.key)||event.key===null){if(sqCheckinImport){sqCancelCheckinImport(false);sqBackupStatus('Storage changed in another tab. Choose the backup again to review a fresh merge.');}sqRenderCheckin();}});
 }
 
-$("tickerSuggestions").addEventListener("pointerdown",e=>{if(e.target.closest(".suggest-row"))e.preventDefault()});
+$("tickerSuggestions").addEventListener("pointerdown",e=>{
+  const option=e.target.closest(".suggest-row");
+  if(option&&e.button===0){suggestionPress={option,id:e.pointerId,x:e.clientX,y:e.clientY};e.preventDefault();}
+});
+// Commit on release while keeping focus in the combobox; retain click for assistive activation.
+// Cancelled pans and drags never choose an option on release.
+$("tickerSuggestions").addEventListener("pointerup",e=>{
+  const press=suggestionPress;suggestionPress=null;
+  if(press&&press.id===e.pointerId&&press.option===e.target.closest(".suggest-row")&&Math.hypot(e.clientX-press.x,e.clientY-press.y)<=10){e.preventDefault();chooseSuggestion(press.option);}
+});
+$("tickerSuggestions").addEventListener("pointercancel",()=>{suggestionPress=null;});
 $("tickerSuggestions").addEventListener("click",e=>{const option=e.target.closest(".suggest-row");if(option)chooseSuggestion(option)});
 $("ticker").addEventListener("focus",runPredictiveSearch);
 $("ticker").addEventListener("blur",closeTickerSuggestions);

@@ -41,6 +41,16 @@ async function originalDiagnosis(browser,engine){
  const labels=await p.locator('#quickPicks button').evaluateAll(es=>es.map(e=>({symbol:e.dataset.quick,label:e.getAttribute('aria-label'),art:e.querySelector('.company-icon').innerHTML,provider:e.querySelector('.provider-label')?.textContent||''})));
  await f.close();return labels;
 }
+async function touchDiagnosis(browser,engine){
+ const broken=execFileSync('git',['show','b0b6520d4ca15454dd5e31bdc8c393c0b72c5e49:index.html'],{cwd:root,maxBuffer:10*1024*1024}),next=current.get('/index.html');current.set('/index.html',broken);
+ let f;try{f=await fixture(browser,390);}finally{current.set('/index.html',next);}
+ const p=f.page;await p.locator('#ticker').fill('');
+ await p.evaluate(()=>{window.touchTrace=[];for(const type of ['pointerdown','pointerup','pointercancel','mousedown','mouseup','click','blur','focus'])document.addEventListener(type,e=>{if(e.target.id==='ticker'||e.target.closest?.('.suggest-row'))touchTrace.push({type,target:e.target.id||e.target.className,prevented:e.defaultPrevented,pointer:e.pointerType||'',focus:document.activeElement.id});},true);});
+ await p.locator('#ticker').evaluate(e=>{e.value='aap';e.dispatchEvent(new InputEvent('input',{bubbles:true,isComposing:true}));});await p.locator('#ticker').dispatchEvent('compositionend');await p.locator('[role="option"][data-symbol="AAPL"]').tap();await p.waitForTimeout(1000);
+ const result=await p.evaluate(()=>({value:document.getElementById('ticker').value,expanded:document.getElementById('ticker').getAttribute('aria-expanded'),trace:touchTrace}));console.log('SEARCH_TOUCH_BEFORE_FIX '+JSON.stringify({engine,head:'b0b6520d',...result}));
+ if(engine==='webkit')assert.equal(result.value,'aap','Reproduce the reviewed WebKit touch blocker against exact prior code');else assert.equal(result.value,'AAPL');
+ await f.close();
+}
 async function providerFlow(browser,engine){
  const f=await fixture(browser,390),p=f.page,records=await retained(p);
  await p.evaluate(()=>{state.mode='auto_eod';state.sharedApiReady=true;state.sharedApiBase='https://synthetic-api.fixture.test';localStorage.setItem('sq_provider_pref','shared');localStorage.setItem('splab_barchart_key','SYNTHETIC_TEST_ONLY');window.pending=[];window.fetch=url=>new Promise(resolve=>pending.push({url:String(url),resolve}));window.release=(i,fail=false)=>{const symbol=new URL(pending[i].url).searchParams.get('symbol'),raw=sqSynthetic(symbol);pending[i].resolve({ok:!fail,status:fail?502:200,json:async()=>fail?{ok:false,error:'Synthetic unavailable'}:{ok:true,symbol,daily:raw.daily,weekly:raw.weekly,monthly:raw.monthly,source:'Synthetic test fixture',cache:'hit',fetchedAt:Date.now()}});};});
@@ -84,7 +94,7 @@ async function cacheUpgrade(browser,engine){
  console.log('SEARCH_LIVE_BASELINE_PASS: public 10.3.3 manifest/index/studio JS/CSS match released 8686df40; no provider requests.');
  for(const [engine,type]of Object.entries({chromium,webkit})){
   const browser=await type.launch();try{
-   const labels=await originalDiagnosis(browser,engine);
+   const labels=await originalDiagnosis(browser,engine);await touchDiagnosis(browser,engine);
    for(const width of [320,390,768,1440]){
     const f=await fixture(browser,width),p=f.page,records=await retained(p),g=await geometry(p);
     assert.equal(g.inside,true);assert.equal(g.overflow,false);assert.ok(g.picks.top<g.scenario.top&&g.scenario.top<g.guide.top&&g.guide.top<g.evidence.top);assert.ok(g.lumi.bottom<(await p.locator('.bottom-nav').boundingBox()).y,'Compact Lumi stays above first-screen navigation');
@@ -94,6 +104,11 @@ async function cacheUpgrade(browser,engine){
      await p.locator('#ticker').fill(query);await p.locator('[role="option"][data-symbol="'+symbol+'"]').waitFor();assert.equal(await p.locator('#ticker').getAttribute('aria-expanded'),'true');
     }
     await p.locator('#ticker').fill('aap');await visibleOption(p);assert.equal(await p.locator('#tickerSuggestions .suggest-mark svg').count(),1);
+    // A touch pan/cancellation or a drag must not commit a suggestion.
+    const option=p.locator('[role="option"][data-symbol="AAPL"]');
+    await option.dispatchEvent('pointerdown',{pointerId:7,button:0,clientX:10,clientY:10});await option.dispatchEvent('pointercancel',{pointerId:7});await option.dispatchEvent('pointerup',{pointerId:7,button:0,clientX:10,clientY:10});assert.equal(await p.locator('#ticker').inputValue(),'aap');
+    await option.dispatchEvent('pointerdown',{pointerId:8,button:0,clientX:10,clientY:10});await option.dispatchEvent('pointerup',{pointerId:8,button:0,clientX:10,clientY:50});assert.equal(await p.locator('#ticker').inputValue(),'aap');
+    assert.equal(await p.locator('#tickerSearchStatus').evaluate(e=>getComputedStyle(e).position),'absolute');assert.equal(await p.locator('#tickerSearchStatus').evaluate(e=>e.getBoundingClientRect().width),1);
     if(engine==='chromium'&&width===390)await image(p,'after-search-390.jpg');
     await p.keyboard.press('ArrowDown');const active=await p.locator('#ticker').getAttribute('aria-activedescendant');assert.equal(await p.locator('#'+active).getAttribute('aria-selected'),'true');
     await p.keyboard.press('Enter');assert.equal(await p.locator('#ticker').inputValue(),'AAPL');assert.match(await p.locator('#selectedInstrument').innerText(),/Apple/);assert.equal(await p.locator('[role="option"]').count(),0);assert.equal(await p.locator('#ticker').getAttribute('aria-expanded'),'false');
