@@ -68,7 +68,7 @@ async function productionFlow(browser,engine){
   assert.deepEqual(await retained(p),before);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
   await p.waitForTimeout(200);assert.equal(calls.market,1);
   if(engine==='chromium'){await p.locator('#status').scrollIntoViewIfNeeded();await image(p,'public-eod-10.3.5-390.jpg');}
-  await p.locator('[data-private-mode="manual"]').click();const frozen=JSON.stringify(calls);await p.locator('#refreshBtn').click();assert.equal(JSON.stringify(calls),frozen);assert.deepEqual(await retained(p),before);
+  await p.locator('[data-private-mode="manual"]').click();const frozen=JSON.stringify(calls);assert.equal(await p.locator('#refreshBtn').isDisabled(),true);await p.waitForTimeout(200);assert.equal(JSON.stringify(calls),frozen);assert.deepEqual(await retained(p),before);
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
   console.log('PUBLIC_EOD_UI_PASS '+JSON.stringify({engine,version,checks:'actual deployed site/assets, intercepted health failure then recovery and observed-shape provider error, keyboard Refresh, no fake quote, no repeated market requests, private mode, saved research/journal/XP and defaults preserved',liveProviderRequests:0}));
  }finally{await c.close();}
