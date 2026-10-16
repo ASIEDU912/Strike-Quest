@@ -1,6 +1,6 @@
 {
   "version": "10.3.5",
-  "sourceCommit": "83cbbe26f272d6c5a3f89bbdce2809c17cb09b9b",
+  "sourceCommit": "8830ed6b25c59eae099642aba07a20a3b94e3feb",
   "rollbackCommit": "e064c08f154de8a2c516f96ac2eb8fa28aef1f6c",
   "audience": "public guest release",
   "accounts": "unavailable; real sign-in/recovery not verified",
@@ -53,8 +53,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 260973,
-      "sha256": "58ecad50ff8f7e56328f85be49bfbbe4f50ceffd936cfb09ab6e827c5a7f9f51"
+      "bytes": 261034,
+      "sha256": "5759691ced35e4fb600906607595e7f85824744d9dfbf0b222377c8e5a23353e"
     },
     {
       "path": "manifest.webmanifest",
@@ -147,7 +147,7 @@
       "sha256": "7d1f5517b32aeb8e4dfcffefdeb094ac18cc36f3b0fcc1f1ac351a7b25eadaf7"
     }
   ],
-  "previousPublicCommit": "6987d86a380faade5ef050808be8e857de29fdf7",
+  "previousPublicCommit": "e064c08f154de8a2c516f96ac2eb8fa28aef1f6c",
   "widgetIsolation": "Fixed foreign TradingView HTTPS iframe; no srcdoc or parent-origin external script",
   "defaultDataMode": "Automatic EOD on a new device; saved explicit Manual/Demo/EOD choices preserved",
   "expeditionSync": "new expedition badges remain device-local; not cloud-synced",
