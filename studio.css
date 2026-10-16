@@ -60,6 +60,9 @@ body[data-studio-theme=quiet]{background:#101925}body[data-studio-theme=quiet] .
 /* Local symbol discovery stays with the ticker; the existing Lumi shortcut remains above it. */
 .studio-instrument .studio-quick-picks{margin:16px 0 0;padding:16px 0 0;border:0;border-top:1px solid #2e455d;border-radius:0;background:none;box-shadow:none}
 .studio-quick-picks .quick-note{font-size:11px}
+.studio-quick-picks .section-kicker{display:none}
+.studio-instrument .studio-quick-picks .section-title{font-size:17px;line-height:1.3;margin:0 0 8px;letter-spacing:0}
+#tickerSearchStatus{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .ticker-search-help{display:block;font-size:11px;line-height:1.5;color:#b6ccdf;margin-top:6px}
 .search-suggestions{z-index:35;max-height:min(320px,45dvh);overscroll-behavior:contain}
 .suggest-row{grid-template-columns:32px minmax(0,1fr) auto;min-height:52px;cursor:pointer}
