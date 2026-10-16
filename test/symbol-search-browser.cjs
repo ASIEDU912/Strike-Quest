@@ -42,9 +42,9 @@ async function originalDiagnosis(browser,engine){
  await f.close();return labels;
 }
 async function touchDiagnosis(browser,engine){
- const broken=execFileSync('git',['show','b0b6520d4ca15454dd5e31bdc8c393c0b72c5e49:index.html'],{cwd:root,maxBuffer:10*1024*1024}),next=current.get('/index.html');current.set('/index.html',broken);
- let f;try{f=await fixture(browser,390);}finally{current.set('/index.html',next);}
- const p=f.page;await p.locator('#ticker').fill('');
+ const broken=execFileSync('git',['show','b0b6520d4ca15454dd5e31bdc8c393c0b72c5e49:index.html'],{cwd:root,maxBuffer:10*1024*1024}),next=current.get('/index.html');current.set('/index.html',broken);current.set('/',broken);
+ let f;try{f=await fixture(browser,390);}finally{current.set('/index.html',next);current.set('/',next);}
+ const p=f.page;assert.equal(await p.evaluate(()=>typeof suggestionPress),'undefined','The comparison must execute the previous index source');await p.locator('#ticker').fill('');
  await p.evaluate(()=>{window.touchTrace=[];for(const type of ['pointerdown','pointerup','pointercancel','mousedown','mouseup','click','blur','focus'])document.addEventListener(type,e=>{if(e.target.id==='ticker'||e.target.closest?.('.suggest-row'))touchTrace.push({type,target:e.target.id||e.target.className,prevented:e.defaultPrevented,pointer:e.pointerType||'',focus:document.activeElement.id});},true);});
  await p.locator('#ticker').evaluate(e=>{e.value='aap';e.dispatchEvent(new InputEvent('input',{bubbles:true,isComposing:true}));});await p.locator('#ticker').dispatchEvent('compositionend');await p.locator('[role="option"][data-symbol="AAPL"]').tap();await p.waitForTimeout(1000);
  const result=await p.evaluate(()=>({value:document.getElementById('ticker').value,expanded:document.getElementById('ticker').getAttribute('aria-expanded'),trace:touchTrace}));console.log('SEARCH_TOUCH_BEFORE_FIX '+JSON.stringify({engine,head:'b0b6520d',...result}));
@@ -65,9 +65,11 @@ async function providerFlow(browser,engine){
  await p.locator('[role="option"][data-symbol="NVDA"]').tap();await p.waitForFunction(()=>pending.length===3);await p.evaluate(()=>release(2,true));
  await p.waitForFunction(()=>!document.getElementById('fetchBtn').disabled);assert.match(await p.locator('#status').innerText(),/could not be verified or loaded/);assert.equal(await p.locator('#price').inputValue(),'');
  await p.locator('#ticker').fill('spdr');assert.ok(await p.locator('[role="option"]').count()>0);assert.equal(await p.evaluate(()=>pending.length),3);
+ await p.locator('#ticker').fill('TESTX');assert.equal(await p.locator('[role="option"]').count(),0);assert.equal(await p.evaluate(()=>pending.length),3);
+ await p.locator('#analyzeBtn').click();await p.waitForFunction(()=>pending.length===4);assert.match(await p.evaluate(()=>pending[3].url),/symbol=TESTX/);await p.evaluate(()=>release(3,true));await p.waitForFunction(()=>!document.getElementById('fetchBtn').disabled);assert.equal(await p.locator('#ticker').inputValue(),'TESTX','Direct ticker entry remains usable beyond the local catalog');
  // Existing provider caches may change; saved records, journal and earned XP must not.
  const end=await retained(p);assert.equal(end.xp,records.xp);for(const k of ['splab_history','sq_research_checkins_v1','sq_journey_v1:guest:revisit'])assert.equal(end.storage[k],records.storage[k]);
- console.log('SEARCH_PROVIDER_PASS '+engine+': no requests while typing; one synthetic request per committed selection; pending/latest/error states; old response ignored; saved data and XP retained');await f.close();
+ console.log('SEARCH_PROVIDER_PASS '+engine+': no requests while typing; one synthetic request per committed selection; direct out-of-catalog ticker Analyze preserved; pending/latest/error states; old response ignored; saved data and XP retained');await f.close();
 }
 async function cacheUpgrade(browser,engine){
  let files=prior,stopped=false;const unexpected=[],server=http.createServer((req,res)=>{const p=new URL(req.url,'http://localhost').pathname,b=files.get(p);if(!b&&p!=='/favicon.ico')unexpected.push(p);res.writeHead(b?200:404,{'Content-Type':mime(p),'Cache-Control':'no-store'});res.end(b||'');});
