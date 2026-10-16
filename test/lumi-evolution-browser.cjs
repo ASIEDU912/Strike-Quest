@@ -27,7 +27,7 @@ const protectedSeed={splab_history:JSON.stringify([{id:'retained-note',ticker:'A
     });
     await context.routeWebSocket('**/*',s=>{external.push(s.url());s.close()});
     const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(base);
-    await page.waitForSelector('body[data-quest-renewal="10.3.4"]');
+    await page.waitForSelector('body[data-quest-renewal="10.3.5"]');
     await page.locator('[data-view="quests"]').click();
     const initial=await page.evaluate(()=>Object.fromEntries(['splab_history','sq_research_checkins_v1','sq_badges_v1',...Object.keys(localStorage).filter(k=>k.startsWith('sq_journey_v1:'))].map(k=>[k,localStorage.getItem(k)])));
     for(let i=0;i<xp.length;i++){
@@ -50,7 +50,7 @@ const protectedSeed={splab_history:JSON.stringify([{id:'retained-note',ticker:'A
     assert.equal(await page.evaluate(()=>sqResearchXp()),0);
     await page.locator('#questsCompanionHost [data-mascot-motion]').click();
     assert.equal(await page.locator('#questsCompanionHost [data-mascot-motion]').getAttribute('aria-pressed'),'true');
-    await page.reload();await page.waitForSelector('body[data-quest-renewal="10.3.4"]');
+    await page.reload();await page.waitForSelector('body[data-quest-renewal="10.3.5"]');
     assert.equal(await page.locator('#questsCompanionHost [data-mascot-motion]').getAttribute('aria-pressed'),'true');
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.locator('[data-view="quests"]').click();
