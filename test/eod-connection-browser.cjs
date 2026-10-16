@@ -72,26 +72,26 @@ async function browserFlow(browser,engine,width){
   await p.locator('#ticker').fill('microsoft');await p.locator('[role="option"][data-symbol="MSFT"]').tap();
   await p.locator('[data-p="3m"]').click();await p.waitForTimeout(50);
   assert.equal(calls.config,1);assert.equal(calls.health,1);assert.equal(calls.market.length,0);
-  assert.equal(await p.locator('#fetchBtn').getAttribute('aria-busy'),'true');
+  assert.equal(await p.locator('#refreshBtn').getAttribute('aria-busy'),'true');
   await pendingHealth.shift().fulfill({json:health});
   await p.waitForFunction(()=>document.getElementById('status').textContent.includes('provider could not supply daily history'));
   assert.deepEqual(calls.market,['MSFT']);assert.equal(await p.evaluate(()=>state.sharedApiReady),true);assert.equal(await p.locator('#price').inputValue(),'');assert.doesNotMatch(await p.locator('#status').innerText(),/PRIVATE_ERROR|not connected/);
   assert.equal(await p.locator('#status').getAttribute('role'),'status');assert.equal(await p.locator('#status').getAttribute('aria-live'),'polite');
   assert.deepEqual(await privateRecords(p),original);
-  await p.locator('#fetchBtn').focus();await p.keyboard.press('Enter');await until(()=>calls.market.length===2);await p.waitForFunction(()=>!document.getElementById('fetchBtn').disabled);await p.waitForTimeout(150);assert.equal(calls.market.length,2);
+  await p.locator('#refreshBtn').focus();await p.keyboard.press('Enter');await until(()=>calls.market.length===2);await p.waitForFunction(()=>!document.getElementById('refreshBtn').disabled);await p.waitForTimeout(150);assert.equal(calls.market.length,2);
   if(engine==='chromium'&&width===390){await p.locator('#status').scrollIntoViewIfNeeded();await image(p,'eod-provider-failure-390.jpg');}
   // A new Automatic session has its own connection generation.
   await p.locator('[data-private-mode="manual"]').click();healthGate=false;healthStatus=503;
   await p.locator('[data-private-mode="auto_eod"]').click();
   await p.waitForFunction(()=>document.getElementById('status').textContent.includes('connection check (HTTP 503)'));assert.equal(calls.market.length,2);
   if(engine==='chromium'&&width===390){await p.locator('#status').scrollIntoViewIfNeeded();await image(p,'eod-connection-failure-390.jpg');}
-  healthStatus=200;marketMode='valid';await p.locator('#fetchBtn').focus();await p.keyboard.press('Enter');
-  await p.waitForFunction(()=>document.getElementById('price').value==='200.00');assert.equal(calls.market.length,3);assert.equal(await p.evaluate(()=>state.sharedApiReady),true);assert.equal(await p.locator('#fetchBtn').getAttribute('aria-busy'),'false');
-  marketMode='quota';await p.locator('#fetchBtn').click();await p.waitForFunction(()=>document.getElementById('status').textContent.includes('request limit reached'));
+  healthStatus=200;marketMode='valid';await p.locator('#refreshBtn').focus();await p.keyboard.press('Enter');
+  await p.waitForFunction(()=>document.getElementById('price').value==='200.00');assert.equal(calls.market.length,3);assert.equal(await p.evaluate(()=>state.sharedApiReady),true);assert.equal(await p.locator('#refreshBtn').getAttribute('aria-busy'),'false');
+  marketMode='quota';await p.locator('#refreshBtn').click();await p.waitForFunction(()=>document.getElementById('status').textContent.includes('request limit reached'));
   assert.equal(await p.locator('#price').inputValue(),'200.00');assert.equal(await p.evaluate(()=>state.dataMeta.stale),true);assert.match(await p.locator('#status').innerText(),/last cached EOD snapshot/);
-  marketMode='invalid';await p.locator('#fetchBtn').click();await p.waitForFunction(()=>document.getElementById('status').textContent.includes('could not be verified'));assert.equal(await p.locator('#price').inputValue(),'200.00');
+  marketMode='invalid';await p.locator('#refreshBtn').click();await p.waitForFunction(()=>document.getElementById('status').textContent.includes('could not be verified'));assert.equal(await p.locator('#price').inputValue(),'200.00');
   // Saved research switches to Manual and rejects the old automatic request.
-  marketGate=true;await p.locator('#fetchBtn').click();await until(()=>pendingMarket.length===1);
+  marketGate=true;await p.locator('#refreshBtn').click();await until(()=>pendingMarket.length===1);
   await p.evaluate(()=>loadSaved('search-idea'));const savedStatus=await p.locator('#status').innerText();
   const waiting=pendingMarket.shift();await waiting.r.fulfill({json:payload(waiting.symbol)}).catch(()=>{});
   await p.waitForTimeout(80);assert.equal(await p.locator('#price').inputValue(),'190.43');assert.equal(await p.evaluate(()=>state.mode),'manual');assert.equal(await p.locator('#status').innerText(),savedStatus);

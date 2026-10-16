@@ -534,7 +534,7 @@ function invalidateMarketRequest(){
   marketRequestSerial++;
   setMarketBusy(false);
 }
-function setMarketBusy(busy){$("fetchBtn").disabled=busy;$("fetchBtn").setAttribute("aria-busy",String(busy));}
+function setMarketBusy(busy){for(const id of ["fetchBtn","refreshBtn"]){const button=$(id);if(button){button.disabled=busy;button.setAttribute("aria-busy",String(busy));}}}
 function invalidateSharedConnection(){
   sharedConnectionSerial++;sharedConnectionPending=null;state.sharedApiReady=false;state.sharedApiError="";
   if($("sharedApiState"))$("sharedApiState").textContent="Not checked";
