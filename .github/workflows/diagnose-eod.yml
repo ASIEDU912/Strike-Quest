@@ -1,0 +1,19 @@
+name: Diagnose shared EOD connectivity
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  read-only-probe:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'diagnose/eod-connectivity-2026-10-16'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Read public config, health and at most one bounded market response
+        run: node test/eod-connectivity-probe.cjs
