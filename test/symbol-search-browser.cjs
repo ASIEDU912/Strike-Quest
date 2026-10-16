@@ -16,7 +16,7 @@ const entry={id:'search-checkin',originalId:idea.id,original:{...idea,period:'2y
 const seed={sq_next_session:JSON.stringify({mode:'manual',ticker:'XLK',period:'2y',correction:10,price:'190.43',perf:'76.93',divisor:'1.5',increment:'1'}),splab_history:JSON.stringify([idea]),sq_research_checkins_v1:JSON.stringify({version:1,entries:[entry]}),sq_badges_v1011:JSON.stringify({version:1,earned:{first:{at,mode:'manual',origin:'fixture'}},horizons:[]}),sq_progress:JSON.stringify({earned:{first:{at}}}),'sq_journey_v1:guest:revisit':JSON.stringify({version:1,at,mode:'manual'})};
 async function retained(page){return page.evaluate(keys=>({xp:sqResearchXp(),storage:Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)]))}),Object.keys(seed).filter(k=>k!=='sq_next_session'));}
 async function seedContext(context){await context.addInitScript(seed=>{if(!sessionStorage.getItem('search-seeded')){for(const [k,v]of Object.entries(seed))localStorage.setItem(k,v);sessionStorage.setItem('search-seeded','1');}sessionStorage.setItem('strikequests_v9_splash_seen','1');},seed);}
-async function ready(p,v=version){await p.waitForSelector('body[data-quest-renewal="'+v+'"]');await p.waitForFunction(()=>document.getElementById('studioResearchLumiName').textContent==='Lumi � Scout');}
+async function ready(p,v=version){await p.waitForSelector('body[data-quest-renewal="'+v+'"]');await p.waitForFunction(()=>document.getElementById('studioResearchLumiName').textContent==='Lumi · Scout');}
 async function fixture(browser,width,baseline=false){
  const context=await browser.newContext({viewport:{width,height:844},hasTouch:true,serviceWorkers:'block'}),errors=[],external=[];
  await seedContext(context);await context.route('**/*',r=>{const u=new URL(r.request().url()),map=baseline?prior:current;if(u.origin!==origin){external.push(u.href);return r.abort();}const b=map.get(u.pathname);return r.fulfill({status:b?200:404,body:b||'',contentType:mime(u.pathname)});});
@@ -115,4 +115,3 @@ async function cacheUpgrade(browser,engine){
  }
  console.log('SEARCH_VERIFIED: local catalog only; no new provider/backend/account/credential/data schema changes.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
-
