@@ -1,7 +1,7 @@
 {
-  "version": "10.3.4",
-  "sourceCommit": "9a95b1212c3efd75372c1fcb577fd5acdab88b67",
-  "rollbackCommit": "8686df40b6f84fde919ed544c4f0a65af4b82971",
+  "version": "10.3.5",
+  "sourceCommit": "83cbbe26f272d6c5a3f89bbdce2809c17cb09b9b",
+  "rollbackCommit": "e064c08f154de8a2c516f96ac2eb8fa28aef1f6c",
   "audience": "public guest release",
   "accounts": "unavailable; real sign-in/recovery not verified",
   "sec": "dated six-company annual snapshots; retrieved 2026-10-14",
@@ -53,8 +53,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 257769,
-      "sha256": "221416e6ecdf6d638d165ca5127402914560d50ec4fda03e512ffef2d77c34d4"
+      "bytes": 260973,
+      "sha256": "58ecad50ff8f7e56328f85be49bfbbe4f50ceffd936cfb09ab6e827c5a7f9f51"
     },
     {
       "path": "manifest.webmanifest",
@@ -73,8 +73,8 @@
     },
     {
       "path": "public-preview.js",
-      "bytes": 666,
-      "sha256": "b456680fafffc925389db5477d354bf081ac5019852115361960893cf2bd10cd"
+      "bytes": 665,
+      "sha256": "c44b11d2b702b17d528e940d4ccd5f5ef7bed5e2681cbf748f67d6a9570af4ee"
     },
     {
       "path": "research-data/sec/AAPL.json",
@@ -133,13 +133,13 @@
     },
     {
       "path": "studio.js",
-      "bytes": 93858,
-      "sha256": "ca7279288ba748e03980338027f616485ea6d4e1a6e50f5be832add83b743976"
+      "bytes": 93857,
+      "sha256": "aac7d4da0cfd2d7b192c0d5ac4de47664a9f979c762940b0cb66ab5e7298d332"
     },
     {
       "path": "sw.js",
       "bytes": 1280,
-      "sha256": "ed44fabfda7101f6f4557d41516836f764f5b785d7375fbac9c2f53a98d17901"
+      "sha256": "55757ef8ad995716b1e867b6700fb8bfc4a5c582b00035311a1e32c235882f00"
     },
     {
       "path": "vendor/supabase.js",
